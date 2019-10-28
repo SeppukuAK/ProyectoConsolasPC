@@ -1,0 +1,17 @@
+# User-specific files
+*.user
+
+# Files built by Visual Studio
+*.ilk
+*.obj
+*.pdb
+*.log
+
+# Build results
+ProyectoConsolas/Projects/x64/
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+
+# Executables
+*.exe
