@@ -1,4 +1,6 @@
-//#include "Renderer/Renderer.h"
+#include "Renderer/Renderer.h"
+#include "Platform/Platform.h"
+
 //#include
 //#include <iostream>
 
@@ -12,6 +14,10 @@ using namespace std;
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+/*
+Aplicación que simula un fuego en la parte inferior de la pantalla y junto con unas barras blancas
+que se desplazan a la derecha en la parte superior
+*/
 int main(int argc, char* args[])
 {
 	//The window we'll be rendering to 
@@ -38,6 +44,11 @@ int main(int argc, char* args[])
 
 			//Fill the surface white 
 			SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+
+			//SDL_SetRenderDrawColor(screenSurface, 255, 0, 0, 255);
+
+			//SDL_RenderDrawPoint(screenSurface, i, i);
+
 
 			//Update the surface 
 			SDL_UpdateWindowSurface(window);

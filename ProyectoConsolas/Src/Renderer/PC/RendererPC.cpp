@@ -3,7 +3,7 @@
 #include "RendererPC.h"
 
 //TODO: Implementar los métodos
-static void RendererPC::Clear() {}
-static void RendererPC::PutPixel() {}
-static void RendererPC::Present() {}
+void RendererPC::Clear(Color color) {}
+void RendererPC::PutPixel(int x, int y, Color color) {}
+void RendererPC::Present() {}
 #endif

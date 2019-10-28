@@ -52,6 +52,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\PC\SDL2-2.0.8\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PLATFORM_PC</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -62,6 +63,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\PC\SDL2-2.0.8\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PLATFORM_PC</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -78,6 +80,7 @@
     <ClInclude Include="..\Src\Renderer\PC\RendererPC.h" />
     <ClInclude Include="..\Src\Renderer\PS4\RendererPS4.h" />
     <ClInclude Include="..\Src\Renderer\Renderer.h" />
+    <ClInclude Include="..\Src\Renderer\Utilities\Color.h" />
   </ItemGroup>
   <Import Condition="'$(ConfigurationType)' == 'Makefile' and Exists('$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets')" Project="$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

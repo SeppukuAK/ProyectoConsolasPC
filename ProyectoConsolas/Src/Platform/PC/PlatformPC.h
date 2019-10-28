@@ -1,4 +1,3 @@
-#pragma once
 
 /*
 	Inicializa atributos de la plataforma.
