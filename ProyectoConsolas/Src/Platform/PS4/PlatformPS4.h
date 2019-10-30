@@ -5,10 +5,12 @@
 */
 class PlatformPS4
 {
+	//Los métodos son estáticos
+
 	//TODO:Poner atributos
-	//TODO: Los métodos son estáticos???
 	static void Init();
 	static void Release();	//Libera recursos
+
 	/*
 	Devuelve un bool que indica si el usuario ha decidido terminar la aplicación.
 	En PS4 no se detecta

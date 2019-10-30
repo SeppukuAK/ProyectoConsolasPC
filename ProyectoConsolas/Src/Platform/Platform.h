@@ -1,4 +1,5 @@
 //Abstrae los detalles más básicos de la plataforma.
+//TODO: CREAR LA COMPILACION CONDICIONAL PS4
 
 #if PLATFORM_PS4
 #include "Platform/PS4/PlatformPS4.h" //Este tiene todas las cosas extras de la plataforma.

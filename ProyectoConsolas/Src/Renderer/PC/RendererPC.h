@@ -10,15 +10,16 @@ class RendererPC
 	static void Release();
 	//TODO: SDL explica como hacer PutPixel, Clear y Present
 
-	static void Clear(Color color);
+	static void Clear(MyColor color);
 
 	/*
 		Pone un Pixel en el RenderBuffer. No aparece en pantalla hasta que se hace present
 	*/
-	static void PutPixel(int x, int y, Color color);
+	static void PutPixel(int x, int y, MyColor color);
 
 	/*
 		Muestra en pantalla el RenderBuffer.
+		Espera o no dependiendo de como se ha inicializado. De forma normal espera.
 	*/
 	static void Present();
 
@@ -26,5 +27,7 @@ class RendererPC
 	static int GetWidth();
 	static int GetHeight();
 
+private:
+	//Tengo que tener un atributo que sea un frameBuffer de 800x600 o lo que sea (matriz)
 };
 

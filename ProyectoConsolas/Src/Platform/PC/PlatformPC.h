@@ -5,8 +5,9 @@
 */
 class PlatformPC
 {
+	//Los métodos son estáticos
+
 	//TODO:Poner atributos
-	//TODO: Los métodos son estáticos???
 	static void Init();
 	static void Release();	//Libera recursos
 
