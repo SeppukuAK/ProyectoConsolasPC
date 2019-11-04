@@ -6,8 +6,8 @@
 void RendererPC::Init() {}
 void RendererPC::Release() {}
 
-void RendererPC::Clear(MyColor color) {}
-void RendererPC::PutPixel(int x, int y, MyColor color) {}
+void RendererPC::Clear(Color color) {}
+void RendererPC::PutPixel(int x, int y, Color color) {}
 void RendererPC::Present() {}
 
 int RendererPC::GetWidth() { return 0; }

@@ -9,6 +9,8 @@
 #include <SDL.h>
 #include <stdio.h> 
 #include <iostream>
+#include <time.h>       /* time */
+#include <stdlib.h>		/* srand, rand */
 
 using namespace std;
 
@@ -16,9 +18,22 @@ using namespace std;
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-#define RGB(r, g, b) { (Uint8)r, (Uint8)g, (Uint8)b,255 }
+//Dimensiones fuego
+const int FIRE_HEIGHT = 100;
+const int FIRE_WIDTH = 480;
 
-MyColor paletaFuego[] = {
+//Dimensiones barras
+const int BAR_HEIGHT = 10;
+const int BAR_WIDTH = 100;
+
+const int BAR_VERT_DIST = 20;
+const int BAR_HORI_DIST = 20;
+
+
+//Macro que convierte la representación en RGB de la clase color.
+#define RGB(r, g, b) { (uint8_t)r, (uint8_t)g, (uint8_t)b,255 }
+
+Color paletaFuego[] = {
 				 RGB(0x00,0x00,0x00),
 				 RGB(0x07,0x07,0x07),
 				 RGB(0x1F,0x07,0x07),
@@ -64,16 +79,45 @@ void Logic(SDL_Renderer* renderer)
 	//Clear screen
 	SDL_RenderClear(renderer);
 
+	//Inicialización del FUEGO
 
-	cout << paletaFuego[3].G;
-	//Dibujamos cuadrado
-	for (int j = 0; j < 38 * 2; j++)
+	//Obtenemos numero de colores de la paleta
+	int sizeFirePalette = sizeof(paletaFuego) / sizeof(Color);
+
+	//Cada valor representa la temperatura del fuego. Valores entre 0(frio) y sizeFirePalette(caliente):
+	int** fireMatrix = NULL;
+	
+	fireMatrix = new int*[FIRE_HEIGHT];
+	for (int i = 0; i < FIRE_HEIGHT; ++i)
+		fireMatrix[i] = new int[FIRE_WIDTH];
+
+	//Color inicial (blanco)
+	Color initialColor = paletaFuego[sizeFirePalette - 1];
+	SDL_SetRenderDrawColor(renderer, initialColor.R, initialColor.G, initialColor.B, initialColor.A);
+
+	int firePosY = SCREEN_HEIGHT - FIRE_HEIGHT;
+
+	//Ponemos la primera fila a la temperatura más caliente
+	for (int j = 0; j < FIRE_WIDTH; j++)
 	{
-		MyColor color = paletaFuego[j % sizeof(paletaFuego)];
-		SDL_SetRenderDrawColor(renderer, color.R, color.G, color.B, color.A);
-		for (size_t i = 0; i < 50; i++)
+		fireMatrix[FIRE_HEIGHT - 1][j] = sizeFirePalette - 1;
+
+		//Cambiamos el color del pixel
+		SDL_RenderDrawPoint(renderer, j, (FIRE_HEIGHT - 1) + firePosY);
+	}
+
+	//Inicialización de las BARRAS
+
+	//Las barras son de color blanco
+	Color barColor = RGB(255,255,255);
+	SDL_SetRenderDrawColor(renderer, barColor.R, barColor.G, barColor.B, barColor.A);
+
+	for (int i = 0; i < BAR_HEIGHT; i++)
+	{
+		for (int j = 0; j < BAR_WIDTH; j++)
 		{
-			SDL_RenderDrawPoint(renderer, 50 + i, 50 + j);
+			//Cambiamos el color del pixel
+			SDL_RenderDrawPoint(renderer, j + 30, i + 100);
 
 		}
 	}
@@ -81,7 +125,70 @@ void Logic(SDL_Renderer* renderer)
 	//Update screen
 	SDL_RenderPresent(renderer);
 
-	SDL_Delay(3000);
+	//Simulación del fuego
+
+	int totalTicks = 1000;
+
+	/* initialize random seed: */
+	srand(time(NULL));
+
+	for (int k = 0; k < totalTicks; k++)
+	{
+		//En cada frame evolucionamos la simulacion
+
+		//Fuego
+		for (int i = (FIRE_HEIGHT - 2); i >= 0; i--)   		//Recorremos de abajo a arriba
+		{
+			for (int j = 0; j < FIRE_WIDTH; j++)
+			{
+				//Evolucionamos cada pixel, actualizando su temperatura
+
+				//Elegimos de forma aleatoria que dirección escoge
+				int randomDir; //Coge un valor entre [-1,+1]
+
+				//Ajustamos casos de error
+				if (j == 0)
+					randomDir = rand() % 2;
+				else if (j == FIRE_WIDTH - 1)
+					randomDir = rand() % 2 - 1;
+				else
+					randomDir = rand() % 3 - 1;
+
+				//Elegimos de forma aleatoria si se enfria o no
+				int randomCooling = rand() % 2; //Coge un valor entre [0,+1]
+
+				fireMatrix[i][j] = fireMatrix[i + 1][j + randomDir] - randomCooling;
+
+				if (fireMatrix[i][j] < 0)
+					fireMatrix[i][j] = 0;
+
+				Color initialColor = paletaFuego[fireMatrix[i][j]];
+
+				//Esto es PutPixel
+				SDL_SetRenderDrawColor(renderer, initialColor.R, initialColor.G, initialColor.B, initialColor.A);
+
+				//Cambiamos el color del pixel
+				SDL_RenderDrawPoint(renderer, j, i + firePosY);
+			}
+		}
+
+		//Barras
+		//Cada frame se mueven una unidad
+
+
+
+
+		//Update screen
+		SDL_RenderPresent(renderer);
+
+		SDL_Delay(100);
+	}
+
+	//Limpiamos memoria
+	for (int i = 0; i < FIRE_HEIGHT; ++i)
+		delete[] fireMatrix[i];
+
+	delete[] fireMatrix;
 }
 
 
@@ -126,7 +233,7 @@ int main(int argc, char* args[])
 			else
 			{
 				//Initialize renderer color
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
 			}
 
 		}
