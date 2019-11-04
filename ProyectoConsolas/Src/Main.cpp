@@ -86,8 +86,8 @@ void Logic(SDL_Renderer* renderer)
 
 	//Cada valor representa la temperatura del fuego. Valores entre 0(frio) y sizeFirePalette(caliente):
 	int** fireMatrix = NULL;
-	
-	fireMatrix = new int*[FIRE_HEIGHT];
+
+	fireMatrix = new int* [FIRE_HEIGHT];
 	for (int i = 0; i < FIRE_HEIGHT; ++i)
 		fireMatrix[i] = new int[FIRE_WIDTH];
 
@@ -96,6 +96,7 @@ void Logic(SDL_Renderer* renderer)
 	SDL_SetRenderDrawColor(renderer, initialColor.R, initialColor.G, initialColor.B, initialColor.A);
 
 	int firePosY = SCREEN_HEIGHT - FIRE_HEIGHT;
+	int firePosX = SCREEN_WIDTH / 2 - FIRE_WIDTH / 2;
 
 	//Ponemos la primera fila a la temperatura más caliente
 	for (int j = 0; j < FIRE_WIDTH; j++)
@@ -103,36 +104,41 @@ void Logic(SDL_Renderer* renderer)
 		fireMatrix[FIRE_HEIGHT - 1][j] = sizeFirePalette - 1;
 
 		//Cambiamos el color del pixel
-		SDL_RenderDrawPoint(renderer, j, (FIRE_HEIGHT - 1) + firePosY);
+		SDL_RenderDrawPoint(renderer, j + firePosX, (FIRE_HEIGHT - 1) + firePosY);
 	}
 
 	//Inicialización de las BARRAS
+	int numHoriBars = SCREEN_WIDTH / (BAR_WIDTH + BAR_HORI_DIST);
+	int numVertBars = (SCREEN_HEIGHT - FIRE_HEIGHT) / (BAR_HEIGHT + BAR_VERT_DIST);
 
 	//Las barras son de color blanco
-	Color barColor = RGB(255,255,255);
+	Color barColor = RGB(255, 255, 255);
 	SDL_SetRenderDrawColor(renderer, barColor.R, barColor.G, barColor.B, barColor.A);
 
-	for (int i = 0; i < BAR_HEIGHT; i++)
+	for (int r = 0; r < numVertBars; r++)
 	{
-		for (int j = 0; j < BAR_WIDTH; j++)
+		for (int c = 0; c < numHoriBars; c++)
 		{
-			//Cambiamos el color del pixel
-			SDL_RenderDrawPoint(renderer, j + 30, i + 100);
+			for (int i = 0; i < BAR_HEIGHT; i++)
+			{
+				for (int j = 0; j < BAR_WIDTH; j++)
+				{
+					//Cambiamos el color del pixel
+					SDL_RenderDrawPoint(renderer, j + c * (BAR_WIDTH + BAR_HORI_DIST), i + r * (BAR_HEIGHT + BAR_VERT_DIST));
 
+				}
+			}
 		}
 	}
-
 	//Update screen
 	SDL_RenderPresent(renderer);
 
-	//Simulación del fuego
-
+	//Simulación
 	int totalTicks = 1000;
-
 	/* initialize random seed: */
 	srand(time(NULL));
 
-	for (int k = 0; k < totalTicks; k++)
+	for (int delta = 0; delta < totalTicks; delta++)
 	{
 		//En cada frame evolucionamos la simulacion
 
@@ -168,14 +174,58 @@ void Logic(SDL_Renderer* renderer)
 				SDL_SetRenderDrawColor(renderer, initialColor.R, initialColor.G, initialColor.B, initialColor.A);
 
 				//Cambiamos el color del pixel
-				SDL_RenderDrawPoint(renderer, j, i + firePosY);
+				SDL_RenderDrawPoint(renderer, j + firePosX, i + firePosY);
 			}
 		}
 
 		//Barras
 		//Cada frame se mueven una unidad
 
+		//Pintar cada fila
+		for (int r = 0; r < numVertBars; r++)
+		{
+			//Pintar cada columna
+			for (int c = 0; c < numHoriBars; c++)
+			{
+				//Primero borramos la columna izquierda de la barra
+				Color barColor = RGB(0, 0, 0);
+				SDL_SetRenderDrawColor(renderer, barColor.R, barColor.G, barColor.B, barColor.A);
 
+				for (int i = 0; i < BAR_HEIGHT; i++)
+				{
+					//Cambiamos el color del pixel
+					SDL_RenderDrawPoint(renderer, delta + c * (BAR_WIDTH + BAR_HORI_DIST), i + r * (BAR_HEIGHT + BAR_VERT_DIST));
+				}
+			}
+		}
+
+				//Pintar cada fila
+		for (int r = 0; r < numVertBars; r++)
+		{
+			//Pintar cada columna
+			for (int c = 0; c < numHoriBars; c++)
+			{
+				//Primero borramos la columna izquierda de la barra
+				Color black = RGB(0, 0, 0);
+				SDL_SetRenderDrawColor(renderer, black.R, black.G, black.B, black.A);
+
+				for (int i = 0; i < BAR_HEIGHT; i++)
+				{
+					//Cambiamos el color del pixel
+					SDL_RenderDrawPoint(renderer, (delta + c * (BAR_WIDTH + BAR_HORI_DIST))% SCREEN_WIDTH, i + r * (BAR_HEIGHT + BAR_VERT_DIST));
+				}
+
+				//Segundo pintamos cada columna por la derecha
+				Color white = RGB(255, 255, 255);
+				SDL_SetRenderDrawColor(renderer, white.R, white.G, white.B, white.A);
+
+				for (int i = 0; i < BAR_HEIGHT; i++)
+				{
+					//Cambiamos el color del pixel
+					SDL_RenderDrawPoint(renderer, (delta + BAR_WIDTH + c * (BAR_WIDTH + BAR_HORI_DIST)) %SCREEN_WIDTH, i + r * (BAR_HEIGHT + BAR_VERT_DIST));
+				}
+			}
+		}
 
 
 		//Update screen
