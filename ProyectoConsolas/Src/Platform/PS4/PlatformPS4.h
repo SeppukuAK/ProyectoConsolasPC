@@ -5,8 +5,6 @@
 */
 class PlatformPS4
 {
-	//Los métodos son estáticos
-
 	//TODO:Poner atributos
 	static void Init();
 	static void Release();	//Libera recursos

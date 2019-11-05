@@ -24,6 +24,12 @@
     <Filter Include="Header Files\Renderer\Utilities">
       <UniqueIdentifier>{9849fb4c-8a8e-42c4-bfce-624c659bbccb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic">
+      <UniqueIdentifier>{8fb06269-c8ff-4b23-a591-296455350d7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic">
+      <UniqueIdentifier>{960ef772-d0f1-49bf-b1da-24bc06f1bbf5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\Main.cpp">
@@ -40,6 +46,12 @@
     </ClCompile>
     <ClCompile Include="..\Src\Platform\PS4\PlatformPS4.cpp">
       <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\Bar.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\Fire.cpp">
+      <Filter>Source Files\Logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +75,12 @@
     </ClInclude>
     <ClInclude Include="..\Src\Renderer\Utilities\Color.h">
       <Filter>Header Files\Renderer\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Bar.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Fire.h">
+      <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

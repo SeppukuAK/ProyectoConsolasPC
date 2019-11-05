@@ -1,11 +1,11 @@
-//Abstrae los detalles más básicos de la plataforma.
-//TODO: CREAR LA COMPILACION CONDICIONAL PS4
+//Contiene funciones estáticas para inicializar la parte especifica de la plataforma:
 
+//TODO: CREAR LA COMPILACION CONDICIONAL PS4
 #if PLATFORM_PS4
-#include "Platform/PS4/PlatformPS4.h" //Este tiene todas las cosas extras de la plataforma.
+#include "PS4/PlatformPS4.h" 
 
 #elif PLATFORM_PC
-#include "Platform/PC/PlatformPC.h" //Este tiene todas las cosas extras de la plataforma.
+#include "PC/PlatformPC.h" 
 
 #else
 //#error "Plataforma no soportada" TODO: Lanzar un error

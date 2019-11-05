@@ -1,8 +1,25 @@
 #include "../Utilities/Color.h"
+#include <SDL.h>
+
+
 
 //Utiliza la librería SDL: permite la carga de pngs y el pintado de píxeles
 class RendererPC
 {
+
+private:
+
+	//Tengo que tener un atributo que sea un frameBuffer de 800x600 o lo que sea (matriz)
+
+	static int numBuffers; //número de frame buffers del Renderer
+	static int width;
+	static int height;
+	static SDL_Renderer* renderer;
+
+
+public:
+
+	//RendererPC() { renderer = NULL; };
 	//Los métodos son estáticos
 
 	//TODO: Se inicializa en modo ventana o pantalla completa. 
@@ -24,10 +41,10 @@ class RendererPC
 	static void Present();
 
 	//TODO: Utilizaremos estos dos metodos para dibujar el fuego centrado en la parte inferior.
-	static int GetWidth();
-	static int GetHeight();
+	inline static int GetWidth() { return width; };
+	inline static int GetHeight() { return height; };
 
-private:
-	//Tengo que tener un atributo que sea un frameBuffer de 800x600 o lo que sea (matriz)
+	inline static int GetNumBuffers() { return numBuffers; };
 };
+SDL_Renderer* RendererPC::renderer = NULL;
 

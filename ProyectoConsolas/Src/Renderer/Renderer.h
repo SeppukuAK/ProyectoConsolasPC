@@ -2,10 +2,10 @@
 //TODO: CREAR LA COMPILACION CONDICIONAL PS4
 
 #if PLATFORM_PS4
-#include "Renderer/PS4/RendererPS4.h" //Este tiene todas las cosas extras de la plataforma.
+#include "PS4/RendererPS4.h" //Este tiene todas las cosas extras de la plataforma.
 
 #elif PLATFORM_PC
-#include "Renderer/PC/RendererPC.h" //Este tiene todas las cosas extras de la plataforma.
+#include "PC/RendererPC.h" //Este tiene todas las cosas extras de la plataforma.
 
 #else
 //#error "Plataforma no soportada" TODO: Lanzar un error
