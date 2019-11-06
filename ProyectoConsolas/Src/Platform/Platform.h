@@ -1,6 +1,12 @@
-//Contiene funciones estáticas para inicializar la parte especifica de la plataforma:
+#pragma once
+
+/*
+	Fachada alrededor de la inicialización de la plataforma
+*/
 
 //TODO: CREAR LA COMPILACION CONDICIONAL PS4
+
+//Se incluye el correspondiente a la plataforma
 #if PLATFORM_PS4
 #include "PS4/PlatformPS4.h" 
 

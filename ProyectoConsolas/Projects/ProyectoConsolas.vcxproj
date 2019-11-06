@@ -67,7 +67,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Src\Logic\Bar.cpp" />
+    <ClCompile Include="..\Src\Logic\Bars.cpp" />
     <ClCompile Include="..\Src\Logic\Fire.cpp" />
     <ClCompile Include="..\Src\Main.cpp" />
     <ClCompile Include="..\Src\Platform\PC\PlatformPC.cpp" />
@@ -76,7 +76,7 @@
     <ClCompile Include="..\Src\Renderer\PS4\RendererPS4.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Src\Logic\Bar.h" />
+    <ClInclude Include="..\Src\Logic\Bars.h" />
     <ClInclude Include="..\Src\Logic\Fire.h" />
     <ClInclude Include="..\Src\Platform\PC\PlatformPC.h" />
     <ClInclude Include="..\Src\Platform\Platform.h" />

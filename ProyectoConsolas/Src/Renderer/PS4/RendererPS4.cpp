@@ -1,5 +1,6 @@
 //Se envuelve todo para evitar que se compile si no estamos en la plataforma
 #if PLATFORM_PS4
+
 #include "RendererPS4.h"
 
 //TODO: Implementar los métodos
@@ -10,6 +11,4 @@ void RendererPS4::Clear(Color color) {}
 void RendererPS4::PutPixel(int x, int y, Color color) {}
 void RendererPS4::Present() {}
 
-int RendererPS4::GetWidth() { return 0; }
-int RendererPS4::GetHeight() { return 0; }
 #endif

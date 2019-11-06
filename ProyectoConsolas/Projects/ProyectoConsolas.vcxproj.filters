@@ -30,57 +30,81 @@
     <Filter Include="Source Files\Logic">
       <UniqueIdentifier>{960ef772-d0f1-49bf-b1da-24bc06f1bbf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Renderer\PC">
+      <UniqueIdentifier>{48a2f6f2-d55e-4346-b70f-9d15fc2a157f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Renderer\PS4">
+      <UniqueIdentifier>{9edf63d9-f4fc-4ab1-8800-cc92c561e6cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Platform\PC">
+      <UniqueIdentifier>{7f5f29a9-4a14-4f07-b1b9-946c5eb3fffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Platform\PS4">
+      <UniqueIdentifier>{75201230-aaf7-4fb4-b6f9-60bd65199664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform\PC">
+      <UniqueIdentifier>{93ccecfe-0716-490b-b8f0-3a3bf2b142f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform\PS4">
+      <UniqueIdentifier>{f007df12-96b6-4293-aab9-fd61770c2210}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer\PC">
+      <UniqueIdentifier>{b70d67dd-ca5f-4d36-a0b8-0f1dd9d3a5cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer\PS4">
+      <UniqueIdentifier>{2e31aef9-92fb-4e17-96f7-35809e948c22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\Renderer\PC\RendererPC.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Renderer\PS4\RendererPS4.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Platform\PC\PlatformPC.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Platform\PS4\PlatformPS4.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Logic\Bar.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
     <ClCompile Include="..\Src\Logic\Fire.cpp">
       <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\Bars.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Platform\PC\PlatformPC.cpp">
+      <Filter>Source Files\Platform\PC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Platform\PS4\PlatformPS4.cpp">
+      <Filter>Source Files\Platform\PS4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Renderer\PC\RendererPC.cpp">
+      <Filter>Source Files\Renderer\PC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Renderer\PS4\RendererPS4.cpp">
+      <Filter>Source Files\Renderer\PS4</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Renderer\Renderer.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Renderer\PC\RendererPC.h">
-      <Filter>Header Files\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\Renderer\PS4\RendererPS4.h">
-      <Filter>Header Files\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Platform\Platform.h">
-      <Filter>Header Files\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\Platform\PC\PlatformPC.h">
-      <Filter>Header Files\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\Platform\PS4\PlatformPS4.h">
       <Filter>Header Files\Platform</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\Renderer\Utilities\Color.h">
       <Filter>Header Files\Renderer\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Logic\Bar.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Logic\Fire.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Bars.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Renderer\PC\RendererPC.h">
+      <Filter>Header Files\Renderer\PC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Renderer\PS4\RendererPS4.h">
+      <Filter>Header Files\Renderer\PS4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Platform\PC\PlatformPC.h">
+      <Filter>Header Files\Platform\PC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Platform\PS4\PlatformPS4.h">
+      <Filter>Header Files\Platform\PS4</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
