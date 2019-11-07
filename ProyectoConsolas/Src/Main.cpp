@@ -7,6 +7,8 @@
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
 
+//TODO: PRAGMA ONCE
+
 //Atributos de la ventana
 const bool FULLSCREEN = false;	
 const int SCREEN_WIDTH = 640;
@@ -17,7 +19,7 @@ const int FIRE_HEIGHT = 100;
 const int FIRE_WIDTH = 480;
 
 //Ciclo del fuego
-const int FIRE_TURN_ON_FRAMES = 150;
+const int FIRE_TURN_ON_FRAMES = 300;
 const int FIRE_TURN_OFF_FRAMES = 150;
 
 //Dimensiones barras
@@ -123,13 +125,16 @@ int main(int argc, char* args[])
 		Renderer::Present();
 
 		//Espera 'x' milisegundos
-		SDL_Delay(50); //TODO: ESTO NO TIENE QUE SER ASI OBVIAMENTE
+		//SDL_Delay(50); //TODO: ESTO NO TIENE QUE SER ASI OBVIAMENTE
 
 		tick++;
 	}
 
+	//TODO: Los null de Adri
 	delete bars;
+	bars = nullptr;
 	delete fire;
+	fire = nullptr;
 
 	Renderer::Release();
 	Platform::Release();
