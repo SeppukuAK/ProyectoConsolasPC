@@ -16,8 +16,6 @@ Fire::~Fire()
 		delete[] matrix[i];
 
 	delete[] matrix;
-
-	//TODO: delete de colors
 }
 
 void Fire::Update(bool on)
@@ -74,7 +72,7 @@ void Fire::Init()
 	for (int i = 0; i < _height; ++i)
 	{
 		matrix[i] = new int[_width];
-		for (size_t j = 0; j < _width; j++)		//TODO: A lo mejor se puede hacer mejor
+		for (size_t j = 0; j < _width; j++)
 			matrix[i][j] = 0;
 	}
 

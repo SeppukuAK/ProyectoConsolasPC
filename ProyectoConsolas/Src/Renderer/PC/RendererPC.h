@@ -39,7 +39,7 @@ public:
 	static void PutPixel(int x, int y, Color color);
 
 	/*
-		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.	
+		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.
 		TODO: Espera o no dependiendo de como se ha inicializado. De forma normal espera.
 	*/
 	static void Present();

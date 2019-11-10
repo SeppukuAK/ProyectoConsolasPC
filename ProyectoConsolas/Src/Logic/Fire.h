@@ -8,7 +8,7 @@ class Fire
 {
 private:
 	int _width, _height;	//Dimensiones del fuego
-	Color * _palette;		//Colores del fuego
+	Color* _palette;		//Colores del fuego
 
 	int** matrix;			//Matriz con las temperaturas del fuego
 	int posX, posY;			//Offset de posición del fuego
@@ -18,7 +18,7 @@ public:
 	/*
 		Inicializa
 	*/
-	Fire(int width, int height, Color * palette, int numColors);
+	Fire(int width, int height, Color* palette, int numColors);
 
 	/*
 		Libera memoria

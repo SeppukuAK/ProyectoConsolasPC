@@ -4,8 +4,6 @@
 	Fachada alrededor del API de dibujado
 */
 
-//TODO: CREAR LA COMPILACION CONDICIONAL PS4
-
 //Se incluye el correspondiente a la plataforma
 #if PLATFORM_PS4
 #include "PS4/RendererPS4.h" 

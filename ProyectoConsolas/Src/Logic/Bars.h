@@ -8,7 +8,7 @@ class Bars
 {
 private:
 	int _barWidth, _barHeight;				//Dimensiones de cada barra
-	Color _barColor,_clearColor;				//Colores
+	Color _barColor, _clearColor;			//Colores
 
 	int numHoriBars, numVertBars;			//Número total de barras
 	int diffHoriBars, diffVertBars;			//Diferencia entre el inicio de cada barra y la siguiente
@@ -18,7 +18,7 @@ public:
 	/*
 		Inicializa
 	*/
-	Bars(int barWidth, int barHeight, int barHoriDist, int barVertDist, Color barColor,Color clearColor, int fireHeight);
+	Bars(int barWidth, int barHeight, int barHoriDist, int barVertDist, Color barColor, Color clearColor, int fireHeight);
 
 	/*
 		Libera memoria

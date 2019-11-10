@@ -7,10 +7,8 @@
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
 
-//TODO: PRAGMA ONCE
-
 //Atributos de la ventana
-const bool FULLSCREEN = false;	
+const int NUM_BUFFERS = 2;	//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 1-16 //TODO: DETECTAR ERROR?	
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
@@ -81,7 +79,7 @@ Color firePalette[] = {
 int main(int argc, char* args[])
 {
 	//Inicialización
-	Platform::Init(SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN);
+	Platform::Init(SCREEN_WIDTH, SCREEN_HEIGHT, NUM_BUFFERS);
 	Renderer::Init();
 
 	int numBuffers = Renderer::GetNumBuffers();
@@ -95,7 +93,7 @@ int main(int argc, char* args[])
 	bool fireOn = true;
 
 	//Inicialización de las barras
-	Bars* bars = new Bars(BAR_WIDTH, BAR_HEIGHT, BAR_HORI_DIST, BAR_VERT_DIST, RGB(255, 255, 255), RGB(0,0,0), FIRE_HEIGHT);
+	Bars* bars = new Bars(BAR_WIDTH, BAR_HEIGHT, BAR_HORI_DIST, BAR_VERT_DIST, RGB(255, 255, 255), RGB(0, 0, 0), FIRE_HEIGHT);
 
 	int tick = 0;
 

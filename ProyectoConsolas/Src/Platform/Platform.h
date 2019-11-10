@@ -4,8 +4,6 @@
 	Fachada alrededor de la inicialización de la plataforma
 */
 
-//TODO: CREAR LA COMPILACION CONDICIONAL PS4
-
 //Se incluye el correspondiente a la plataforma
 #if PLATFORM_PS4
 #include "PS4/PlatformPS4.h" 

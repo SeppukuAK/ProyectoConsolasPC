@@ -6,9 +6,9 @@
 #include "../../Platform/Platform.h"
 
 //Inicialización de atributos estáticos
-int RendererPC::numBuffers = 0;			
-int RendererPC::width = 0;				
-int RendererPC::height = 0;				
+int RendererPC::numBuffers = 0;
+int RendererPC::width = 0;
+int RendererPC::height = 0;
 SDL_Renderer* RendererPC::renderer = NULL;
 
 void RendererPC::Init()
@@ -41,7 +41,7 @@ void RendererPC::Init()
 	}
 }
 
-void RendererPC::Release() 
+void RendererPC::Release()
 {
 	//Destruye el renderer
 	SDL_DestroyRenderer(renderer);

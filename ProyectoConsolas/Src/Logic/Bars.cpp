@@ -19,11 +19,10 @@ Bars::~Bars()
 void Bars::Draw(int x)
 {
 	//Pinta todas las barras a partir de X
-	//TODO: PASAR ESTOS COMENTARIOS
 	for (int r = 0; r < numVertBars; r++)				//Recorrido por filas
 	{
 		//Distancia entre el origen y la fila en la que estoy
-		int rowOffset = r * diffVertBars;		
+		int rowOffset = r * diffVertBars;
 		for (int c = 0; c < numHoriBars; c++)			//Recorrido por columnas
 		{
 			//Distancia entre el origen y la columna en la que estoy
@@ -43,13 +42,13 @@ void Bars::Draw(int x)
 void Bars::DrawWithDelta(int x, int delta)
 {
 	//Pintar cada fila
-	for (int r = 0; r < numVertBars; r++)					
+	for (int r = 0; r < numVertBars; r++)
 	{
 		//Distancia entre el origen y la fila en la que estoy
 		int rowOffset = r * diffVertBars;
 
 		//Pintar cada columna
-		for (int c = 0; c < numHoriBars; c++)		
+		for (int c = 0; c < numHoriBars; c++)
 		{
 			//Distancia entre el origen y la columna en la que estoy
 			int columnOffset = x + c * diffHoriBars;

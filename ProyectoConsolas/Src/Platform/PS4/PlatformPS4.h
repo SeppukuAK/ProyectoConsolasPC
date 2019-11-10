@@ -14,7 +14,7 @@ class PlatformPS4
 	/*
 		Libera recursos
 	*/
-	static void Release();	
+	static void Release();
 
 	/*
 		Devuelve un bool que indica si el usuario ha decidido terminar la aplicación.
