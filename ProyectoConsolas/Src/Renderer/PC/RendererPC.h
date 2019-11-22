@@ -8,8 +8,6 @@
 class RendererPC
 {
 private:
-	//TODO: Tengo que tener un atributo que sea un frameBuffer de 800x600 o lo que sea (matriz)
-
 	static int numBuffers;			//Número de frame buffers del Renderer
 	static int width;				//Ancho de la ventana
 	static int height;				//Alto de la ventana
@@ -40,7 +38,6 @@ public:
 
 	/*
 		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.
-		TODO: Espera o no dependiendo de como se ha inicializado. De forma normal espera.
 	*/
 	static void Present();
 

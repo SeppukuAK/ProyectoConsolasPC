@@ -59,8 +59,6 @@ void RendererPC::Clear(Color color)
 
 void RendererPC::PutPixel(int x, int y, Color color)
 {
-	//TODO: QUIZA HAY QUE COMPROBAR SI EL COLOR COINCIDE CON EL QUE TENEMOS
-
 	//Establecemos un color de dibujado
 	SDL_SetRenderDrawColor(renderer, color.R, color.G, color.B, color.A);
 

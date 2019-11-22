@@ -3,8 +3,9 @@
 #include <stdlib.h>		/* srand, rand */
 
 Fire::Fire(int width, int height, Color* palette, int numColors)
-	: matrix(nullptr), _width(width), _height(height), _palette(palette)
+	: _width(width), _height(height), _palette(palette)
 {
+	matrix = nullptr;
 	maxTemp = numColors - 1;
 	Init();
 }
@@ -68,7 +69,7 @@ void Fire::Render()
 void Fire::Init()
 {
 	//Cada valor representa la temperatura del fuego. Valores entre 0(frio) y sizeFirePalette(caliente):
-	matrix = new int* [_height];
+	matrix = new int*[_height];
 	for (int i = 0; i < _height; ++i)
 	{
 		matrix[i] = new int[_width];
