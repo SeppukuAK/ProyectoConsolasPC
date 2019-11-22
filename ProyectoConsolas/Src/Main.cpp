@@ -11,7 +11,7 @@
 #include <stdio.h>		/* fopen */
 
 //Atributos de la ventana
-const int NUM_BUFFERS = 2;	//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 2-16 //TODO: DETECTAR ERROR?
+const int NUM_BUFFERS = 1;	//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 2-16 //TODO: DETECTAR ERROR?
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;	//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
 const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
@@ -108,7 +108,6 @@ int main(int argc, char* args[])
 	f = fopen("app0/fdi.rgba", "rb");	//PC: Projects/app0/..
 
 	std::cout << "Holita" << std::endl;
-
 	f = NULL;
 	if (f != NULL)
 	{
@@ -145,11 +144,6 @@ int main(int argc, char* args[])
 		}
 
 	}
-
-	Color color = SCREEN_CLEAR_COLOR;
-	std::cout << (int)color.R << std::endl;
-	color.R = color.R - 50;
-	std::cout << (int)color.R << std::endl;
 
 	////Inicialización fuego
 	//Fire* fire = new Fire(FIRE_WIDTH, FIRE_HEIGHT, firePalette, sizeof(firePalette) / sizeof(Color));
