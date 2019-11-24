@@ -65,6 +65,9 @@
     <ClCompile Include="..\Src\Logic\Waves.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\Renderer\RendererThread.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Renderer\Renderer.h">
@@ -93,6 +96,9 @@
     </ClInclude>
     <ClInclude Include="..\Src\Logic\Waves.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Renderer\RendererThread.h">
+      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

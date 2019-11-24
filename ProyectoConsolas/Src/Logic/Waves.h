@@ -8,8 +8,10 @@ class Waves
 private:
 	Color ** _background;	//Matriz de colores del fondo
 	int _energyWave;		//Energia de la onda (31/32)
+	int _heightWave;		//Altura de la onda
 	int _minFramesBetweenWaves, _maxFramesBetweenWaves;
 	int width, height;		//Dimensiones de la onda
+	int nextWaveFrame;		//Frame en el que sucederá la proxima onda
 
 	//Estado
 	int* buffer1;			//Alturas
@@ -18,7 +20,7 @@ private:
 	const Pair dirs[4] = { {1,0},{0,1},{-1,0},{0,-1} };
 
 public:
-	Waves(int energyWave, int minFramesBetweenWaves, int maxFramesBetweenWaves, Color ** background);
+	Waves(int energyWave, int heightWave, int minFramesBetweenWaves, int maxFramesBetweenWaves, Color ** background);
 	~Waves();
 
 	/*
@@ -29,7 +31,12 @@ public:
 	/*
 		Llama a render de todos los pixeles de la onda
 	*/
-	void Render();
+	void Draw();
+
+	/*
+		Llama a render de todos los pixeles de la onda
+	*/
+	void DrawWithDelta(int delta);
 
 private:
 	/*
@@ -41,6 +48,11 @@ private:
 		Evoluciona un pixel, actualizando su altura.
 	*/
 	void UpdatePixel(int x, int y);
+
+	/*
+		Dibuja un pixel, en función de su altura
+	*/
+	void DrawPixel(int x, int y);
 
 	/*
 		Devuelve si una posición no se sale de los límites de la ventana

@@ -10,6 +10,8 @@
 #include <iostream>		/* cout */
 #include <stdio.h>		/* fopen */
 
+using namespace std;
+
 //Atributos de la ventana
 const int NUM_BUFFERS = 1;	//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 2-16 //TODO: DETECTAR ERROR?
 const int SCREEN_WIDTH = 1280;
@@ -34,6 +36,8 @@ const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 
 //Waves
 const int ENERGY_WAVE = 32; //	31/32
+const int HEIGHT_WAVE = 5000;
+
 //Tiempo entre 1 gota y la siguiente
 const int MIN_FRAMES_BETWEEN_WAVES = 50;
 const int MAX_FRAMES_BETWEEN_WAVES = 150;
@@ -96,38 +100,37 @@ int main(int argc, char* args[])
 
 	int numBuffers = Renderer::GetNumBuffers();
 
-	////Inicializa la semilla de aleatoriedad random.
+	//Inicializa la semilla de aleatoriedad random.
 	srand(time(NULL));
 
 	//La imagen de fondo es formato crudo
-	Color **background = nullptr;
+	Color** background = nullptr;
 
 	//Inicialización fichero
-	FILE *f;
+	FILE* f;
+
 	//f = fopen("app0/fdi.rgba", "rb");
 	f = fopen("app0/fdi.rgba", "rb");	//PC: Projects/app0/..
 
-	std::cout << "Holita" << std::endl;
-	f = NULL;
 	if (f != NULL)
 	{
 		std::cout << "Fichero abierto" << std::endl;
-		//long lSize;
+		char buffer[4];
 
-		//// obtain file size:
-		//fseek(f, 0, SEEK_END);
-		//lSize = ftell(f);
-		//rewind(f);
+		//TODO: Se asume que el fichero tiene la misma resolución que la ventana
+		background = new Color * [SCREEN_HEIGHT];
+		for (int i = 0; i < SCREEN_HEIGHT; ++i)
+		{
+			background[i] = new Color[SCREEN_WIDTH];
 
-		//char * buffer;
-
-		//// allocate memory to contain the whole file:
-		//buffer = (char*)malloc(sizeof(char)*lSize);
-		//if (buffer == NULL) { fputs("Memory error", stderr); exit(2); }
-
-		//// copy the file into the buffer:
-		//result = fread(buffer, 1, lSize, pFile);
-		//if (result != lSize) { fputs("Reading error", stderr); exit(3); }
+			for (size_t j = 0; j < SCREEN_WIDTH; j++)
+			{
+				// fucntion used to read the contents of file 
+				fread(buffer, sizeof(Color), 1, f);
+				Color color = { buffer[0],buffer[1],buffer[2],buffer[3] };
+				background[i][j] = color;
+			}
+		}
 
 		fclose(f);
 	}
@@ -135,7 +138,9 @@ int main(int argc, char* args[])
 	//No hay imagen, color por defecto
 	else
 	{
-		background = new Color*[SCREEN_HEIGHT];
+		std::cout << "Error de apertura de fichero" << std::endl;
+
+		background = new Color * [SCREEN_HEIGHT];
 		for (int i = 0; i < SCREEN_HEIGHT; ++i)
 		{
 			background[i] = new Color[SCREEN_WIDTH];
@@ -154,16 +159,15 @@ int main(int argc, char* args[])
 	//Bars* bars = new Bars(BAR_WIDTH, BAR_HEIGHT, BAR_HORI_DIST, BAR_VERT_DIST, BarColor, SCREEN_CLEAR_COLOR, FIRE_HEIGHT);
 
 	//Inicialización ondas
-	Waves * waves = new Waves(ENERGY_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES, background);
+	Waves* waves = new Waves(ENERGY_WAVE, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES, background);
 
 	int tick = 0;
-	Renderer::Clear(SCREEN_CLEAR_COLOR); //TODO: En esta práctica no hacemos clear para mantener la coherencia de frames de las barras
 
 	//Bucle principal
 	while (Platform::Tick())
 	{
 		//Input(); // TODO: No en esta práctica
-
+		//Renderer::Clear(SCREEN_CLEAR_COLOR); //TODO: En esta práctica no hacemos clear para mantener la coherencia de frames de las barras
 
 		////Actualización fuego
 		//fireOn = ((tick % fireCycleFrames) < FIRE_TURN_ON_FRAMES);	//Detecta si está apagado o encendido
@@ -182,7 +186,12 @@ int main(int argc, char* args[])
 		//	bars->DrawWithDelta(tick, numBuffers);
 
 		waves->Update(tick);
-		waves->Render();
+
+		if (tick < numBuffers)
+			waves->Draw();
+
+		else
+			waves->DrawWithDelta(numBuffers);
 
 		Renderer::Present();
 

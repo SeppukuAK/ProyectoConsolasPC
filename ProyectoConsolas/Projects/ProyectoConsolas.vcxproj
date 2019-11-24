@@ -73,6 +73,7 @@
     <ClCompile Include="..\Src\Main.cpp" />
     <ClCompile Include="..\Src\Platform\PC\PlatformPC.cpp" />
     <ClCompile Include="..\Src\Renderer\PC\RendererPC.cpp" />
+    <ClCompile Include="..\Src\Renderer\RendererThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Logic\Bars.h" />
@@ -83,6 +84,7 @@
     <ClInclude Include="..\Src\Platform\Platform.h" />
     <ClInclude Include="..\Src\Renderer\PC\RendererPC.h" />
     <ClInclude Include="..\Src\Renderer\Renderer.h" />
+    <ClInclude Include="..\Src\Renderer\RendererThread.h" />
     <ClInclude Include="..\Src\Renderer\Utilities\Color.h" />
   </ItemGroup>
   <Import Condition="'$(ConfigurationType)' == 'Makefile' and Exists('$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets')" Project="$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets" />
