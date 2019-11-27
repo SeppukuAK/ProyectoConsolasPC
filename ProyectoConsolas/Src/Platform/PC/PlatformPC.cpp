@@ -52,7 +52,7 @@ bool PlatformPC::Tick()
 	while (SDL_PollEvent(&e) != 0)
 	{
 		//Se cierra la ventana si se da a la 'X' o a cualquier tecla
-		if (e.type == SDL_QUIT || e.type == SDL_KEYDOWN)
+		if (e.type == SDL_QUIT || e.type == SDL_KEYDOWN || e.type == SDL_MOUSEBUTTONDOWN)
 			quit = true;
 	}
 

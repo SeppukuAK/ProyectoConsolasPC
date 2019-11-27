@@ -1,11 +1,10 @@
 #include "Waves.h"
 #include "../Renderer/Renderer.h"
 #include <stdlib.h>		/* srand, rand */
-#include <iostream>		/* cout */
 
-Waves::Waves(int energyWave, int heightWave, int minFramesBetweenWaves, int maxFramesBetweenWaves, Color** background) :
-	_energyWave(energyWave), _heightWave(heightWave), _minFramesBetweenWaves(minFramesBetweenWaves),
-	_maxFramesBetweenWaves(maxFramesBetweenWaves), _background(background)
+Waves::Waves(Color* background, int heightWave, int minFramesBetweenWaves, int maxFramesBetweenWaves) :
+	_background(background), _heightWave(heightWave),
+	_minFramesBetweenWaves(minFramesBetweenWaves), _maxFramesBetweenWaves(maxFramesBetweenWaves)
 {
 	Init();
 }
@@ -13,8 +12,13 @@ Waves::Waves(int energyWave, int heightWave, int minFramesBetweenWaves, int maxF
 Waves::~Waves()
 {
 	//Limpiamos memoria
-	delete[] buffer1;
-	delete[] buffer2;
+	for (int i = 0; i < numBuffers; ++i)
+		delete[] buffers[i];
+
+	delete[] buffers;
+	buffers = nullptr;
+	delete[] diffHeight;
+	diffHeight = nullptr;
 }
 
 void Waves::Init()
@@ -23,22 +27,40 @@ void Waves::Init()
 	width = Renderer::GetWidth();
 	height = Renderer::GetHeight();
 
-	int bufferSize = width * height;
+	bufferSize = width * height;
+	numBuffers = Renderer::GetNumBuffers() + 1;
+	bufferIndex = 0;
 
 	//Cada valor representa la altura de la onda
-	buffer1 = new int[bufferSize];
-	buffer2 = new int[bufferSize];
+	buffers = new int* [numBuffers];
+
+	for (int i = 0; i < numBuffers; ++i)
+	{
+		buffers[i] = new int[bufferSize];
+		for (int j = 0; j < bufferSize; j++)
+			buffers[i][j] = 0;
+	}
+	diffHeight = new int[bufferSize];
+
 	for (int i = 0; i < bufferSize; ++i)
 	{
-		buffer1[i] = 0;
-		buffer2[i] = 0;
+		diffHeight[i] = 0;
 	}
 
+	//Generamos el frame en el que se generará la primera onda
 	nextWaveFrame = _minFramesBetweenWaves + (rand() % (_maxFramesBetweenWaves - _minFramesBetweenWaves));
+
+	//Inicialización comando de renderizado de la lluvia
+	renderCommand.Type = RendererCommandType::RENDER_RAIN_EFFECT;
+	renderCommand.Param.RainParams.Background = _background;
+	renderCommand.Param.RainParams.HeightDiff = diffHeight;
 }
 
 void Waves::Update(int delta)
 {
+	bufferIndex = delta % numBuffers;
+
+	//Actualiza todos los pixeles del buffer actual
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
@@ -47,49 +69,31 @@ void Waves::Update(int delta)
 		}
 	}
 
-	int* temp = buffer1;
-	buffer1 = buffer2;
-	buffer2 = temp;
-
-	//Se genera onda
+	//Se genera onda si coincide el tick actual con el aleatorio
 	if (delta == nextWaveFrame)
 	{
+		//Calculo posiciones aleatorias
 		int x = rand() % width;
 		int y = rand() % height;
 
-		buffer2[y * width + x] = _heightWave;
+		//Se mete el valor en el buffer actual
+		buffers[bufferIndex][y * width + x] = _heightWave;
+
+		//Generamos el frame en el que se generará la primera onda
 		nextWaveFrame = delta + _minFramesBetweenWaves + (rand() % (_maxFramesBetweenWaves - _minFramesBetweenWaves));
 	}
-}
 
-void Waves::Draw()
-{
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			DrawPixel(j, i);
-		}
-	}
-}
-
-void Waves::DrawWithDelta(int delta)
-{
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			//Solo se modifica el color si ha cambiado la altura
-			if (buffer2[i * width + j] != buffer1[i * width + j])
-			{
-				DrawPixel(j, i);
-			}
-		}
-	}
+	//Actualiza dibujado
+	UpdateRenderCommand(delta);
 }
 
 void Waves::UpdatePixel(int x, int y)
 {
+	int oneFrameOldIndex = bufferIndex - 1;
+
+	if (oneFrameOldIndex < 0)
+		oneFrameOldIndex = numBuffers - 1;
+
 	//Se suma cada una de las direcciones multiplicadas por 0.5
 	int sumHeight = 0;
 	for (auto dir : dirs)
@@ -97,54 +101,79 @@ void Waves::UpdatePixel(int x, int y)
 		int adjX = x + dir.First;
 		int adjY = y + dir.Second;
 		if (Correct(adjX, adjY))
-			//sumHeight = old[adjY * width + adjX] * 0.5
-			sumHeight += buffer1[adjY * width + adjX];	//Aritmetica entera
+			sumHeight += buffers[oneFrameOldIndex][adjY * width + adjX];	//Aritmetica entera
 	}
 
 	sumHeight = sumHeight >> 1;
 
+	int twoFramesOldIndex = bufferIndex - 2;
+
+	if (twoFramesOldIndex < 0)
+		twoFramesOldIndex = numBuffers + twoFramesOldIndex;
+
 	//Al resultado se le suma el valor de hace 2 frames
-	buffer2[y * width + x] = sumHeight - buffer2[y * width + x];
+	buffers[bufferIndex][y * width + x] = sumHeight - buffers[twoFramesOldIndex][y * width + x];
 
 	//Le reducimos un poco la altura por la perdida de energia
-	// v *= _energyWave (31/32)
-	buffer2[y * width + x] -= (buffer2[y * width + x] >> 5);	//Aritmetica entera
+	// v *= 31/32
+	buffers[bufferIndex][y * width + x] -= (buffers[bufferIndex][y * width + x] >> 5);	//Aritmetica entera
 }
 
-void Waves::DrawPixel(int x, int y)
+void Waves::UpdateRenderCommand(int delta)
 {
-	Color color = _background[y][x];
+	//Si no estan inicializados todos los buffers, se pinta toda la pantalla
+	if (delta < numBuffers)
+		renderCommand.Param.RainParams.ForcePaint = true;
 
-	int left = 0;
-	int right = 0;
+	//Si están inicializados, se dibujan en función del numero de Buffers
+	else
+		renderCommand.Param.RainParams.ForcePaint = false;
 
-	if (Correct(x - 1, y))
-		left = buffer2[y * width + x - 1];
+	//Actualiza vector de diferencias
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			int leftOld = 0;
+			int rightOld = 0;
+			int leftCurrent = 0;
+			int rightCurrent = 0;
 
-	if (Correct(x + 1, y))
-		right = buffer2[y * width + x + 1];
+			int bufferAntIndex = (bufferIndex + 1) % numBuffers;
 
-	int heightDiff = left - right;
+			//Calculamos las diferencias entre el antiguo frame y el actual
+			if (Correct(j - 1, i))
+			{
+				leftOld = buffers[bufferAntIndex][i * width + j - 1];
+				leftCurrent = buffers[bufferIndex][i * width + j - 1];
+			}
 
-	//Se obtiene el color en función de la altura de la onda y la imagen de fondo
-	color.R = Clamp(0, 255, (color.R - heightDiff));
-	color.G = Clamp(0, 255, (color.G - heightDiff));
-	color.B = Clamp(0, 255, (color.B - heightDiff));
+			if (Correct(j + 1, i))
+			{
+				rightOld = buffers[bufferAntIndex][i * width + j + 1];
+				rightCurrent = buffers[bufferIndex][i * width + j + 1];
+			}
 
-	Renderer::PutPixel(x, y, color);
+			int heightDiffCurrent = leftCurrent - rightCurrent;//incr
+			int heightDiffOld = leftOld - rightOld;//incr
+
+			//Si son diferentes, se tendrá que pintar
+			if (heightDiffCurrent != heightDiffOld)
+			{
+				heightDiffCurrent = heightDiffCurrent << 1;
+				heightDiffCurrent |= 1;
+			}
+			else
+				heightDiffCurrent = heightDiffCurrent << 1;
+
+			diffHeight[i * width + j] = heightDiffCurrent;
+		}
+	}
+
+	renderCommand.Param.RainParams.HeightDiff = diffHeight;
 }
 
 bool Waves::Correct(int x, int y)
 {
 	return (x >= 0 && x < width && y >= 0 && y < height);
-}
-
-int Waves::Clamp(int min, int max, int value)
-{
-	if (value < min)
-		return min;
-	else if (value > max)
-		return max;
-	else
-		return value;
 }

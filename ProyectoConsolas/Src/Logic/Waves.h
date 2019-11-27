@@ -2,25 +2,30 @@
 
 #include "Utilities/Pair.h"
 #include "../Renderer/Utilities/Color.h"
+#include "../Renderer/RendererThread.h"
 
 class Waves
 {
 private:
-	Color ** _background;	//Matriz de colores del fondo
-	int _energyWave;		//Energia de la onda (31/32)
-	int _heightWave;		//Altura de la onda
-	int _minFramesBetweenWaves, _maxFramesBetweenWaves;
-	int width, height;		//Dimensiones de la onda
-	int nextWaveFrame;		//Frame en el que sucederá la proxima onda
+	Color* _background;										//Matriz de colores del fondo
+	int _heightWave;										//Altura de la onda
+	int _minFramesBetweenWaves, _maxFramesBetweenWaves;		//Tiempo minimo y maximo entre 1 gota y la siguiente
+
+	int width, height;										//Dimensiones de la onda
+	int bufferSize;											//Tamaño de los buffers de altura
+	int numBuffers;											//Número de buffers (uno más que renderBuffers)
+	int nextWaveFrame;										//Frame en el que sucederá la proxima onda
+	int bufferIndex;										//Indice del buffer actual
+	RenderCommand renderCommand;
 
 	//Estado
-	int* buffer1;			//Alturas
-	int* buffer2;			//Alturas
+	int** buffers;			//Array de buffers(1-17)
+	int* diffHeight;
 
-	const Pair dirs[4] = { {1,0},{0,1},{-1,0},{0,-1} };
+	const Pair dirs[4] = { {1,0},{0,1},{-1,0},{0,-1} };		//Direcciones
 
 public:
-	Waves(int energyWave, int heightWave, int minFramesBetweenWaves, int maxFramesBetweenWaves, Color ** background);
+	Waves(Color* background, int heightWave, int minFramesBetweenWaves, int maxFramesBetweenWaves);
 	~Waves();
 
 	/*
@@ -29,14 +34,9 @@ public:
 	void Update(int delta);
 
 	/*
-		Llama a render de todos los pixeles de la onda
+		Devuelve el comando de pintado de la lluvia actual
 	*/
-	void Draw();
-
-	/*
-		Llama a render de todos los pixeles de la onda
-	*/
-	void DrawWithDelta(int delta);
+	RenderCommand GetRenderCommand() { return renderCommand; };
 
 private:
 	/*
@@ -49,19 +49,12 @@ private:
 	*/
 	void UpdatePixel(int x, int y);
 
-	/*
-		Dibuja un pixel, en función de su altura
-	*/
-	void DrawPixel(int x, int y);
+
+	void UpdateRenderCommand(int delta);
 
 	/*
 		Devuelve si una posición no se sale de los límites de la ventana
 	*/
 	bool Correct(int x, int y);
-
-	/*
-		Restringe un valor al rango
-	*/
-	int Clamp(int min, int max, int value);
 };
 
