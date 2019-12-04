@@ -66,6 +66,21 @@ void RendererPC::PutPixel(int x, int y, Color color)
 	SDL_RenderDrawPoint(renderer, x, y);
 }
 
+void RendererPC::DrawRect(Image* image, int posX, int posY, int width, int height, int offsetX, int offsetY)
+{
+	int imageWidth = image->GetWidth();
+
+	Color* colorArray = image->GetColorArray();
+
+	for (int i = offsetY; i < height; i++)
+	{
+		for (int j = offsetX; j < width; j++)
+		{
+			PutPixel(j + posX, i + posY, colorArray[i * imageWidth + j]);
+		}
+	}
+}
+
 void RendererPC::Present()
 {
 	//Actualiza la pantalla

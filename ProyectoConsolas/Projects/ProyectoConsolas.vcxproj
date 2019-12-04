@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\PC\SDL2-2.0.8\VisualC\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2test.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
@@ -58,7 +58,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\PC\SDL2-2.0.8\VisualC\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2test.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
@@ -67,21 +67,18 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Src\Logic\Bars.cpp" />
-    <ClCompile Include="..\Src\Logic\Fire.cpp" />
     <ClCompile Include="..\Src\Logic\Waves.cpp" />
     <ClCompile Include="..\Src\Main.cpp" />
     <ClCompile Include="..\Src\Platform\PC\PlatformPC.cpp" />
+    <ClCompile Include="..\Src\Renderer\Image.cpp" />
     <ClCompile Include="..\Src\Renderer\PC\RendererPC.cpp" />
     <ClCompile Include="..\Src\Renderer\RendererThread.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Src\Logic\Bars.h" />
-    <ClInclude Include="..\Src\Logic\Fire.h" />
-    <ClInclude Include="..\Src\Logic\Utilities\Pair.h" />
     <ClInclude Include="..\Src\Logic\Waves.h" />
     <ClInclude Include="..\Src\Platform\PC\PlatformPC.h" />
     <ClInclude Include="..\Src\Platform\Platform.h" />
+    <ClInclude Include="..\Src\Renderer\Image.h" />
     <ClInclude Include="..\Src\Renderer\PC\RendererPC.h" />
     <ClInclude Include="..\Src\Renderer\Renderer.h" />
     <ClInclude Include="..\Src\Renderer\RendererThread.h" />

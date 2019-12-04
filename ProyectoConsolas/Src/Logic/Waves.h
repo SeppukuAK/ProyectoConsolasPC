@@ -1,35 +1,51 @@
 #pragma once
 
-#include "Utilities/Pair.h"
 #include "../Renderer/Utilities/Color.h"
 #include "../Renderer/RendererThread.h"
 
+/*
+	Simulación del agua. Aparecen en posiciones y en intervalos aleatorios.
+	Controla la coherencia de frames
+*/
 class Waves
 {
 private:
 	Color* _background;										//Matriz de colores del fondo
-	int _heightWave;										//Altura de la onda
+
+	//Parámetros de la gota
+	int _heightWave;										//Altura de la onda que se establece cuando cae una gota
 	int _minFramesBetweenWaves, _maxFramesBetweenWaves;		//Tiempo minimo y maximo entre 1 gota y la siguiente
 
+	//Información simulación
 	int width, height;										//Dimensiones de la onda
-	int bufferSize;											//Tamaño de los buffers de altura
 	int numBuffers;											//Número de buffers (uno más que renderBuffers)
-	int nextWaveFrame;										//Frame en el que sucederá la proxima onda
-	int bufferIndex;										//Indice del buffer actual
-	RenderCommand renderCommand;
 
 	//Estado
-	int** buffers;			//Array de buffers(1-17)
-	int* diffHeight;
+	int nextWaveFrame;										//Frame en el que sucederá la proxima onda
+	int** diffBuffers;										//Array de buffers de diferencia de alturas de la simulación(2-17)
+	int * currentHeightBuffer;								//Buffer que contiene el estado actual de alturas
+	int * oldHeightBuffer;									//Buffer que contiene el estado anterior de alturas
+	RenderCommand renderCommand;							//Comando de lluvia que se mandará al render
 
-	const Pair dirs[4] = { {1,0},{0,1},{-1,0},{0,-1} };		//Direcciones
+	//Referencias auxiliares
+	int * currentDiffBuffer;
+	int * oldDiffBuffer;
 
 public:
+
+	/*
+		Llama a Init
+	*/
 	Waves(Color* background, int heightWave, int minFramesBetweenWaves, int maxFramesBetweenWaves);
+
+	/*
+		Libera memoria
+	*/
 	~Waves();
 
 	/*
-		Llama a UpdatePixel de todos los puntos de la onda
+		Avanza en el estado de la lluvia
+		Coloca una gota nueva cada cierto tiempo.
 	*/
 	void Update(int delta);
 
@@ -40,21 +56,19 @@ public:
 
 private:
 	/*
-		Inicializa variables
+		Inicializa la lluvia y crea el comando de dibujado de la lluvia
 	*/
 	void Init();
 
 	/*
 		Evoluciona un pixel, actualizando su altura.
 	*/
-	void UpdatePixel(int x, int y);
-
-
-	void UpdateRenderCommand(int delta);
+	void UpdatePixelHeight(const int & x, const int & y);
 
 	/*
-		Devuelve si una posición no se sale de los límites de la ventana
+		Evoluciona un pixel, actualizando su diferencia
 	*/
-	bool Correct(int x, int y);
+	void UpdatePixelDiff(const int & x, const int & y);
+
 };
 

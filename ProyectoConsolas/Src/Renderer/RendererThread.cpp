@@ -1,9 +1,9 @@
 #include "RendererThread.h"
 #include "Renderer.h"
-
+#include <iostream>		
 using namespace std;
 
-void RendererThread::Start() 
+void RendererThread::Start()
 {
 	if (t != nullptr)
 		Stop();
@@ -39,11 +39,13 @@ void RendererThread::EnqueueCommand(RenderCommand renderCommand)
 	commandQueue.push(renderCommand);
 }
 
-void RendererThread::RenderLoop() {
+void RendererThread::RenderLoop()
+{
 	while (!quitRequested)
 	{
 		RenderCommand sigCommand = commandQueue.pop();
 
+		//Procesa todos los eventos hasta que encuentra un present
 		while (sigCommand.Type != RendererCommandType::END_FRAME)
 		{
 			switch (sigCommand.Type)
@@ -57,6 +59,8 @@ void RendererThread::RenderLoop() {
 			case RendererCommandType::RENDER_RAIN_EFFECT:
 				DrawRain(sigCommand.Param.RainParams.Background, sigCommand.Param.RainParams.HeightDiff, sigCommand.Param.RainParams.ForcePaint);
 				break;
+			default:
+				break;
 			}
 
 			sigCommand = commandQueue.pop();
@@ -67,9 +71,6 @@ void RendererThread::RenderLoop() {
 	}
 }
 
-
-//en waveheight hay que desplazar todo a la izq y en el bit
-//menos significativo meter un 0 o un 1 en funcion de si hay que cambiar o no el pixel
 void RendererThread::DrawRain(Color* background, int* heightDiffs, bool forcePaint)
 {
 	int height = Renderer::GetHeight();
@@ -79,14 +80,17 @@ void RendererThread::DrawRain(Color* background, int* heightDiffs, bool forcePai
 	{
 		for (int j = 0; j < width; j++)
 		{
-			Color color = background[i * width + j];
-			
-			bool heightChanged = (heightDiffs[i * width + j] & 1) == 1;
+			int pixelIndex = i * width + j;
+			Color color = background[pixelIndex];
+
+			//Si el ultimo bit es 1, implica que hay que pintarlo.
+			bool heightChanged = (heightDiffs[pixelIndex] & 1) == 1;
 
 			//Solo se modifica el color si ha cambiado la altura
 			if (forcePaint || heightChanged)
 			{
-				int heightDiff = heightDiffs[i * width + j] >> 1;
+				//Conversión a su valor real
+				int heightDiff = heightDiffs[pixelIndex] >> 1;
 
 				//Se obtiene el color en función de la altura de la onda y la imagen de fondo
 				color.R = Clamp(0, 255, (color.R - heightDiff));

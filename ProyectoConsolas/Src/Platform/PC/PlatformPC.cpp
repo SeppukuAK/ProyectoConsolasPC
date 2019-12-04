@@ -2,10 +2,11 @@
 #if PLATFORM_PC
 
 #include "PlatformPC.h"
-#include <stdio.h> 
+#include <stdio.h>		/* fopen */
 
 //Inicialización de atributos estáticos
 SDL_Window* PlatformPC::window = NULL;
+std::string PlatformPC::mediaPath = "../Media/";//Se accede desde Projects
 
 void PlatformPC::Init(int screenWidth, int screenHeight, int numBuffers)
 {
@@ -51,13 +52,55 @@ bool PlatformPC::Tick()
 	//Procesa los eventos de la cola
 	while (SDL_PollEvent(&e) != 0)
 	{
-		//Se cierra la ventana si se da a la 'X' o a cualquier tecla
+		//Se cierra la ventana si se da a la 'X' o cualquier tecla o el ratón
 		if (e.type == SDL_QUIT || e.type == SDL_KEYDOWN || e.type == SDL_MOUSEBUTTONDOWN)
 			quit = true;
 	}
 
 	//Si quiere salir devuelve false
 	return !quit;
+}
+
+Image* PlatformPC::LoadImage(const std::string & path)
+{
+	//La imagen de fondo es formato crudo
+	Color* arrayColor = nullptr;
+	int width = 0;
+	int height = 0;
+
+	//Inicialización fichero
+	FILE* f = NULL;
+
+	f = fopen((mediaPath + path).c_str(), "rb");
+
+	//Imagen cargada
+	if (f != NULL)
+	{
+		uint8_t buffer[4];
+
+		fread(buffer, sizeof(int), 1, f);
+		width = (buffer[3] << 0) | (buffer[2] << 8) | (buffer[1] << 16) | (buffer[0] << 24);
+
+		fread(buffer, sizeof(int), 1, f);
+		height = (buffer[3] << 0) | (buffer[2] << 8) | (buffer[1] << 16) | (buffer[0] << 24);
+
+		printf("%d %d", width, height);
+
+		arrayColor = new Color[width * height];	//Se asume que el fichero tiene la misma resolución que la ventana
+
+		// fucntion used to read the contents of file 
+		fread(arrayColor, sizeof(Color), width * height, f);
+
+		fclose(f);
+	}
+	else
+	{
+		printf("Error al cargar la imagen");
+	}
+
+	Image * image = new Image(arrayColor, width, height);
+
+	return image;
 }
 
 #endif

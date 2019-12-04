@@ -5,19 +5,19 @@
 
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
-#include <iostream>		/* cout */
 #include <stdio.h>		/* fopen */
+#include <iostream>		/* cout */		
 
 using namespace std;
 
 //Atributos de la ventana
-const int NUM_BUFFERS = 2;	//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 2-16 //TODO: DETECTAR ERROR?
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;	//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
+const int NUM_BUFFERS = 1;							//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 2-16 //TODO: DETECTAR ERROR?
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 360;						//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
 const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 
 //Waves
-//const float ENERGY_WAVE = 31/ 32; //TODO: Hay que utilizarla?
+//const float ENERGY_WAVE = 31/ 32;
 const int HEIGHT_WAVE = 5000;
 
 //Tiempo minimo y maximo entre 1 gota y la siguiente
@@ -25,9 +25,8 @@ const int MIN_FRAMES_BETWEEN_WAVES = 50;
 const int MAX_FRAMES_BETWEEN_WAVES = 150;
 
 /*
-	TODO: PONER COMENTARIO
-	Aplicación que simula un fuego en la parte inferior de la pantalla junto con unas barras blancas que se desplazan a la derecha en la parte superior
-	El fuego se enciende y se apaga ciclicamente
+	Aplicación que muestra un efecto de lluvia que cae sobre una imagen de la facultad.
+	Multihebra: 1 Lógica y 1 Render -> Cada una va a un nucleo
 */
 int main(int argc, char* args[])
 {
@@ -38,41 +37,14 @@ int main(int argc, char* args[])
 	srand(time(NULL));
 
 	//La imagen de fondo es formato crudo
-	Color* background = new Color[SCREEN_HEIGHT * SCREEN_WIDTH];	//Se asume que el fichero tiene la misma resolución que la ventana
-
-	//Inicialización fichero
-	FILE* f = NULL;
-
-	f = fopen("app0/fdi.rgba", "rb");	//PC: Projects/app0/..
-	
-	//Imagen cargada
-	if (f != NULL)
-	{
-		std::cout << "Fichero abierto" << std::endl;
-
-		// fucntion used to read the contents of file 
-		fread(background, sizeof(Color), SCREEN_HEIGHT * SCREEN_WIDTH, f);
-
-		fclose(f);
-	}
-
-	//No hay imagen, color por defecto
-	else
-	{
-		std::cout << "Error de apertura de fichero" << std::endl;
-
-		for (int i = 0; i < SCREEN_HEIGHT * SCREEN_WIDTH; i++)
-			background[i] = SCREEN_CLEAR_COLOR;
-	}
+	Image * image = Platform::LoadImage("SpritesSheetsWestBank/ladron.rgba");
 
 	//Se lanza la hebra de renderizado
-	RendererThread* rendererThread = new RendererThread();
+	RendererThread* rendererThread = new RendererThread(); // TODO: NO HACER NEW PARA CREAR LA CLASE RENDERTRHEAD
 	rendererThread->Start();
 
 	//Inicialización ondas
-	Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
-
-	int tick = 0;
+	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
 
 	//Creación de comandos iniciales
 	RenderCommand clearCommand;
@@ -89,37 +61,57 @@ int main(int argc, char* args[])
 		rendererThread->EnqueueCommand(presentCommand);
 	}
 
-	//Bucle principal
+	//Contención inicial. No empieza el bucle principal hasta que se limpien todos los buffers
+	while (rendererThread->GetPendingFrames() > 0)
+		;
+
+	int tick = 0;
+
+	//Bucle principal. Hebra lógica.
 	while (Platform::Tick())
 	{
 		//Input(); // No en esta práctica
-		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no hacemos clear para mantener la coherencia de frames
+		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
 
-		//Lógica. 1. Paso de simulación de la lluvia
-		waves->Update(tick);
+		//Paso de simulación
+		//waves->Update(tick);
 
-		//3. Contención. Se para la hebra si el render va muy retrasado
+		//Contención. Se para la hebra si el render va muy retrasado
 		while (rendererThread->GetPendingFrames() >= NUM_BUFFERS)
 			;
 
-		//Comunicación logica con render
-		//2. Una vez terminada la simulacion, se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
-		rendererThread->EnqueueCommand(waves->GetRenderCommand());
+		//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
+		//rendererThread->EnqueueCommand(waves->GetRenderCommand());
+
+		for (int i = 0; i < image->GetHeight(); i++)
+		{
+			for (int j = 0; j < image->GetWidth(); j++)
+			{
+				RenderCommand pixelCommand;
+				pixelCommand.Type = RendererCommandType::PUT_PIXEL;
+				pixelCommand.Param.PutPixelParams.Color = image->GetColorArray()[i * image->GetWidth() + j];
+				pixelCommand.Param.PutPixelParams.X = j;
+				pixelCommand.Param.PutPixelParams.Y = i;
+				rendererThread->EnqueueCommand(pixelCommand);
+			}
+		}
 
 		rendererThread->EnqueueCommand(presentCommand);
 
 		//Delay
-
 		tick++;
 	}
 
 	rendererThread->Stop();
 
+	//delete waves;
+	//waves = nullptr;
+
 	delete rendererThread;
 	rendererThread = nullptr;
 
-	delete[] background;
-	background = nullptr;
+	delete image;
+	image = nullptr;
 
 	Platform::Release();
 

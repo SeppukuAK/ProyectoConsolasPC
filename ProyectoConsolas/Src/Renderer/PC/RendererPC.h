@@ -1,5 +1,6 @@
 #pragma once
 #include "../Utilities/Color.h"
+#include "../Image.h"
 #include <SDL.h> //Utiliza la librería SDL: permite la carga de pngs y el pintado de píxeles
 
 /*
@@ -35,6 +36,9 @@ public:
 		No aparece en pantalla hasta que se hace Present().
 	*/
 	static void PutPixel(int x, int y, Color color);
+
+
+	static void DrawRect(Image* image, int posX, int posY,int width, int height, int offsetX, int offsetY);
 
 	/*
 		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.
