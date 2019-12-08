@@ -61,9 +61,8 @@ bool PlatformPC::Tick()
 	return !quit;
 }
 
-Image* PlatformPC::LoadImage(const std::string & path)
+Image* PlatformPC::LoadImage(std::string path)
 {
-	//La imagen de fondo es formato crudo
 	Color* arrayColor = nullptr;
 	int width = 0;
 	int height = 0;
@@ -83,8 +82,6 @@ Image* PlatformPC::LoadImage(const std::string & path)
 
 		fread(buffer, sizeof(int), 1, f);
 		height = (buffer[3] << 0) | (buffer[2] << 8) | (buffer[1] << 16) | (buffer[0] << 24);
-
-		printf("%d %d", width, height);
 
 		arrayColor = new Color[width * height];	//Se asume que el fichero tiene la misma resolución que la ventana
 

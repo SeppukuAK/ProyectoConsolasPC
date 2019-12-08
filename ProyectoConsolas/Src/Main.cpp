@@ -24,6 +24,31 @@ const int HEIGHT_WAVE = 5000;
 const int MIN_FRAMES_BETWEEN_WAVES = 50;
 const int MAX_FRAMES_BETWEEN_WAVES = 150;
 
+enum ImageType { DOOR_FRAME, DOORS, CLIENT, THIEF, DOLLARS, BANG, SIZE };
+
+void LoadResources(Image** images)
+{
+	//TODO: Esto esta bien o un array de string o qué?
+
+	//Pared con puerta. //TODO: 3 De ellas consecutivas crean la escena principal de juego
+	images[DOOR_FRAME] = Platform::LoadImage("SpritesSheetsWestBank/marcoPuerta.rgba");
+
+	//Contiene las cuatro posibles posiciones de una puerta. Todos los sprites tienen el mismo ancho.
+	//La zona abierta no debería pintarse, sino sustituirse por el personaje que abre la puerta
+	images[DOORS] = Platform::LoadImage("SpritesSheetsWestBank/puertas.rgba");
+
+	//Distintas "poses" de ambos personajes
+	//Tienen el mismo ancho que el ancho que deja una puerta completamente abierta
+	images[CLIENT] = Platform::LoadImage("SpritesSheetsWestBank/client.rgba");
+	images[THIEF] = Platform::LoadImage("SpritesSheetsWestBank/ladron.rgba");
+
+	//Distintos "sprites" de las "cajas" que indican el estado de una puerta. (Visible o No) (Recibe ingreso o no)
+	images[DOLLARS] = Platform::LoadImage("SpritesSheetsWestBank/dolares.rgba");
+
+	//Distintos "frames" de la animación de "Bang" mostrada cuando se recibe un disparo de un ladrón
+	images[BANG] = Platform::LoadImage("SpritesSheetsWestBank/bang.rgba");
+}
+
 /*
 	Aplicación que muestra un efecto de lluvia que cae sobre una imagen de la facultad.
 	Multihebra: 1 Lógica y 1 Render -> Cada una va a un nucleo
@@ -36,8 +61,9 @@ int main(int argc, char* args[])
 	//Inicializa la semilla de aleatoriedad random.
 	srand(time(NULL));
 
-	//La imagen de fondo es formato crudo
-	Image * image = Platform::LoadImage("SpritesSheetsWestBank/ladron.rgba");
+	//Carga de recursos. Asumen una resolución de juego de 640 x 360
+	Image* images[ImageType::SIZE];
+	LoadResources(images);
 
 	//Se lanza la hebra de renderizado
 	RendererThread* rendererThread = new RendererThread(); // TODO: NO HACER NEW PARA CREAR LA CLASE RENDERTRHEAD
@@ -67,6 +93,16 @@ int main(int argc, char* args[])
 
 	int tick = 0;
 
+	RenderCommand drawRectCommand;
+	drawRectCommand.Type = RendererCommandType::DRAW_RECT;
+	drawRectCommand.Param.DrawRectParams.Image = images[ImageType::BANG];
+	drawRectCommand.Param.DrawRectParams.PosX = 50;
+	drawRectCommand.Param.DrawRectParams.PosY = 30;
+	drawRectCommand.Param.DrawRectParams.Width = drawRectCommand.Param.DrawRectParams.Image->GetWidth();
+	drawRectCommand.Param.DrawRectParams.Height = drawRectCommand.Param.DrawRectParams.Image->GetHeight();
+	drawRectCommand.Param.DrawRectParams.OffsetX =0;
+	drawRectCommand.Param.DrawRectParams.OffsetY = 0;
+
 	//Bucle principal. Hebra lógica.
 	while (Platform::Tick())
 	{
@@ -83,18 +119,8 @@ int main(int argc, char* args[])
 		//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
 		//rendererThread->EnqueueCommand(waves->GetRenderCommand());
 
-		for (int i = 0; i < image->GetHeight(); i++)
-		{
-			for (int j = 0; j < image->GetWidth(); j++)
-			{
-				RenderCommand pixelCommand;
-				pixelCommand.Type = RendererCommandType::PUT_PIXEL;
-				pixelCommand.Param.PutPixelParams.Color = image->GetColorArray()[i * image->GetWidth() + j];
-				pixelCommand.Param.PutPixelParams.X = j;
-				pixelCommand.Param.PutPixelParams.Y = i;
-				rendererThread->EnqueueCommand(pixelCommand);
-			}
-		}
+
+		rendererThread->EnqueueCommand(drawRectCommand);
 
 		rendererThread->EnqueueCommand(presentCommand);
 
@@ -110,8 +136,11 @@ int main(int argc, char* args[])
 	delete rendererThread;
 	rendererThread = nullptr;
 
-	delete image;
-	image = nullptr;
+	for (int i = 0; i < ImageType::SIZE; i++)
+	{
+		delete images[i];
+		images[i] = nullptr;
+	}
 
 	Platform::Release();
 

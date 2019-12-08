@@ -57,7 +57,7 @@ void RendererPC::Clear(Color color)
 	SDL_RenderClear(renderer);
 }
 
-void RendererPC::PutPixel(int x, int y, Color color)
+void RendererPC::PutPixel(int x, int y,Color color)
 {
 	//Establecemos un color de dibujado
 	SDL_SetRenderDrawColor(renderer, color.R, color.G, color.B, color.A);
@@ -72,9 +72,12 @@ void RendererPC::DrawRect(Image* image, int posX, int posY, int width, int heigh
 
 	Color* colorArray = image->GetColorArray();
 
-	for (int i = offsetY; i < height; i++)
+	int endX = width + offsetX;
+	int endY = height + offsetY;
+
+	for (int i = offsetY; i < endY; i++)
 	{
-		for (int j = offsetX; j < width; j++)
+		for (int j = offsetX; j < endX; j++)
 		{
 			PutPixel(j + posX, i + posY, colorArray[i * imageWidth + j]);
 		}

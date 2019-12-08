@@ -37,8 +37,10 @@ public:
 	*/
 	static void PutPixel(int x, int y, Color color);
 
-
-	static void DrawRect(Image* image, int posX, int posY,int width, int height, int offsetX, int offsetY);
+	/*
+		Pinta una seccion de una imagen en la posición especificada
+	*/
+	static void DrawRect(Image* image, int posX, int posY, int width, int height, int offsetX, int offsetY);
 
 	/*
 		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.

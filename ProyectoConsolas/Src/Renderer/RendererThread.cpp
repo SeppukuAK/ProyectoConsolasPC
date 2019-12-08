@@ -59,6 +59,10 @@ void RendererThread::RenderLoop()
 			case RendererCommandType::RENDER_RAIN_EFFECT:
 				DrawRain(sigCommand.Param.RainParams.Background, sigCommand.Param.RainParams.HeightDiff, sigCommand.Param.RainParams.ForcePaint);
 				break;
+			case RendererCommandType::DRAW_RECT:
+				RenderCommandDrawRectParams drawRectParams = sigCommand.Param.DrawRectParams;
+				Renderer::DrawRect(drawRectParams.Image, drawRectParams.PosX, drawRectParams.PosY, drawRectParams.Width, drawRectParams.Height, drawRectParams.OffsetX, drawRectParams.OffsetY);
+				break;
 			default:
 				break;
 			}

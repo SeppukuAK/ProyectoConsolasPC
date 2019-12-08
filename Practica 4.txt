@@ -1,0 +1,136 @@
+11 - 25
+
+------Práctica 4--------------
+leer anchura y altura en big endian --> darles la vuelta con desplazamiento de bits, usando codigo condicional (ifdef) para hacer la transformacion. SDL ayuda con eso para ver si es big o little endian
+
+En PS4 como se da la vuelta? con desplazamiento de bits y con ands
+
+	c = (c>> 24) | c >> 16 & 0xFF00(8 bits bajos)
+
+	j(int32_t), ANCHO * ALTO, f)
+	asdfbasdf[0] = 0x0000FFFF
+
+Necesitamos añadir en renderer un metodo que reciba una imagen, un rectangulo y una pos x,y
+
+------------------------------------12 - 2-----------------------------------------------
+
+Habrá que hacer la parte de input
+
+Ampliar el renderer para dibujado de un cuadrado de imagen
+
+Input:
+
+PS4:
+Hay usuarios en la propia consola. Siempre tienes que decir quién eres. 
+
+En el mando en el que hacemos login. Todos los logros que consigamos estan asociados a ese usuario.
+
+Todo va por usuarios y no por mandos.
+El juego te pide la información de entrada del usuario. Y si el usuario no tiene mando pues te da la informacion de que está en reposo.
+
+Se gestiona la entrada a traves de lo usuarios.
+Puede haber usuarios invitados.
+Como mucho hay 16 usuarios locales.
+
+Hay que mirar que usuarios estan logeados
+Quedarnos con el primero
+Abrir un puerto
+
+Leemos la informacion de ese dispositivo
+
+Hacemos un seguimiento de si se conectan nuevos usuarios
+
+Y cuando terminemos pues cerramos todos.
+
+El estado del mando se puede saber, excepto del boton playStation.
+
+El mando PS4 tiene altavoz.
+
+Existe un usuario Generico pero que no vamos a usar.
+
+Vamos a usar el mando del primer usuario y ya está.
+
+
+El proceso es:
+1. Abrir la libreria de usuario:
+	-userservicelibrary
+		-incluir un .h user_service.h
+		-libSceUserService_stub_weak.a -> Meterlo en la compilacion para Orbis
+		-#pragma comment(lib,"Nombre de la libreria entre comillas"); -> Indicaciones que se llaman al compilador -> Aunque esto va al enlazador -> Añade la libreria (solo en un .cpp) -> Esta opcion me parece feisima.
+
+		-Hacer uso del API.
+			-SceUserServiceUserId -> Es un tipo. ID del jugador
+			-sceUserServiceInitialize(NULL); -> Inicializa la libreria de gestión de usuarios. Imprescindible ponerlo. -> Crea una hebra del sistema que monitoriza los usuarios que se conectan y desconectan.
+			-Hay que saber quién ha lanzado el juego: sceUserServiceInitialUser(&userId); //Recibe un * a un SceUserServiceUserId
+			-Ahora podremos coger el mando asociado a ese usuario.
+			-sceUserServiceTerminate(); -> Cierra la libreria de usuarios. Se carga la hebra.
+			-En esta practica podemos cerrarlo en el momento en que conseguimos el ID del usuario. No necesitamos nada mas de gestion de usuarios, la hace directamente la consola por nosotros.
+			-EJEMPLO: common\include\sampleutils\system.h -> Este codigo confunde mas que ayuda.
+				-y ejemplo implementado 3 veces. Para ps4, psvita y pc.
+
+
+
+		-TRC. Test que todo juego tiene que pasar.
+		-Se le puede decir a la play que el juego es monojugador. Hay que decirselo en esta práctica. El juego empieza desde el principio cuando se cambia de jugador.
+		-Hay que consiguir acceso al manejador de la entrada
+
+2. Input.
+	-PAD Library. Nos da el acceso a la información de los mandos
+		-pad.h
+		-libScePad_stub_weak.a
+		-Hay un ejemplo muy completo de la entrada del mando. La parte de pintado es una fiesta. Pero la parte de detectar la entrada es interesante.
+		-scePadInit(); --> Hay muchas mas funciones que hay que mirar en el ejemplo.
+		-handle = scePadOpen(userId,SCE_PAD_PORT_TYPE_STANDART,0,nullptr);	//El enum es para el tipo de dispositivo (move, volante, vr etc.) -> Esto nos da un manejador de dispositivo virtual. Del cual podemos obtener su estado.
+		-scePadClose(handle); --> Cierra el manejador. Esto es necesario en un juego multijugador. Aunque hay que meterlo en el cierre.
+		-Entre el open y close hay que detectar el estado del mando
+		-TIENE QUE HABER UNA CLASE DE ENTRADA.
+		-Tick se procesa la entrada.
+		-ScePadData. Estado del mando.
+		-scePadReadState(-). Recibirá el manejador y un puntero a un ScePadData.
+		-scePadRead() -> La diferencia está en que nos da las diferencias con la ultima vez que lo llamamos. 
+		-Tiramos de ReadState() no deberia haber problemas.
+		-Si necesitamos un seguimiento fino como el giroscopio o acelerometro usuariamos read.
+		-AMIGUI HOLA QUIEREME.
+		-AMIGUI HASTA QUE NO VEAS ESTO NO ME QUIERES.
+		-hay que utilizar solo una vez: scePadGetControllerInformation(); recibe el manejador y un puntero a una estructura.
+			-La utilidad es conseguir la información de las DEAD ZONES. (ZONAS DONDE SE IGNORA EL JOYSTICK)
+		-En SCE PAD DATA hay un monton de booleanos con los botones.
+		-los joystick nos dan un byte.
+		-los L2 Y R2 No tienen zona muerta. Es un byte. 0x00 es reposo 0xFF es maximo
+		-La logica discretiza el estado de los gatillos no la plataforma.
+		-En neiborhood. Mando en pantalla o mando host controller. Hay que marcar host controller antes de hacer el view. Hay que hacerlo con el fisico.
+
+
+INPUT.
+-INIT
+-RELEASE
+-TICK
+-GETUSERINPUT
+
+Tambien hay que programar la entrada en SDL.
+-Tiene que funcionar con teclado y mando.
+
+SDL:
+-Ejes. Los ejes de 0 y 1 son izquierda derecha y arriba abajo del jostick izquierdo.
+	-Los gatillos analogicos se mapean a los ejes 2 y 5 en mandos de xbox y 3 y 4 en caso de los mandos de PS4.
+-En SDL ya detectamos los eventos en Platform TICK. Entonces los esta consumiendo platform.
+Hay que hacer un sistema de listener. El platform proporciona la facilidad de que otros se registren para recibir eventos. Hay que ir pasando los eventos hasta que uno lo consuma. Usar orientación .
+PATRON OBSERVER.EN SDL
+dentro de input hacemos una clase que implementa la interfaz que se registra y que llama a un metodo estatico tio estoy hasta los cojones te voy a seguir a casa y te voy a quemar entero.
+
+En esta practica se necesita
+joystick izquierdo
+-2 triggers analogicos
+-2 botones. Metemos x y o tambien
+
+Tenemos 2 gatillos en el mando. No es una metralleta. Para que deje de ser disparo los 2 gatillos tienen que estar sueltos. Hay que convertirlos de analogico a digital.
+
+-Tiene que haber un deltaTime.
+
+el joystick izquierdo derecho va desde -1.0 a 1.0. Tiene que haber zonas muertas
+-0.8 a -0.2 , 0.2 a 0.8 son zonas muertas
+
+gatillo:
+-1.0 a 1.0
+	-1.0 reposo
+	a la ida y ala vuelta del trigger hay distintos deadzones de on y off.

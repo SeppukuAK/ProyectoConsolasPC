@@ -2,7 +2,8 @@
 #include <thread>
 #include <atomic> 
 #include "../Utilities/ConcurrentQueue.h"
-#include "../Renderer/Utilities/Color.h"
+#include "Utilities/Color.h"
+#include "Image.h"
 
 //Parámetros de los diferentes comandos
 struct RenderCommandClearParams
@@ -24,6 +25,17 @@ struct RenderCommandRainParams
 	bool ForcePaint;		//Indica si hay que forzar el pintado de toda la pantalla
 };
 
+struct RenderCommandDrawRectParams
+{
+	Image* Image;
+	int PosX;
+	int PosY; 
+	int Width;
+	int Height;
+	int OffsetX; 
+	int OffsetY;
+};
+
 /*
 	Todos los campos están en la misma región de memoria
 	No se pueden usar tipos con constructoras (clases)
@@ -33,6 +45,7 @@ union RenderCommandParam
 	RenderCommandClearParams ClearParams;
 	RenderCommandPutPixelParams PutPixelParams;
 	RenderCommandRainParams RainParams;
+	RenderCommandDrawRectParams DrawRectParams;
 };
 
 enum RendererCommandType
@@ -40,7 +53,8 @@ enum RendererCommandType
 	CLEAR,				//Borra la pantalla
 	PUT_PIXEL,			//Sirve para hacer pruebas (x,y,c)
 	END_FRAME,			//Hace el present
-	RENDER_RAIN_EFFECT	//Pinta el resultado de la simulación de la lluvia
+	RENDER_RAIN_EFFECT,	//Pinta el resultado de la simulación de la lluvia
+	DRAW_RECT			//Pinta una seccion de una imagen en la posición especificada
 };
 
 struct RenderCommand

@@ -35,9 +35,9 @@ public:
 	static bool Tick();
 
 	/*
-		Carga un fichero y lo guarda en un array de color
+		Carga una imagen en formato crudo y lo guarda en un array de color
 	*/
-	static Image * LoadImage(const std::string &path);
+	static Image * LoadImage(std::string path);
 
 	//Getters
 	static SDL_Window* GetWindow() { return window; };
