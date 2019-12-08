@@ -66,6 +66,7 @@ Image* PlatformPC::LoadImage(std::string path)
 	Color* arrayColor = nullptr;
 	int width = 0;
 	int height = 0;
+	Image* image = nullptr;
 
 	//Inicialización fichero
 	FILE* f = NULL;
@@ -75,8 +76,10 @@ Image* PlatformPC::LoadImage(std::string path)
 	//Imagen cargada
 	if (f != NULL)
 	{
+		//Lectura de cabecera: 2 enteros de 4 bytes (big endian)
 		uint8_t buffer[4];
 
+		//TODO: Meter en método?
 		fread(buffer, sizeof(int), 1, f);
 		width = (buffer[3] << 0) | (buffer[2] << 8) | (buffer[1] << 16) | (buffer[0] << 24);
 
@@ -89,13 +92,14 @@ Image* PlatformPC::LoadImage(std::string path)
 		fread(arrayColor, sizeof(Color), width * height, f);
 
 		fclose(f);
+
+		image = new Image(arrayColor, width, height);
 	}
 	else
 	{
 		printf("Error al cargar la imagen");
 	}
 
-	Image * image = new Image(arrayColor, width, height);
 
 	return image;
 }

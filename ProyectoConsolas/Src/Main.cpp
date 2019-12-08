@@ -7,6 +7,12 @@
 #include <time.h>       /* time */
 #include <stdio.h>		/* fopen */
 #include <iostream>		/* cout */		
+#include <chrono>		/* chrono */
+
+using namespace std::chrono_literals;
+
+// we use a fixed timestep of 1 / (60 fps) = 16 milliseconds
+constexpr std::chrono::nanoseconds timestep(16ms);
 
 using namespace std;
 
@@ -91,7 +97,6 @@ int main(int argc, char* args[])
 	while (rendererThread->GetPendingFrames() > 0)
 		;
 
-	int tick = 0;
 
 	RenderCommand drawRectCommand;
 	drawRectCommand.Type = RendererCommandType::DRAW_RECT;
@@ -103,22 +108,39 @@ int main(int argc, char* args[])
 	drawRectCommand.Param.DrawRectParams.OffsetX =0;
 	drawRectCommand.Param.DrawRectParams.OffsetY = 0;
 
+	int tick = 0;
+
+	using clock = std::chrono::high_resolution_clock;
+
+	std::chrono::nanoseconds lag(0ns);
+	auto time_start = clock::now();
+
 	//Bucle principal. Hebra lógica.
 	while (Platform::Tick())
 	{
-		//Input(); // No en esta práctica
-		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
+		auto delta_time = clock::now() - time_start;
+		time_start = clock::now();
+		lag += std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
 
-		//Paso de simulación
-		//waves->Update(tick);
+		//Input(); // No en esta práctica
+
+		 // update game logic as lag permits
+		while (lag >= timestep) {
+			lag -= timestep;
+
+			//Paso de simulación
+			//waves->Update();
+			cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
+		}
 
 		//Contención. Se para la hebra si el render va muy retrasado
 		while (rendererThread->GetPendingFrames() >= NUM_BUFFERS)
 			;
 
+		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
+
 		//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
 		//rendererThread->EnqueueCommand(waves->GetRenderCommand());
-
 
 		rendererThread->EnqueueCommand(drawRectCommand);
 
