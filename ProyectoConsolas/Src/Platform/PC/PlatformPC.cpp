@@ -14,7 +14,7 @@ void PlatformPC::Init(int screenWidth, int screenHeight, int numBuffers)
 	window = NULL;
 
 	//Inicialización de SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 
 	//Si no ha habido error

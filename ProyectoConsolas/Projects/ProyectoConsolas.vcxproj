@@ -67,6 +67,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Src\Input\PC\InputPC.cpp" />
     <ClCompile Include="..\Src\Logic\Waves.cpp" />
     <ClCompile Include="..\Src\Main.cpp" />
     <ClCompile Include="..\Src\Platform\PC\PlatformPC.cpp" />
@@ -75,6 +76,9 @@
     <ClCompile Include="..\Src\Renderer\RendererThread.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Src\Input\Input.h" />
+    <ClInclude Include="..\Src\Input\PC\InputPC.h" />
+    <ClInclude Include="..\Src\Input\UserInput.h" />
     <ClInclude Include="..\Src\Logic\Waves.h" />
     <ClInclude Include="..\Src\Platform\PC\PlatformPC.h" />
     <ClInclude Include="..\Src\Platform\Platform.h" />

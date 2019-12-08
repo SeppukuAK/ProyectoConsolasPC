@@ -45,6 +45,24 @@
     <Filter Include="Header Files\Utilities">
       <UniqueIdentifier>{a2c4fd3b-c113-4944-989f-1c61591cbe36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{25e6e750-4e10-4bfe-8ea2-d4f1fcf27856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input\PC">
+      <UniqueIdentifier>{90880526-c642-4005-8e36-9288f1c4e43d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input\PS4">
+      <UniqueIdentifier>{55888b2a-b4b6-4fab-8d18-332d84abde59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input">
+      <UniqueIdentifier>{656fc1db-5a74-4a93-aa69-1378145ce705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input\PC">
+      <UniqueIdentifier>{2a924783-f201-4964-b1c3-91dba0206b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input\PS4">
+      <UniqueIdentifier>{578a25aa-4539-42be-8cc8-5edc6d49b108}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\Main.cpp">
@@ -64,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="..\Src\Renderer\Image.cpp">
       <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Input\PC\InputPC.cpp">
+      <Filter>Source Files\Input\PC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +114,15 @@
     </ClInclude>
     <ClInclude Include="..\Src\Renderer\Image.h">
       <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Input\PC\InputPC.h">
+      <Filter>Header Files\Input\PC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Input\Input.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Input\UserInput.h">
+      <Filter>Header Files\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
