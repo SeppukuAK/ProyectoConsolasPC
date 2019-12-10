@@ -10,6 +10,7 @@ public:
 	bool R1, L1; //Desplazamiento para cambiar puertas
 
 	//2 triggers analogicos (gatillos) 
+	//Va desde -1.0 a 1.0
 	//TODO: Hay que convertirlos de analogico a digital
 	float L2, R2;
 

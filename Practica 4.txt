@@ -134,3 +134,24 @@ gatillo:
 -1.0 a 1.0
 	-1.0 reposo
 	a la ida y ala vuelta del trigger hay distintos deadzones de on y off.
+
+
+
+
+
+	------------------------------------------------------------------------
+	Cositas para adri:
+	https://wiki.libsdl.org/SDL_Event					SDL_Event
+	https://wiki.libsdl.org/SDL_GameControllerAxis		SDL_GameControllerAxis
+
+
+	SDL_GameController is an abstraction for gamepads ("controllers") similar to the xbox360-pad: They have a DPAD, two analog sticks, 4 buttons on the right (often called A, B, X, Y), shoulder buttons (two of which might be axes) and 3 buttons in the middle (Start, Back and usually some kind of logo-button).
+	This includes devices that have a similar layout, like the Playstation DualShock Controller, but different button names; SDL_GameController uses the naming-conventions of xbox360/XInput for all supported devices, so you'll know that SDL_CONTROLLER_AXIS_LEFTX is always the X-Axis of the left Analog Stick, or SDL_CONTROLLER_BUTTON_B is always the rightmost buttons of the 4 buttons on the right, for example. This makes providing consistent input bindings (for this kind of device) to your users easy, like "press B to jump, move around with the left analog stick" - with SDL_Joystick (and the underlying APIs like DirectInput) it's impossible to know which SDL (or DirectInput) axis or button corresponds to which physical axis/button on the device.
+
+
+	https://stackoverflow.com/questions/35385658/sdl2-going-too-fast-why-does-it-read-multiple-inputs-when-i-press-just-one-bu  Que solo se ejecute una vez al pulsar un botón y no múltiples veces
+
+	https://books.google.es/books?id=VfxNDwAAQBAJ&pg=PT420&lpg=PT420&dq=detect+one+single+input+with+trigger+sdl&source=bl&ots=Dld8o4T2oj&sig=ACfU3U0Kcyj2sbkb2krTQQPQmDxvRZwNtA&hl=es&sa=X&ved=2ahUKEwj299ixg6vmAhVJD2MBHdphDdEQ6AEwBXoECAoQAQ#v=onepage&q=detect%20one%20single%20input%20with%20trigger%20sdl&f=false 	
+
+	Datos sobre triggers, sticks, conectar y desconectar mandos mientras el juego se ejecuta
+	-----------------------------------------------------------------------
