@@ -3,6 +3,7 @@
 
 #include "PlatformPC.h"
 #include <stdio.h>		/* fopen */
+#include <iostream>		/* cout */
 
 //Inicialización de atributos estáticos
 SDL_Window* PlatformPC::window = NULL;
@@ -62,18 +63,11 @@ bool PlatformPC::Tick()
 		case SDL_KEYDOWN:
 			if(e.key.keysym.sym == SDLK_ESCAPE)		
 				quit = true;
+			else
+				NotifyObservers(e);
 			break;
 		default:
-			bool eventConsumed = false;
-			int i = 0;
-
-			// notify all observers
-			while (!eventConsumed && i < observers.size())
-			{
-				eventConsumed = observers[i]->HandleEvent(e);
-				i++;
-			}
-
+			NotifyObservers(e);
 			break;
 		}
 	}
@@ -125,18 +119,30 @@ Image* PlatformPC::LoadImage(std::string path)
 	return image;
 }
 
-void PlatformPC::AddObserver(InputObserver* observer)
-{
+
+void PlatformPC::RegisterObserver(InputObserver* observer) {
 	observers.push_back(observer);
 }
 
-void PlatformPC::RemoveObserver(InputObserver* observer)
-{
+void PlatformPC::RemoveObserver(InputObserver* observer) {
 	// find the observer
 	auto iterator = std::find(observers.begin(), observers.end(), observer);
 
 	if (iterator != observers.end()) { // observer found
 		observers.erase(iterator); // remove the observer
+	}
+}
+
+void PlatformPC::NotifyObservers(SDL_Event e)
+{
+	bool eventConsumed = false;
+	int i = 0;
+
+	// notify all observers
+	while (!eventConsumed && i < observers.size())
+	{
+		eventConsumed = observers[i]->HandleEvent(e);
+		i++;
 	}
 }
 

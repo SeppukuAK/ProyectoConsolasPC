@@ -6,15 +6,75 @@
 #include "InputPC.h"
 #include <stdio.h> 
 #include <iostream>
+#include "../../Platform/Platform.h"
+#include <stdlib.h>     /* abs */
 
 //-32768 and 32767
+const int JOYSTICK_MAX_VALUE = 32768;
 const int JOYSTICK_DEAD_ZONE = 8000; //TODO: ESTE ES EL DEADZONE PARA LOS STICKS, CUAL ES EL DEADZONE PARA LOS TRIGGERS?
 
 //Inicialización de atributos estáticos
 SDL_GameController* InputPC::gameController = NULL;
-InputPC::Listener InputPC::listener = InputPC::Listener();
-UserInput InputPC::userInput = UserInput();
+InputPC::Observer InputPC::observer;
 std::queue<SDL_Event> InputPC::eventQueue = std::queue<SDL_Event>();
+UserInput InputPC::userInput = UserInput();
+
+bool InputPC::Observer::HandleEvent(SDL_Event e)
+{
+	bool eventConsumed = false;
+	switch (e.type)
+	{
+	case SDL_KEYDOWN:
+	case SDL_KEYUP:
+		switch (e.key.keysym.sym)
+		{
+		case SDLK_1:
+		case SDLK_2:
+		case SDLK_3:
+		case SDLK_o:
+		case SDLK_p:
+			eventConsumed = true;
+			break;
+		}
+		break;
+
+	case SDL_CONTROLLERBUTTONDOWN:
+	case SDL_CONTROLLERBUTTONUP:
+		switch (e.key.keysym.sym)
+		{
+			//BOTONES
+		case SDL_CONTROLLER_BUTTON_A:
+		case SDL_CONTROLLER_BUTTON_B:
+		case SDL_CONTROLLER_BUTTON_X:
+		case SDL_CONTROLLER_BUTTON_Y:
+		case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+		case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+			eventConsumed = true;
+			break;
+		}
+		break;
+
+	case SDL_CONTROLLERAXISMOTION:
+		if (e.caxis.which == 0)
+		{
+			switch (e.caxis.axis)
+			{
+			case SDL_CONTROLLER_AXIS_LEFTX:
+			case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
+			case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
+				eventConsumed = true;
+				break;
+			}
+
+		}
+		break;
+	}
+
+	if (eventConsumed)
+		InputPC::AddEvent(e);
+
+	return eventConsumed;
+}
 
 void InputPC::Init()
 {
@@ -32,17 +92,20 @@ void InputPC::Init()
 	else
 	{
 		// Se abre el primer mando conectado. Ahora genera eventos
-		gameController = SDL_GameControllerOpen(0);	
+		gameController = SDL_GameControllerOpen(0);
 		if (gameController == NULL)
 		{
 			printf("Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
 		}
 	}
 
+	PlatformPC::RegisterObserver(&observer);
 }
 
 void InputPC::Release()
 {
+	PlatformPC::RemoveObserver(&observer);
+
 	//Close game  controller
 	SDL_GameControllerClose(gameController);
 	gameController = NULL;
@@ -50,54 +113,107 @@ void InputPC::Release()
 
 void InputPC::Tick()
 {
-	SDL_Event e;		//Manejador de eventos
-	bool quit = false;
-	userInput = UserInput();
 
 	//Procesa los eventos de la cola
-	while (SDL_PollEvent(&e) != 0)
+	while (!eventQueue.empty())
 	{
+		SDL_Event e = eventQueue.front();
+		eventQueue.pop();
+
 		switch (e.type)
 		{
 		case SDL_KEYDOWN:
-			//Select surfaces based on key press
 			switch (e.key.keysym.sym)
 			{
-				//Izq
 			case SDLK_1:
-				std::cout << "Disparar izq" << std::endl;
+				userInput.Key_1 = true;
 				break;
-				//Centro
 			case SDLK_2:
-				std::cout << "Disparar centro" << std::endl;
+				userInput.Key_2 = true;
 				break;
-				//Derecha
 			case SDLK_3:
-				std::cout << "Disparar derecha" << std::endl;
+				userInput.Key_3 = true;
+				break;
+			case SDLK_o:
+				userInput.Key_O = true;
+				break;
+			case SDLK_p:
+				userInput.Key_P = true;
 				break;
 			}
 			break;
 
-			//BOTONES
-		case SDL_CONTROLLER_BUTTON_A:
-			userInput.Cross = true;
-			break;
-		case SDL_CONTROLLER_BUTTON_B:
-			userInput.Circle = true;
-			break;
-		case SDL_CONTROLLER_BUTTON_X:
-			userInput.Square = true;
-			break;
-		case SDL_CONTROLLER_BUTTON_Y:
-			userInput.Triangle = true;
-			break;
-		case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
-			userInput.L1 = true;
-			break;
-		case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
-			userInput.R1 = true;
+		case SDL_KEYUP:
+			switch (e.key.keysym.sym)
+			{
+			case SDLK_1:
+				userInput.Key_1 = false;
+				break;
+			case SDLK_2:
+				userInput.Key_2 = false;
+				break;
+			case SDLK_3:
+				userInput.Key_3 = false;
+				break;
+			case SDLK_o:
+				userInput.Key_O = false;
+				break;
+			case SDLK_p:
+				userInput.Key_P = false;
+				break;
+			}
 			break;
 
+		case SDL_CONTROLLERBUTTONDOWN:
+			switch (e.key.keysym.sym)
+			{
+				//BOTONES
+			case SDL_CONTROLLER_BUTTON_A:
+				userInput.Cross = true;
+				break;
+			case SDL_CONTROLLER_BUTTON_B:
+				userInput.Circle = true;
+				break;
+			case SDL_CONTROLLER_BUTTON_X:
+				userInput.Square = true;
+				break;
+			case SDL_CONTROLLER_BUTTON_Y:
+				userInput.Triangle = true;
+				break;
+			case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+				userInput.L1 = true;
+				break;
+			case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+				userInput.R1 = true;
+				break;
+			}
+			break;
+
+		case SDL_CONTROLLERBUTTONUP:
+			switch (e.key.keysym.sym)
+			{
+				//BOTONES
+			case SDL_CONTROLLER_BUTTON_A:
+				userInput.Cross = false;
+				break;
+			case SDL_CONTROLLER_BUTTON_B:
+				userInput.Circle = false;
+				break;
+			case SDL_CONTROLLER_BUTTON_X:
+				userInput.Square = false;
+				break;
+			case SDL_CONTROLLER_BUTTON_Y:
+				userInput.Triangle = false;
+				break;
+			case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+				userInput.L1 = false;
+				break;
+			case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+				userInput.R1 = false;
+				break;
+			}
+			break;
+			
 			//Eventos que utilizan ejes ( TRIGGERS Y STICKERS ) 
 		case SDL_CONTROLLERAXISMOTION:
 		{
@@ -111,41 +227,15 @@ void InputPC::Tick()
 					//X axis motion LEFT AND RIGHT
 				case SDL_CONTROLLER_AXIS_LEFTX:
 				{
-					//Left of dead zone
-					if (e.caxis.value < -JOYSTICK_DEAD_ZONE)// TODO: JOYSTICK_DEAD_ZONE
-					{
-						userInput.LeftJoystickHor = -1;
-					}
-					//Right of dead zone
-					else if (e.caxis.value > JOYSTICK_DEAD_ZONE)// TODO: JOYSTICK_DEAD_ZONE
-					{
-						userInput.LeftJoystickHor = 1;
-					}
-					else
-					{
+					//Aplicación de deadzone
+					if (abs(e.caxis.value) < JOYSTICK_DEAD_ZONE)
 						userInput.LeftJoystickHor = 0;
-					}
-					break;
-				}
-				//Y axis motion UP AND DOWN
-				case SDL_CONTROLLER_AXIS_LEFTY:
-				{
-					//Below of dead zone
-					if (e.caxis.value < -JOYSTICK_DEAD_ZONE)
-					{
-						userInput.LeftJoystickVer = -1;
-					}
-					//Above of dead zone
-					else if (e.caxis.value > JOYSTICK_DEAD_ZONE)
-					{
-						userInput.LeftJoystickVer = 1;
-					}
 					else
-					{
-						userInput.LeftJoystickVer = 0;
-					}
+						userInput.LeftJoystickHor = e.caxis.value /JOYSTICK_MAX_VALUE;
+				
 					break;
 				}
+				//TODO: SDL_CONTROLLERAXXISLEFTY
 
 				//GATILLOS
 
@@ -197,7 +287,5 @@ void InputPC::Tick()
 		}
 	}
 }
-
-
 
 #endif

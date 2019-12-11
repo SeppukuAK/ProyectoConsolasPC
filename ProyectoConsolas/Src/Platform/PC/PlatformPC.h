@@ -7,17 +7,18 @@
 #include "../../Renderer/Image.h"
 
 #include <vector>
-#include "../..//Utilities/InputObserver.h"
+#include "../../Utilities/InputObserver.h"
 
 /*
 	Clase con métodos estáticos. Inicializa atributos de la plataforma.
 	Gestiona la ventana. Detecta cerrar la ventana.
 */
-class PlatformPC
+class PlatformPC 
 {
 private:
 	static SDL_Window* window;							//Referencia a la ventana de SDL
 	static std::string mediaPath;						//Ruta donde se encuentran los recursos
+
 	static std::vector<InputObserver*> observers;		//Observadores del input
 
 public:
@@ -44,15 +45,15 @@ public:
 	static Image * LoadImage(std::string path);
 
 	/**
-	* Register an observer
-	* @param observer the observer object to be registered
-	*/
-	static void AddObserver(InputObserver* observer);
-
+	 * Register an observer
+	 * @param observer the observer object to be registered
+	 */
+	static void RegisterObserver(InputObserver* observer);
+	
 	/**
-	* Unregister an observer
-	* @param observer the observer object to be unregistered
-	*/
+	 * Unregister an observer
+	 * @param observer the observer object to be unregistered
+	 */
 	static void RemoveObserver(InputObserver* observer);
 
 	//Getters
@@ -62,5 +63,8 @@ public:
 		Devuelve la ruta donde se encuentran los recursos
 	*/
 	static std::string GetMediaPath() { return mediaPath; };
+
+private:
+	static void NotifyObservers(SDL_Event e);
 };
 

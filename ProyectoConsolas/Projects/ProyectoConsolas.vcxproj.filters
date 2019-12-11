@@ -80,6 +80,12 @@
     <ClCompile Include="..\Src\Input\PC\InputPC.cpp">
       <Filter>Source Files\Input\PC</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\Logic\Door.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\Sprite.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Renderer\Renderer.h">
@@ -120,6 +126,12 @@
     </ClInclude>
     <ClInclude Include="..\Src\Utilities\InputObserver.h">
       <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Door.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Sprite.h">
+      <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

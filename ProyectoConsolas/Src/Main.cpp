@@ -130,6 +130,8 @@ int main(int argc, char* args[])
 		while (lag >= timestep) {
 			lag -= timestep;
 
+			if (Input::GetUserInput().Key_1)
+				cout << "Holita " << endl;
 			//Paso de simulación
 			//waves->Update();
 		//TODO:	cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;

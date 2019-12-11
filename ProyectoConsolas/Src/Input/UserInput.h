@@ -1,12 +1,17 @@
 #pragma once
+
 class UserInput
 {
 public:
+	//PC
+
+	//Teclas
+	bool Key_1, Key_2, Key_3, Key_O, Key_P;
+
+	//GAMEPAD
+
 	//Botones
-	bool Circle;
-	bool Cross;
-	bool Triangle;
-	bool Square;
+	bool Cross, Square, Triangle, Circle;
 	bool L1, R1; //Desplazamiento para cambiar puertas
 
 	//2 triggers analogicos (gatillos) 
@@ -20,8 +25,7 @@ public:
 	float LeftJoystickHor;
 	float LeftJoystickVer;
 
-
 	//Constructora
-	UserInput() : Circle(false), Cross(false), Triangle(false), Square(false), L1(false), R1(false),L2(-1.0), R2(-1.0), LeftJoystickHor(0), LeftJoystickVer(0) {}
+	UserInput() : Key_1(false), Key_2(false), Key_3(false), Key_O(false), Key_P(false), Cross(false), Square(false), Triangle(false), Circle(false), L1(false), R1(false), L2(-1.0), R2(-1.0), LeftJoystickHor(0), LeftJoystickVer(0) {}
 
 };

@@ -2,7 +2,6 @@
 #include <SDL.h> //Utiliza la librería SDL
 #include "../UserInput.h"
 #include "../../Utilities/InputObserver.h"
-#include "../../Platform/Platform.h"
 #include <iostream>
 #include <queue>
 
@@ -12,20 +11,15 @@
 class InputPC
 {
 public:
-	class Listener : public InputObserver
+	class Observer : public InputObserver
 	{
 	public:
-		Listener(){ PlatformPC::AddObserver(this); }
-		~Listener(){ PlatformPC::RemoveObserver(this); }
-		virtual bool HandleEvent(SDL_Event e) override
-		{
-			return InputPC::AddEvent(e);
-		}
+		virtual bool HandleEvent(SDL_Event e) override;
 	};
 
 private:
 	static SDL_GameController* gameController;	//Manejador del GameController
-	static Listener listener;
+	static Observer observer;
 	static std::queue<SDL_Event> eventQueue;
 	static UserInput userInput; //Informacion del "boton" pulsado
 
@@ -48,10 +42,9 @@ public:
 	*/
 	static void Tick();
 
-	static bool AddEvent(SDL_Event e)
+	static void AddEvent(SDL_Event e)
 	{
 		eventQueue.push(e);
-		return true;
 	}
 
 	/*
