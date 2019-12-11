@@ -7,14 +7,15 @@
 //Inicialización de atributos estáticos
 SDL_Window* PlatformPC::window = NULL;
 std::string PlatformPC::mediaPath = "../Media/";//Se accede desde Projects
+std::vector<InputObserver*> PlatformPC::observers = std::vector<InputObserver*>();
 
 void PlatformPC::Init(int screenWidth, int screenHeight, int numBuffers)
 {
 	//La ventana en la que se renderizará
 	window = NULL;
 
-	//Inicialización de SDL
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
+	//Inicialización de SDL y GameController
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)	
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 
 	//Si no ha habido error
@@ -52,9 +53,29 @@ bool PlatformPC::Tick()
 	//Procesa los eventos de la cola
 	while (SDL_PollEvent(&e) != 0)
 	{
-		//Se cierra la ventana si se da a la 'X' o cualquier tecla o el ratón
-		if (e.type == SDL_QUIT || e.type == SDL_KEYDOWN || e.type == SDL_MOUSEBUTTONDOWN)
+		switch (e.type) {
+		//Se cierra la ventana si se da a la 'X' o a la tecla escape o el ratón
+		case SDL_QUIT:
+		case SDL_MOUSEBUTTONDOWN:
 			quit = true;
+			break;
+		case SDL_KEYDOWN:
+			if(e.key.keysym.sym == SDLK_ESCAPE)		
+				quit = true;
+			break;
+		default:
+			bool eventConsumed = false;
+			int i = 0;
+
+			// notify all observers
+			while (!eventConsumed && i < observers.size())
+			{
+				eventConsumed = observers[i]->HandleEvent(e);
+				i++;
+			}
+
+			break;
+		}
 	}
 
 	//Si quiere salir devuelve false
@@ -102,6 +123,21 @@ Image* PlatformPC::LoadImage(std::string path)
 
 
 	return image;
+}
+
+void PlatformPC::AddObserver(InputObserver* observer)
+{
+	observers.push_back(observer);
+}
+
+void PlatformPC::RemoveObserver(InputObserver* observer)
+{
+	// find the observer
+	auto iterator = std::find(observers.begin(), observers.end(), observer);
+
+	if (iterator != observers.end()) { // observer found
+		observers.erase(iterator); // remove the observer
+	}
 }
 
 #endif

@@ -51,17 +51,11 @@
     <Filter Include="Source Files\Input\PC">
       <UniqueIdentifier>{90880526-c642-4005-8e36-9288f1c4e43d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Input\PS4">
-      <UniqueIdentifier>{55888b2a-b4b6-4fab-8d18-332d84abde59}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Input">
       <UniqueIdentifier>{656fc1db-5a74-4a93-aa69-1378145ce705}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Input\PC">
       <UniqueIdentifier>{2a924783-f201-4964-b1c3-91dba0206b08}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Input\PS4">
-      <UniqueIdentifier>{578a25aa-4539-42be-8cc8-5edc6d49b108}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +117,9 @@
     </ClInclude>
     <ClInclude Include="..\Src\Input\UserInput.h">
       <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Utilities\InputObserver.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

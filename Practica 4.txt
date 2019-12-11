@@ -116,7 +116,12 @@ SDL:
 -En SDL ya detectamos los eventos en Platform TICK. Entonces los esta consumiendo platform.
 Hay que hacer un sistema de listener. El platform proporciona la facilidad de que otros se registren para recibir eventos. Hay que ir pasando los eventos hasta que uno lo consuma. Usar orientación .
 PATRON OBSERVER.EN SDL
-dentro de input hacemos una clase que implementa la interfaz que se registra y que llama a un metodo estatico tio estoy hasta los cojones te voy a seguir a casa y te voy a quemar entero.
+
+
+dentro de input hacemos una clase que implementa la interfaz que se registra y que llama a un metodo estatico
+
+
+tio estoy hasta los cojones te voy a seguir a casa y te voy a quemar entero.
 
 En esta practica se necesita
 joystick izquierdo
@@ -155,3 +160,11 @@ gatillo:
 
 	Datos sobre triggers, sticks, conectar y desconectar mandos mientras el juego se ejecuta
 	-----------------------------------------------------------------------
+
+	https://medium.com/@gayashanbc/explore-the-observer-design-pattern-with-c-8592459b0486
+
+	TODO: LA CLASE OBSERVED TIENE QUE IR EN UNA CLASE APARTE DE PLATFORM O VA YA IMPLEMENTADO DENTRO DE PLATFORM? TODOS LOS METODOS DEBERIAN SER ESTATICOS?
+
+	//TODO: SDL_INIT_GAMECONTROLLER????????
+	//TODO: JOYSTICK DEADZONE DONDE VA
+	//TODO: REVISAR LISTENER

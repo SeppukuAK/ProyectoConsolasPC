@@ -1,5 +1,6 @@
 #include "Platform/Platform.h"
 #include "Renderer/RendererThread.h"
+#include "Input/Input.h"
 
 #include "Logic/Waves.h"
 
@@ -63,6 +64,7 @@ int main(int argc, char* args[])
 {
 	//Inicialización
 	Platform::Init(SCREEN_WIDTH, SCREEN_HEIGHT, NUM_BUFFERS);
+	Input::Init();
 
 	//Inicializa la semilla de aleatoriedad random.
 	srand(time(NULL));
@@ -122,7 +124,7 @@ int main(int argc, char* args[])
 		time_start = clock::now();
 		lag += std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
 
-		//Input(); // No en esta práctica
+		Input::Tick(); 
 
 		 // update game logic as lag permits
 		while (lag >= timestep) {
@@ -130,7 +132,7 @@ int main(int argc, char* args[])
 
 			//Paso de simulación
 			//waves->Update();
-			cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
+		//TODO:	cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
 		}
 
 		//Contención. Se para la hebra si el render va muy retrasado
@@ -164,6 +166,7 @@ int main(int argc, char* args[])
 		images[i] = nullptr;
 	}
 
+	Input::Release();
 	Platform::Release();
 
 	return 0;

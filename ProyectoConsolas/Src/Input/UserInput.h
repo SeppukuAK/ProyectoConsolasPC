@@ -7,7 +7,7 @@ public:
 	bool Cross;
 	bool Triangle;
 	bool Square;
-	bool R1, L1; //Desplazamiento para cambiar puertas
+	bool L1, R1; //Desplazamiento para cambiar puertas
 
 	//2 triggers analogicos (gatillos) 
 	//Va desde -1.0 a 1.0
@@ -22,6 +22,6 @@ public:
 
 
 	//Constructora
-	UserInput() : Circle(false), Cross(false), Triangle(false), Square(false), L2(-1.0), R2(-1.0), LeftJoystickHor(0), LeftJoystickVer(0) {}
+	UserInput() : Circle(false), Cross(false), Triangle(false), Square(false), L1(false), R1(false),L2(-1.0), R2(-1.0), LeftJoystickHor(0), LeftJoystickVer(0) {}
 
 };
