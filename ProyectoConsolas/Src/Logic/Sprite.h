@@ -5,19 +5,14 @@ class Image;
 class Sprite
 {
 private:
-	Image* image;
-	int posX, posY;
-	int width, height;
-	int offsetX, offsetY;
+	Image* _image;
+	int _sx1, _sy1, _sx2, _sy2;//Región de la imagen que se va a pintar
 
 public:
-	inline Image* GetImage()const { return image; };
-	inline int GetPosX()const { return posX; };
-	inline int GetPosY()const { return posY; };
-	inline int GetWidth()const { return width; };
-	inline int GetHeight()const { return height; };
-	inline int GetOffsetX()const { return offsetX; };
-	inline int GetOffsetY()const { return offsetY; };
+	Sprite(Image* image, int sx1, int sy1, int sx2, int sy2);
+
+	//Método que pinta el sprite a partir de una posición (esquina sup izquierda del sprite)
+	void Draw(int posX, int posY);
 
 };
 

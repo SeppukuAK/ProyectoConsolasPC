@@ -9,9 +9,15 @@
 #include "../../Platform/Platform.h"
 #include <stdlib.h>     /* abs */
 
+//TODO: Estos const tienen que estar aquí??
+
 //-32768 and 32767
-const int JOYSTICK_MAX_VALUE = 32768;
-const int JOYSTICK_DEAD_ZONE = 8000; //TODO: ESTE ES EL DEADZONE PARA LOS STICKS, CUAL ES EL DEADZONE PARA LOS TRIGGERS?
+const float JOYSTICK_MAX_VALUE = 30000;
+const float JOYSTICK_DEAD_ZONE = 8000; //TODO: ESTE ES EL DEADZONE PARA LOS STICKS, CUAL ES EL DEADZONE PARA LOS TRIGGERS?
+
+const float TRIGGER_MAX_VALUE = 32767;
+const float TRIGGER_DEAD_ZONE = 5000;
+
 
 //Inicialización de atributos estáticos
 SDL_GameController* InputPC::gameController = NULL;
@@ -40,7 +46,7 @@ bool InputPC::Observer::HandleEvent(SDL_Event e)
 
 	case SDL_CONTROLLERBUTTONDOWN:
 	case SDL_CONTROLLERBUTTONUP:
-		switch (e.key.keysym.sym)
+		switch (e.cbutton.button)
 		{
 			//BOTONES
 		case SDL_CONTROLLER_BUTTON_A:
@@ -165,7 +171,7 @@ void InputPC::Tick()
 			break;
 
 		case SDL_CONTROLLERBUTTONDOWN:
-			switch (e.key.keysym.sym)
+			switch (e.cbutton.button)
 			{
 				//BOTONES
 			case SDL_CONTROLLER_BUTTON_A:
@@ -190,7 +196,7 @@ void InputPC::Tick()
 			break;
 
 		case SDL_CONTROLLERBUTTONUP:
-			switch (e.key.keysym.sym)
+			switch (e.cbutton.button)
 			{
 				//BOTONES
 			case SDL_CONTROLLER_BUTTON_A:
@@ -213,7 +219,7 @@ void InputPC::Tick()
 				break;
 			}
 			break;
-			
+
 			//Eventos que utilizan ejes ( TRIGGERS Y STICKERS ) 
 		case SDL_CONTROLLERAXISMOTION:
 		{
@@ -231,8 +237,16 @@ void InputPC::Tick()
 					if (abs(e.caxis.value) < JOYSTICK_DEAD_ZONE)
 						userInput.LeftJoystickHor = 0;
 					else
-						userInput.LeftJoystickHor = e.caxis.value /JOYSTICK_MAX_VALUE;
-				
+					{
+						userInput.LeftJoystickHor = e.caxis.value / JOYSTICK_MAX_VALUE;
+
+						//Clamp a [-1,+1]
+						if (userInput.LeftJoystickHor < -1)
+							userInput.LeftJoystickHor = -1;
+						else if (userInput.LeftJoystickHor > 1)
+							userInput.LeftJoystickHor = 1;
+					}
+
 					break;
 				}
 				//TODO: SDL_CONTROLLERAXXISLEFTY
@@ -243,36 +257,28 @@ void InputPC::Tick()
 				//TODO: No es una metralleta. Para que deje de ser disparo los 2 gatillos tienen que estar sueltos. Hay que convertirlos de analogico a digital.
 				//TODO: CREO QUE ESTA MAL
 				case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
-					//Below of dead zone
-					if (e.caxis.value < -JOYSTICK_DEAD_ZONE)
-					{
+
+					//Aplicación de deadzone
+					if (e.caxis.value < TRIGGER_DEAD_ZONE)
 						userInput.L2 = -1;
-					}
-					//Above of dead zone
-					else if (e.caxis.value > JOYSTICK_DEAD_ZONE)
-					{
-						userInput.L2 = 1;
-					}
 					else
 					{
-						userInput.L2 = 0;
+						//(0-30000) --> (0-60000) --> [-1,+1]
+						//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
+						userInput.L2 = (2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
 					}
+
 					break;
 
 				case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
-					//Below of dead zone
-					if (e.caxis.value < -JOYSTICK_DEAD_ZONE)
-					{
+					//Aplicación de deadzone
+					if (e.caxis.value < TRIGGER_DEAD_ZONE)
 						userInput.R2 = -1;
-					}
-					//Above of dead zone
-					else if (e.caxis.value > JOYSTICK_DEAD_ZONE)
-					{
-						userInput.R2 = 1;
-					}
 					else
 					{
-						userInput.R2 = 0;
+						//(0-30000) --> (0-60000) --> [-1,+1]
+						//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
+						userInput.R2 = (2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
 					}
 					break;
 

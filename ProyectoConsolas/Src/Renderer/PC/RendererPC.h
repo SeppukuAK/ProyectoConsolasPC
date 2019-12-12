@@ -40,7 +40,7 @@ public:
 	/*
 		Pinta una seccion de una imagen en la posición especificada
 	*/
-	static void DrawRect(Image* image, int posX, int posY, int width, int height, int offsetX, int offsetY);
+	static void DrawRect(Image* image, int posX, int posY, int sx1, int sy1, int sx2, int sy2);
 
 	/*
 		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.

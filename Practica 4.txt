@@ -141,9 +141,6 @@ gatillo:
 	a la ida y ala vuelta del trigger hay distintos deadzones de on y off.
 
 
-
-
-
 	------------------------------------------------------------------------
 	Cositas para adri:
 	https://wiki.libsdl.org/SDL_Event					SDL_Event

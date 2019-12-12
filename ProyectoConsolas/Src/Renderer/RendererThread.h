@@ -3,7 +3,8 @@
 #include <atomic> 
 #include "../Utilities/ConcurrentQueue.h"
 #include "Utilities/Color.h"
-#include "Image.h"
+
+class Sprite;
 
 //Parámetros de los diferentes comandos
 struct RenderCommandClearParams
@@ -25,15 +26,11 @@ struct RenderCommandRainParams
 	bool ForcePaint;		//Indica si hay que forzar el pintado de toda la pantalla
 };
 
-struct RenderCommandDrawRectParams
+struct RenderCommandDrawSpriteParams
 {
-	Image* Image;
+	Sprite* Sprite;
 	int PosX;
 	int PosY; 
-	int Width;
-	int Height;
-	int OffsetX; 
-	int OffsetY;
 };
 
 /*
@@ -45,7 +42,7 @@ union RenderCommandParam
 	RenderCommandClearParams ClearParams;
 	RenderCommandPutPixelParams PutPixelParams;
 	RenderCommandRainParams RainParams;
-	RenderCommandDrawRectParams DrawRectParams;
+	RenderCommandDrawSpriteParams DrawSpriteParams;
 };
 
 enum RendererCommandType
@@ -54,7 +51,7 @@ enum RendererCommandType
 	PUT_PIXEL,			//Sirve para hacer pruebas (x,y,c)
 	END_FRAME,			//Hace el present
 	RENDER_RAIN_EFFECT,	//Pinta el resultado de la simulación de la lluvia
-	DRAW_RECT			//Pinta una seccion de una imagen en la posición especificada
+	DRAW_SPRITE			//Pinta una seccion de una imagen en la posición especificada
 };
 
 struct RenderCommand
@@ -70,34 +67,34 @@ struct RenderCommand
 class RendererThread
 {
 private:
-	std::thread *t;						//Hilo
-	Queue<RenderCommand> commandQueue; 	//Cola concurrente (compartida entre hebras) de comandos
+	static std::thread *t;						//Hilo
+	static Queue<RenderCommand> commandQueue; 	//Cola concurrente (compartida entre hebras) de comandos
 
 	//Escritura y lectura seguras
-	std::atomic <bool> quitRequested;	//Indica si se quiere parar la aplicación
-	std::atomic <int> pendingFrames;	//Número de comandos de endframe encolados actualmente
+	static std::atomic <bool> quitRequested;	//Indica si se quiere parar la aplicación
+	static std::atomic <int> pendingFrames;	//Número de comandos de endframe encolados actualmente
 
 public:
 	/*
 		Inicia la hebra
 	*/
-	void Start();
+	static void Start();
 
 	/*
 		Para la hebra
 	*/
-	void Stop();
+	static void Stop();
 
 	/*
 		Encola un comando para que lo procese la hebra de render.
 		Es llamado desde la hebra de logica.
 	*/
-	void EnqueueCommand(RenderCommand renderCommand);
+	static void EnqueueCommand(RenderCommand renderCommand);
 
 	/*
 		Devuelve cuantos comandos de endframe hay encolados actualmente
 	*/
-	int GetPendingFrames() { return pendingFrames; };
+	static int GetPendingFrames() { return pendingFrames; };
 
 private:
 
@@ -105,16 +102,16 @@ private:
 		Bucle de la hebra de renderizado.
 		Procesa los eventos en la cola.
 	*/
-	void RenderLoop();
+	static void RenderLoop();
 
 	/*
 		Dibuja el estado actual de la lluvia
 	*/
-	void DrawRain(Color* background, int* heightDiffs, bool forcePaint);
+	static void DrawRain(Color* background, int* heightDiffs, bool forcePaint);
 
 	/*
 		Restringe un valor al rango
 	*/
-	int Clamp(int min, int max, int value);
+	static int Clamp(int min, int max, int value);
 };
 

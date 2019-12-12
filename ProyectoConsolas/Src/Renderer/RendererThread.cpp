@@ -1,7 +1,14 @@
 #include "RendererThread.h"
 #include "Renderer.h"
 #include <iostream>		
+#include "../Logic/Sprite.h"
+
 using namespace std;
+
+std::thread* RendererThread::t = nullptr;
+Queue<RenderCommand> RendererThread::commandQueue;
+std::atomic <bool> RendererThread::quitRequested = false;
+std::atomic <int> RendererThread::pendingFrames = 0;
 
 void RendererThread::Start()
 {
@@ -11,10 +18,7 @@ void RendererThread::Start()
 	Renderer::Init();
 
 	//Recibe la funcion a ejecutar
-	t = new thread(&RendererThread::RenderLoop, this);
-
-	quitRequested = false;
-	pendingFrames = 0;
+	t = new thread(&RendererThread::RenderLoop);
 }
 
 void RendererThread::Stop() {
@@ -59,9 +63,9 @@ void RendererThread::RenderLoop()
 			case RendererCommandType::RENDER_RAIN_EFFECT:
 				DrawRain(sigCommand.Param.RainParams.Background, sigCommand.Param.RainParams.HeightDiff, sigCommand.Param.RainParams.ForcePaint);
 				break;
-			case RendererCommandType::DRAW_RECT:
-				RenderCommandDrawRectParams drawRectParams = sigCommand.Param.DrawRectParams;
-				Renderer::DrawRect(drawRectParams.Image, drawRectParams.PosX, drawRectParams.PosY, drawRectParams.Width, drawRectParams.Height, drawRectParams.OffsetX, drawRectParams.OffsetY);
+			case RendererCommandType::DRAW_SPRITE:
+				RenderCommandDrawSpriteParams drawSpriteParams = sigCommand.Param.DrawSpriteParams;
+				drawSpriteParams.Sprite->Draw(drawSpriteParams.PosX, drawSpriteParams.PosY);
 				break;
 			default:
 				break;

@@ -3,6 +3,7 @@
 #include "Input/Input.h"
 
 #include "Logic/Waves.h"
+#include "Logic/Door.h"
 
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
@@ -74,11 +75,12 @@ int main(int argc, char* args[])
 	LoadResources(images);
 
 	//Se lanza la hebra de renderizado
-	RendererThread* rendererThread = new RendererThread(); // TODO: NO HACER NEW PARA CREAR LA CLASE RENDERTRHEAD
-	rendererThread->Start();
+	RendererThread::Start(); 
 
 	//Inicialización ondas
 	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
+	Door::Init(images[ImageType::DOORS]);
+	Door* door = new Door();
 
 	//Creación de comandos iniciales
 	RenderCommand clearCommand;
@@ -91,24 +93,13 @@ int main(int argc, char* args[])
 	//Limpieza inicial de los buffers
 	for (int i = 0; i < NUM_BUFFERS; i++)
 	{
-		rendererThread->EnqueueCommand(clearCommand);
-		rendererThread->EnqueueCommand(presentCommand);
+		RendererThread::EnqueueCommand(clearCommand);
+		RendererThread::EnqueueCommand(presentCommand);
 	}
 
 	//Contención inicial. No empieza el bucle principal hasta que se limpien todos los buffers
-	while (rendererThread->GetPendingFrames() > 0)
+	while (RendererThread::GetPendingFrames() > 0)
 		;
-
-
-	RenderCommand drawRectCommand;
-	drawRectCommand.Type = RendererCommandType::DRAW_RECT;
-	drawRectCommand.Param.DrawRectParams.Image = images[ImageType::BANG];
-	drawRectCommand.Param.DrawRectParams.PosX = 50;
-	drawRectCommand.Param.DrawRectParams.PosY = 30;
-	drawRectCommand.Param.DrawRectParams.Width = drawRectCommand.Param.DrawRectParams.Image->GetWidth();
-	drawRectCommand.Param.DrawRectParams.Height = drawRectCommand.Param.DrawRectParams.Image->GetHeight();
-	drawRectCommand.Param.DrawRectParams.OffsetX =0;
-	drawRectCommand.Param.DrawRectParams.OffsetY = 0;
 
 	int tick = 0;
 
@@ -124,43 +115,43 @@ int main(int argc, char* args[])
 		time_start = clock::now();
 		lag += std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
 
-		Input::Tick(); 
+		Input::Tick();
 
-		 // update game logic as lag permits
+		// update game logic as lag permits
 		while (lag >= timestep) {
 			lag -= timestep;
 
-			if (Input::GetUserInput().Key_1)
-				cout << "Holita " << endl;
 			//Paso de simulación
+			door->Update(delta_time.count() / 100000000.0f);
 			//waves->Update();
 		//TODO:	cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
 		}
 
 		//Contención. Se para la hebra si el render va muy retrasado
-		while (rendererThread->GetPendingFrames() >= NUM_BUFFERS)
+		while (RendererThread::GetPendingFrames() >= NUM_BUFFERS)
 			;
 
+		door->Render();
 		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
 
 		//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
 		//rendererThread->EnqueueCommand(waves->GetRenderCommand());
 
-		rendererThread->EnqueueCommand(drawRectCommand);
-
-		rendererThread->EnqueueCommand(presentCommand);
+		RendererThread::EnqueueCommand(presentCommand);
 
 		//Delay
 		tick++;
 	}
 
-	rendererThread->Stop();
+	RendererThread::Stop();
+
+	delete door;
+	door = nullptr;
+
+	Door::Release();
 
 	//delete waves;
 	//waves = nullptr;
-
-	delete rendererThread;
-	rendererThread = nullptr;
 
 	for (int i = 0; i < ImageType::SIZE; i++)
 	{
