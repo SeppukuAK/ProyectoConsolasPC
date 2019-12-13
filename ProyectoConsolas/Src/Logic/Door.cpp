@@ -54,11 +54,13 @@ Door::Door(int x, int y) : _x(x), _y(y)
 	animTimer = 0.0f;
 
 	//Creación de los comandos
+	//Marco de la puerta
 	drawDoorFrameCommand.Type = RendererCommandType::DRAW_SPRITE;
 	drawDoorFrameCommand.Param.DrawSpriteParams.Sprite = doorFrameSprite;
 	drawDoorFrameCommand.Param.DrawSpriteParams.PosX = _x;
 	drawDoorFrameCommand.Param.DrawSpriteParams.PosY = _y;
 
+	//Puerta 
 	drawDoorCommand.Type = RendererCommandType::DRAW_SPRITE;
 	drawDoorCommand.Param.DrawSpriteParams.Sprite = doorSprites[frameIndex];
 	drawDoorCommand.Param.DrawSpriteParams.PosX = _x+32;

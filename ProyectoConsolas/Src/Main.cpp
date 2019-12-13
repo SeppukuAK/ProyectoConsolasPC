@@ -36,6 +36,7 @@ const int DOOR_ANIM_FRAMES = 4;
 //Dollar
 const int DOLLAR_WIDTH = 64;
 
+
 ////Waves
 ////const float ENERGY_WAVE = 31/ 32;
 //const int HEIGHT_WAVE = 5000;
@@ -160,7 +161,7 @@ int main(int argc, char* args[])
 			door->Update(deltaTime);
 
 			for (int i = 0; i < NUM_DOORS; i++)
-				dollars[i]->Update(dollarsState[i]);
+				dollars[i]->Update(dollarsState[i], deltaTime);
 
 			//waves->Update();
 

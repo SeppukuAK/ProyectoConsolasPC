@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Renderer/RendererThread.h"
+
 class Image;
 class Sprite;
 
@@ -9,13 +11,20 @@ class Dollar
 {
 
 private:
-
+	static const float ANIM_RATE;
 	static const int NUM_SPRITES;
+	static const int ANIM_FRAMES;
 
 	static Sprite** dollarSprites;
+	static Sprite** dollarAnimSprites;
 
 	int _x, _y;
+	int frameIndex;
+	float animTimer;
 	DollarState state;
+
+	RenderCommand drawDollarCommand;
+	RenderCommand drawDollarAnimCommand;
 
 public:
 	static void Init(Image* dollarImage);
@@ -23,7 +32,7 @@ public:
 
 	Dollar(int x, int y);
 
-	void Update(DollarState newState);
+	void Update(DollarState newState, float deltaTime);
 	void Render();
 };
 
