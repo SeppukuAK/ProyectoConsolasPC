@@ -25,6 +25,8 @@ const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 
 //Lógica
 
+//Door
+const int DOOR_ANIM_FRAMES = 4;
 ////Waves
 ////const float ENERGY_WAVE = 31/ 32;
 //const int HEIGHT_WAVE = 5000;
@@ -68,7 +70,7 @@ int main(int argc, char* args[])
 	srand(time(NULL));
 
 	//Inicialización
-	Platform::Init(); 
+	Platform::Init();
 	Renderer::Init(SCREEN_WIDTH, SCREEN_HEIGHT, NUM_BUFFERS);
 	Input::Init();
 
@@ -82,11 +84,11 @@ int main(int argc, char* args[])
 	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
 
 	//Puerta
-	Door::Init(images[ImageType::DOORS]);
-	Door* door = new Door();
+	Door::Init(images[ImageType::DOOR_FRAME],images[ImageType::DOORS],DOOR_ANIM_FRAMES);
+	Door* door = new Door(32,48);
 
 	//Se lanza la hebra de renderizado
-	RendererThread::Start(); 
+	RendererThread::Start();
 
 	//Creación de comandos iniciales
 	RenderCommand clearCommand;
@@ -132,7 +134,7 @@ int main(int argc, char* args[])
 			door->Update(deltaTime);
 			//waves->Update();
 
-			cout << Input::GetUserInput().HorizontalAxis << endl;
+			//cout << Input::GetUserInput().HorizontalAxis << endl;
 			//TODO:	cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
 		}
 
