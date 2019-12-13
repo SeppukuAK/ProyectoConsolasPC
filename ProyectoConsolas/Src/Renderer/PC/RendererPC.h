@@ -1,7 +1,9 @@
 #pragma once
-#include "../Utilities/Color.h"
-#include "../Image.h"
-#include <SDL.h> //Utiliza la librería SDL: permite la carga de pngs y el pintado de píxeles
+
+//Declaración adelantada para evitar inclusión adicional
+class SDL_Renderer;
+class Color;
+class Image;
 
 /*
 	Clase con métodos estáticos. Maneja el renderBuffer

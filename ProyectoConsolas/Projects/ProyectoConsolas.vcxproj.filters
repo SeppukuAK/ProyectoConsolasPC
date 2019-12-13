@@ -15,26 +15,8 @@
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{e8851753-b55e-4e0b-ac4d-1f93d54a3dc8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Platform">
-      <UniqueIdentifier>{7f72a8f7-666c-4dc2-af1f-b75d72ddc3f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Renderer">
-      <UniqueIdentifier>{337115d9-1280-465c-b67e-f4af8c865971}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Renderer\Utilities">
-      <UniqueIdentifier>{9849fb4c-8a8e-42c4-bfce-624c659bbccb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic">
-      <UniqueIdentifier>{8fb06269-c8ff-4b23-a591-296455350d7c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Logic">
       <UniqueIdentifier>{960ef772-d0f1-49bf-b1da-24bc06f1bbf5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Renderer\PC">
-      <UniqueIdentifier>{48a2f6f2-d55e-4346-b70f-9d15fc2a157f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Platform\PC">
-      <UniqueIdentifier>{7f5f29a9-4a14-4f07-b1b9-946c5eb3fffd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Platform\PC">
       <UniqueIdentifier>{93ccecfe-0716-490b-b8f0-3a3bf2b142f4}</UniqueIdentifier>
@@ -42,20 +24,35 @@
     <Filter Include="Source Files\Renderer\PC">
       <UniqueIdentifier>{b70d67dd-ca5f-4d36-a0b8-0f1dd9d3a5cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Utilities">
-      <UniqueIdentifier>{a2c4fd3b-c113-4944-989f-1c61591cbe36}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{25e6e750-4e10-4bfe-8ea2-d4f1fcf27856}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Input\PC">
       <UniqueIdentifier>{90880526-c642-4005-8e36-9288f1c4e43d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic">
+      <UniqueIdentifier>{8fb06269-c8ff-4b23-a591-296455350d7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Platform">
+      <UniqueIdentifier>{7f72a8f7-666c-4dc2-af1f-b75d72ddc3f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Platform\PC">
+      <UniqueIdentifier>{7f5f29a9-4a14-4f07-b1b9-946c5eb3fffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Renderer">
+      <UniqueIdentifier>{337115d9-1280-465c-b67e-f4af8c865971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Renderer\PC">
+      <UniqueIdentifier>{48a2f6f2-d55e-4346-b70f-9d15fc2a157f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\Input">
       <UniqueIdentifier>{656fc1db-5a74-4a93-aa69-1378145ce705}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Input\PC">
       <UniqueIdentifier>{2a924783-f201-4964-b1c3-91dba0206b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{a2c4fd3b-c113-4944-989f-1c61591cbe36}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -94,9 +91,6 @@
     <ClInclude Include="..\Src\Platform\Platform.h">
       <Filter>Header Files\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Renderer\Utilities\Color.h">
-      <Filter>Header Files\Renderer\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Renderer\PC\RendererPC.h">
       <Filter>Header Files\Renderer\PC</Filter>
     </ClInclude>
@@ -124,14 +118,17 @@
     <ClInclude Include="..\Src\Input\UserInput.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Utilities\InputObserver.h">
-      <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Logic\Door.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\Logic\Sprite.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Input\InputObserver.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Renderer\Color.h">
+      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

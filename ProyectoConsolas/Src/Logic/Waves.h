@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Renderer/Utilities/Color.h"
+#include "../Renderer/Color.h"
 #include "../Renderer/RendererThread.h"
 
 /*

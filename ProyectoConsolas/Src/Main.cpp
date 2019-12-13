@@ -7,14 +7,12 @@
 
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
-#include <stdio.h>		/* fopen */
 #include <iostream>		/* cout */		
 #include <chrono>		/* chrono */
 
+//Utilizado para el deltaTime
 using namespace std::chrono_literals;
-
-// we use a fixed timestep of 1 / (60 fps) = 16 milliseconds
-constexpr std::chrono::nanoseconds timestep(16ms);
+constexpr std::chrono::nanoseconds timestep(16ms);	// we use a fixed timestep of 1 / (60 fps) = 16 milliseconds
 
 using namespace std;
 
@@ -24,13 +22,15 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 360;						//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
 const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 
-//Waves
-//const float ENERGY_WAVE = 31/ 32;
-const int HEIGHT_WAVE = 5000;
+//Lógica
 
-//Tiempo minimo y maximo entre 1 gota y la siguiente
-const int MIN_FRAMES_BETWEEN_WAVES = 50;
-const int MAX_FRAMES_BETWEEN_WAVES = 150;
+////Waves
+////const float ENERGY_WAVE = 31/ 32;
+//const int HEIGHT_WAVE = 5000;
+//
+////Tiempo minimo y maximo entre 1 gota y la siguiente
+//const int MIN_FRAMES_BETWEEN_WAVES = 50;
+//const int MAX_FRAMES_BETWEEN_WAVES = 150;
 
 enum ImageType { DOOR_FRAME, DOORS, CLIENT, THIEF, DOLLARS, BANG, SIZE };
 
@@ -63,12 +63,12 @@ void LoadResources(Image** images)
 */
 int main(int argc, char* args[])
 {
+	//Inicializa la semilla de aleatoriedad random.
+	srand(time(NULL));
+
 	//Inicialización
 	Platform::Init(SCREEN_WIDTH, SCREEN_HEIGHT, NUM_BUFFERS);
 	Input::Init();
-
-	//Inicializa la semilla de aleatoriedad random.
-	srand(time(NULL));
 
 	//Carga de recursos. Asumen una resolución de juego de 640 x 360
 	Image* images[ImageType::SIZE];
@@ -76,11 +76,6 @@ int main(int argc, char* args[])
 
 	//Se lanza la hebra de renderizado
 	RendererThread::Start(); 
-
-	//Inicialización ondas
-	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
-	Door::Init(images[ImageType::DOORS]);
-	Door* door = new Door();
 
 	//Creación de comandos iniciales
 	RenderCommand clearCommand;
@@ -96,6 +91,16 @@ int main(int argc, char* args[])
 		RendererThread::EnqueueCommand(clearCommand);
 		RendererThread::EnqueueCommand(presentCommand);
 	}
+
+	//Inicialización lógica
+
+	//Ondas
+	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
+
+	//Puerta
+	Door::Init(images[ImageType::DOORS]);
+	Door* door = new Door();
+
 
 	//Contención inicial. No empieza el bucle principal hasta que se limpien todos los buffers
 	while (RendererThread::GetPendingFrames() > 0)

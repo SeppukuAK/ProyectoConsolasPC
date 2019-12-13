@@ -2,7 +2,7 @@
 #include <thread>
 #include <atomic> 
 #include "../Utilities/ConcurrentQueue.h"
-#include "Utilities/Color.h"
+#include "Color.h"
 
 class Sprite;
 

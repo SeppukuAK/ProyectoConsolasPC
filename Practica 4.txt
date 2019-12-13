@@ -167,6 +167,21 @@ gatillo:
 	//TODO: REVISAR LISTENER
 
 
+-----------CORRECCION DE LA PRACTICA----------------
+
+1 Funcionamiento
+El fuego va demasiado deprisa. No parece haber ""coherencia temporal"" entre un fotograma y el siguiente (o es difícil verla). Pasa también en PS4, aunque pongáis 30fps (FLIP_RATE a 1)
+GRAVE Dependiendo de la resolución, no todo se llena con barras. En 1280x720 se queda un espacio sin ellas.
+2 Estructura, abstracción y parámetros
+GRAVE ¿Por qué Fire tiene un Update y Bars no? Mantenéis la posición en el bucle principal y se la pasáis al Draw*() en lugar de que lo guarden las barras.
+GRAVE ¿Por qué las dimensiones de la pantalla se especifican en Platform en lugar de en Renderer? Pasa lo mismo con el esquema (pantalla completa o no, número de display buffers).
+Que PS4Renderer::Clear() llame a PutPixel() es un desastre para el rendimiento. En lo que se refiere a encapsulación tiene sentido, pero en este caso ocasiona un cuello de botella artificial, especialmente en modo tiled. Deberíais recorrer la memoria del display buffer directamente para no tener que tener que calcular continuamente la posición en memoria (y transformar el Color).
+GRAVE No deberíais enlazar con SDLtest.lib. Ese nombre ¿no os da la idea de que sirve para comprobar que SDL funciona? ¿Por qué lo necesitáis en vuestra práctica?
+3 Calidad del código
+firePalette debería ser const (y que para Fuego también lo fuera). BarColor también.
+4 Parte opcional
+Sin hacer.
+
 
 -------------11-12------------------
 
@@ -188,3 +203,21 @@ TENEMOS UN CONTADOR DE NUMEROS DE FRAMES A PINTAR PARA PINTAR EL ULTIMO ESTADO Y
 SI EL NUMERO DEL INDICE NO ES 0 SE PINTA Y SE RESTAURA
 
 LA ENTIDAD TIENE UN METODO RENDER
+
+
+
+------------------
+
+Algunos TODO:
+-PlatformPC.h.
+	-Utilizamos vector.
+	-GetWindow(). Borrar
+	-DECLARACION SDL
+-PlatformPC.cpp.
+	-BigEndian. Crear metodo
+
+-En todo. 
+-LA PUTA DECLARACION ADELANTADA QUE SE CARGA TODO SDL
+-Parametros const & ????????
+-Atributos que se usan todo el rato declarados en la clase?????????
+-CERRAR LA VENTANA CON LA 'X' no funciona

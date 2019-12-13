@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Input\Input.h" />
+    <ClInclude Include="..\Src\Input\InputObserver.h" />
     <ClInclude Include="..\Src\Input\PC\InputPC.h" />
     <ClInclude Include="..\Src\Input\UserInput.h" />
     <ClInclude Include="..\Src\Logic\Door.h" />
@@ -86,13 +87,12 @@
     <ClInclude Include="..\Src\Logic\Waves.h" />
     <ClInclude Include="..\Src\Platform\PC\PlatformPC.h" />
     <ClInclude Include="..\Src\Platform\Platform.h" />
+    <ClInclude Include="..\Src\Renderer\Color.h" />
     <ClInclude Include="..\Src\Renderer\Image.h" />
     <ClInclude Include="..\Src\Renderer\PC\RendererPC.h" />
     <ClInclude Include="..\Src\Renderer\Renderer.h" />
     <ClInclude Include="..\Src\Renderer\RendererThread.h" />
-    <ClInclude Include="..\Src\Renderer\Utilities\Color.h" />
     <ClInclude Include="..\Src\Utilities\ConcurrentQueue.h" />
-    <ClInclude Include="..\Src\Utilities\InputObserver.h" />
   </ItemGroup>
   <Import Condition="'$(ConfigurationType)' == 'Makefile' and Exists('$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets')" Project="$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

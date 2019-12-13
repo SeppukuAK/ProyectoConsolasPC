@@ -8,6 +8,7 @@
 #include <iostream>
 #include "../../Platform/Platform.h"
 #include <stdlib.h>     /* abs */
+#include <SDL.h>		/* SDL. Pintado */
 
 //TODO: Estos const tienen que estar aquí??
 
@@ -292,6 +293,12 @@ void InputPC::Tick()
 
 		}
 	}
+}
+
+void InputPC::AddEvent(SDL_Event e)
+{
+	eventQueue.push(e);
+
 }
 
 #endif

@@ -2,13 +2,20 @@
 #if PLATFORM_PC
 
 #include "PlatformPC.h"
-#include <stdio.h>		/* fopen */
 #include <iostream>		/* cout */
+#include <stdio.h>		/* fopen */
+#include <SDL.h>		/* SDL. Pintado */
+#include "../../Input/InputObserver.h"
+#include "../../Renderer/Image.h"
+#include "../../Renderer/Color.h"
+
+using namespace std;
 
 //Inicialización de atributos estáticos
+const string PlatformPC::mediaPath = "../Media/";	//Se accede desde Projects
+
 SDL_Window* PlatformPC::window = NULL;
-std::string PlatformPC::mediaPath = "../Media/";//Se accede desde Projects
-std::vector<InputObserver*> PlatformPC::observers = std::vector<InputObserver*>();
+vector<InputObserver*> PlatformPC::observers = vector<InputObserver*>();
 
 void PlatformPC::Init(int screenWidth, int screenHeight, int numBuffers)
 {
@@ -16,7 +23,7 @@ void PlatformPC::Init(int screenWidth, int screenHeight, int numBuffers)
 	window = NULL;
 
 	//Inicialización de SDL y GameController
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)	
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 
 	//Si no ha habido error
@@ -51,17 +58,21 @@ bool PlatformPC::Tick()
 	SDL_Event e;		//Manejador de eventos
 	bool quit = false;
 
-	//Procesa los eventos de la cola
+	/*
+		Procesa los eventos de la cola:
+		-Se cierra la ventana si se da a la 'X' o a la tecla escape o el ratón.
+		-Cualquier otro evento informa a los observers
+	*/
 	while (SDL_PollEvent(&e) != 0)
 	{
-		switch (e.type) {
-		//Se cierra la ventana si se da a la 'X' o a la tecla escape o el ratón
+		switch (e.type)
+		{
 		case SDL_QUIT:
 		case SDL_MOUSEBUTTONDOWN:
 			quit = true;
 			break;
 		case SDL_KEYDOWN:
-			if(e.key.keysym.sym == SDLK_ESCAPE)		
+			if (e.key.keysym.sym == SDLK_ESCAPE)
 				quit = true;
 			else
 				NotifyObservers(e);
@@ -76,12 +87,12 @@ bool PlatformPC::Tick()
 	return !quit;
 }
 
-Image* PlatformPC::LoadImage(std::string path)
+Image* PlatformPC::LoadImage(string path)
 {
+	Image* image = nullptr;
 	Color* arrayColor = nullptr;
 	int width = 0;
 	int height = 0;
-	Image* image = nullptr;
 
 	//Inicialización fichero
 	FILE* f = NULL;
@@ -101,10 +112,11 @@ Image* PlatformPC::LoadImage(std::string path)
 		fread(buffer, sizeof(int), 1, f);
 		height = (buffer[3] << 0) | (buffer[2] << 8) | (buffer[1] << 16) | (buffer[0] << 24);
 
-		arrayColor = new Color[width * height];	//Se asume que el fichero tiene la misma resolución que la ventana
+		//Lectura de la imagen
+		int imageSize = width * height;
+		arrayColor = new Color[imageSize];
 
-		// fucntion used to read the contents of file 
-		fread(arrayColor, sizeof(Color), width * height, f);
+		fread(arrayColor, sizeof(Color), imageSize, f);
 
 		fclose(f);
 
@@ -115,18 +127,18 @@ Image* PlatformPC::LoadImage(std::string path)
 		printf("Error al cargar la imagen");
 	}
 
-
 	return image;
 }
 
-
-void PlatformPC::RegisterObserver(InputObserver* observer) {
+void PlatformPC::RegisterObserver(InputObserver* observer)
+{
 	observers.push_back(observer);
 }
 
-void PlatformPC::RemoveObserver(InputObserver* observer) {
+void PlatformPC::RemoveObserver(InputObserver* observer)
+{
 	// find the observer
-	auto iterator = std::find(observers.begin(), observers.end(), observer);
+	auto iterator = find(observers.begin(), observers.end(), observer);
 
 	if (iterator != observers.end()) { // observer found
 		observers.erase(iterator); // remove the observer
@@ -138,7 +150,7 @@ void PlatformPC::NotifyObservers(SDL_Event e)
 	bool eventConsumed = false;
 	int i = 0;
 
-	// notify all observers
+	//Notifica a todos los observers el evento hasta que uno lo consuma
 	while (!eventConsumed && i < observers.size())
 	{
 		eventConsumed = observers[i]->HandleEvent(e);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utilities/Color.h"
+class Color;
 
 class Image
 {
@@ -12,8 +12,8 @@ public:
 	Image(Color* colorArray, int width, int height);
 	~Image();
 
-	Color* GetColorArray() { return _colorArray; }
-	int GetWidth() { return _width; }
-	int GetHeight() { return _height; }
+	inline Color* GetColorArray() const { return _colorArray; }
+	inline int GetWidth() const { return _width; }
+	inline int GetHeight() const { return _height; }
 };
 

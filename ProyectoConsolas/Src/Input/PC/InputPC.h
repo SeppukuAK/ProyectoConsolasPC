@@ -1,9 +1,13 @@
 #pragma once
-#include <SDL.h> //Utiliza la librería SDL
 #include "../UserInput.h"
-#include "../../Utilities/InputObserver.h"
+#include "../InputObserver.h"
 #include <iostream>
 #include <queue>
+
+//Declaración adelantada para evitar inclusión adicional
+struct _SDL_GameController;
+typedef struct _SDL_GameController SDL_GameController; 
+union SDL_Event;
 
 /*
 	Clase con métodos estáticos.
@@ -42,10 +46,8 @@ public:
 	*/
 	static void Tick();
 
-	static void AddEvent(SDL_Event e)
-	{
-		eventQueue.push(e);
-	}
+	static void AddEvent(SDL_Event e);
+
 
 	/*
 		Devuelve la informacion de una entrada de input

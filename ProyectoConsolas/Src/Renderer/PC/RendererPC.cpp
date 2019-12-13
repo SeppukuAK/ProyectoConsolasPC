@@ -4,6 +4,9 @@
 #include "RendererPC.h"
 #include <stdio.h> 
 #include "../../Platform/Platform.h"
+#include <SDL.h>		/* SDL. Pintado */
+#include "../Color.h"
+#include "../Image.h"
 
 //Inicialización de atributos estáticos
 int RendererPC::numBuffers = 0;
