@@ -1,4 +1,5 @@
 #include "Platform/Platform.h"
+#include "Renderer/Renderer.h"
 #include "Renderer/RendererThread.h"
 #include "Input/Input.h"
 
@@ -67,12 +68,22 @@ int main(int argc, char* args[])
 	srand(time(NULL));
 
 	//Inicialización
-	Platform::Init(SCREEN_WIDTH, SCREEN_HEIGHT, NUM_BUFFERS);
+	Platform::Init(); 
+	Renderer::Init(SCREEN_WIDTH, SCREEN_HEIGHT, NUM_BUFFERS);
 	Input::Init();
 
 	//Carga de recursos. Asumen una resolución de juego de 640 x 360
 	Image* images[ImageType::SIZE];
 	LoadResources(images);
+
+	//Inicialización lógica
+
+	//Ondas
+	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
+
+	//Puerta
+	Door::Init(images[ImageType::DOORS]);
+	Door* door = new Door();
 
 	//Se lanza la hebra de renderizado
 	RendererThread::Start(); 
@@ -91,16 +102,6 @@ int main(int argc, char* args[])
 		RendererThread::EnqueueCommand(clearCommand);
 		RendererThread::EnqueueCommand(presentCommand);
 	}
-
-	//Inicialización lógica
-
-	//Ondas
-	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
-
-	//Puerta
-	Door::Init(images[ImageType::DOORS]);
-	Door* door = new Door();
-
 
 	//Contención inicial. No empieza el bucle principal hasta que se limpien todos los buffers
 	while (RendererThread::GetPendingFrames() > 0)
@@ -129,7 +130,7 @@ int main(int argc, char* args[])
 			//Paso de simulación
 			door->Update(delta_time.count() / 100000000.0f);
 			//waves->Update();
-		//TODO:	cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
+			//TODO:	cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
 		}
 
 		//Contención. Se para la hebra si el render va muy retrasado
@@ -165,6 +166,7 @@ int main(int argc, char* args[])
 	}
 
 	Input::Release();
+	Renderer::Release();
 	Platform::Release();
 
 	return 0;

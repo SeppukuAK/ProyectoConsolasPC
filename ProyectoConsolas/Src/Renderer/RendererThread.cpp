@@ -15,8 +15,6 @@ void RendererThread::Start()
 	if (t != nullptr)
 		Stop();
 
-	Renderer::Init();
-
 	//Recibe la funcion a ejecutar
 	t = new thread(&RendererThread::RenderLoop);
 }
@@ -30,8 +28,6 @@ void RendererThread::Stop() {
 
 		delete t;
 		t = nullptr;
-
-		Renderer::Release();
 	}
 }
 

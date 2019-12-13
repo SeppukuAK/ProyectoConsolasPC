@@ -2,22 +2,34 @@
 #if PLATFORM_PC
 
 #include "RendererPC.h"
-#include <stdio.h> 
-#include "../../Platform/Platform.h"
 #include <SDL.h>		/* SDL. Pintado */
+#include <stdio.h> 
 #include "../Color.h"
 #include "../Image.h"
 
 //Inicialización de atributos estáticos
-int RendererPC::numBuffers = 0;
-int RendererPC::width = 0;
-int RendererPC::height = 0;
+int RendererPC::_screenWidth = 0;
+int RendererPC::_screenHeight = 0;
+int RendererPC::_numBuffers = 0;
+SDL_Window* RendererPC::window = NULL;
 SDL_Renderer* RendererPC::renderer = NULL;
 
-void RendererPC::Init()
+void RendererPC::Init(int screenWidth, int screenHeight, int numBuffers)
 {
-	//Obtiene referencia a la ventana
-	SDL_Window* window = Platform::GetWindow();
+	_screenWidth = screenWidth;
+	_screenHeight = screenHeight;
+	_numBuffers = numBuffers;
+
+	//Crea la ventana en función del modo establecido. Fullscreen 2 buffer. Windowed 1 buffer.
+	if (_numBuffers == 2)
+		window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _screenWidth, screenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+	else if (_numBuffers == 1)
+		window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+	else
+		printf("Error: En PC solo se dispone de 1 o 2 RenderBuffer");
+
+	if (window == NULL)
+		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 
 	//Crea el renderer para la ventana
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -26,22 +38,10 @@ void RendererPC::Init()
 	if (renderer == NULL)
 		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
 
-	//Si no ha habido error
+	//Si no ha habido error. Inicializa el color del render
 	else
-	{
-		//Inicializa el color del render
 		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
 
-		//Obtenemos el tamaño de la ventana
-		SDL_GetWindowSize(window, &width, &height);
-
-		//Si es fullscreen tiene 2 buffers
-		if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN)
-			numBuffers = 2;
-		else
-			numBuffers = 1;
-
-	}
 }
 
 void RendererPC::Release()
@@ -49,6 +49,10 @@ void RendererPC::Release()
 	//Destruye el renderer
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
+
+	//Destrucción de la ventana
+	SDL_DestroyWindow(window);
+	window = NULL;
 }
 
 void RendererPC::Clear(Color color)
@@ -82,7 +86,6 @@ void RendererPC::DrawRect(Image* image, int posX, int posY, int sx1, int sy1, in
 			int auxJ = j - sx1;
 			int auxI = i - sy1;
 			PutPixel(posX + auxJ, posY + auxI, colorArray[i * imageWidth + j]);
-
 		}
 	}
 

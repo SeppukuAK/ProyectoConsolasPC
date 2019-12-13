@@ -1,6 +1,7 @@
 #pragma once
 
 //Declaración adelantada para evitar inclusión adicional
+class SDL_Window;
 class SDL_Renderer;
 class Color;
 class Image;
@@ -11,20 +12,22 @@ class Image;
 class RendererPC
 {
 private:
-	static int numBuffers;			//Número de frame buffers del Renderer
-	static int width;				//Ancho de la ventana
-	static int height;				//Alto de la ventana
+	static int _screenWidth;		//Ancho de la ventana
+	static int _screenHeight;		//Alto de la ventana
+	static int _numBuffers;			//Número de frame buffers del Renderer
+
+	static SDL_Window* window;		//Referencia a la ventana de SDL
 	static SDL_Renderer* renderer;	//Referencia al renderer de SDL
 
 public:
 
 	/*
-		Crea el renderer para la ventana y inicializa atributos
+		 Crea la ventana con el modo y las dimensiones pasadas y el renderer
 	*/
-	static void Init();
+	static void Init(int screenWidth, int screenHeight, int numBuffers);
 
 	/*
-		Destruye el renderer
+		Destruye la ventana y el renderer
 	*/
 	static void Release();
 
@@ -50,11 +53,9 @@ public:
 	static void Present();
 
 	//Getters
-
-	static int GetWidth() { return width; };
-	static int GetHeight() { return height; };
-
-	static int GetNumBuffers() { return numBuffers; };
+	inline static int GetWidth() { return _screenWidth; };
+	inline static int GetHeight() { return _screenHeight; };
+	inline static int GetNumBuffers() { return _numBuffers; };
 };
 
 

@@ -3,11 +3,7 @@
 #include <string>
 #include <vector>		//TODO: Vector, habrá problemas?
 
-//TODO: CARGARSE ESTO
-
-
 //Declaración adelantada para evitar inclusión adicional
-class SDL_Window;
 class InputObserver;
 class Image;
 union SDL_Event;
@@ -21,18 +17,17 @@ class PlatformPC
 private:
 	static const std::string mediaPath;					//Ruta donde se encuentran los recursos
 
-	static SDL_Window* window;							//Referencia a la ventana de SDL
 	static std::vector<InputObserver*> observers;		//Observadores del input
 
 public:
 
 	/*
-		Inicializa SDL y crea la ventana con el modo y las dimensiones pasadas
+		Inicializa SDL 
 	*/
-	static void Init(int screenWidth, int screenHeight, int numBuffers);
+	static void Init();
 
 	/*
-		Destruye la ventana y cierra SDL
+		Cierra SDL
 	*/
 	static void Release();
 
@@ -66,9 +61,6 @@ public:
 		Devuelve la ruta donde se encuentran los recursos
 	*/
 	static std::string GetMediaPath() { return mediaPath; };
-
-	//TODO: BORRAR
-	static SDL_Window* GetWindow() { return window; };
 
 private:
 
