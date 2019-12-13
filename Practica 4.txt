@@ -7,16 +7,7 @@ En PS4 como se da la vuelta? con desplazamiento de bits y con ands
 
 	c = (c>> 24) | c >> 16 & 0xFF00(8 bits bajos)
 
-	j(int32_t), ANCHO * ALTO, f)
-	asdfbasdf[0] = 0x0000FFFF
-
-Necesitamos añadir en renderer un metodo que reciba una imagen, un rectangulo y una pos x,y
-
 ------------------------------------12 - 2-----------------------------------------------
-
-Habrá que hacer la parte de input
-
-Ampliar el renderer para dibujado de un cuadrado de imagen
 
 Input:
 
@@ -101,32 +92,7 @@ El proceso es:
 		-En neiborhood. Mando en pantalla o mando host controller. Hay que marcar host controller antes de hacer el view. Hay que hacerlo con el fisico.
 
 
-INPUT.
--INIT
--RELEASE
--TICK
--GETUSERINPUT
-
-Tambien hay que programar la entrada en SDL.
--Tiene que funcionar con teclado y mando.
-
 SDL:
--Ejes. Los ejes de 0 y 1 son izquierda derecha y arriba abajo del jostick izquierdo.
-	-Los gatillos analogicos se mapean a los ejes 2 y 5 en mandos de xbox y 3 y 4 en caso de los mandos de PS4.
--En SDL ya detectamos los eventos en Platform TICK. Entonces los esta consumiendo platform.
-Hay que hacer un sistema de listener. El platform proporciona la facilidad de que otros se registren para recibir eventos. Hay que ir pasando los eventos hasta que uno lo consuma. Usar orientación .
-PATRON OBSERVER.EN SDL
-
-
-dentro de input hacemos una clase que implementa la interfaz que se registra y que llama a un metodo estatico
-
-
-tio estoy hasta los cojones te voy a seguir a casa y te voy a quemar entero.
-
-En esta practica se necesita
-joystick izquierdo
--2 triggers analogicos
--2 botones. Metemos x y o tambien
 
 Tenemos 2 gatillos en el mando. No es una metralleta. Para que deje de ser disparo los 2 gatillos tienen que estar sueltos. Hay que convertirlos de analogico a digital.
 
@@ -160,12 +126,6 @@ gatillo:
 
 	https://medium.com/@gayashanbc/explore-the-observer-design-pattern-with-c-8592459b0486
 
-	TODO: LA CLASE OBSERVED TIENE QUE IR EN UNA CLASE APARTE DE PLATFORM O VA YA IMPLEMENTADO DENTRO DE PLATFORM? TODOS LOS METODOS DEBERIAN SER ESTATICOS?
-
-	//TODO: SDL_INIT_GAMECONTROLLER????????
-	//TODO: JOYSTICK DEADZONE DONDE VA
-	//TODO: REVISAR LISTENER
-
 
 -----------CORRECCION DE LA PRACTICA----------------
 
@@ -174,7 +134,6 @@ El fuego va demasiado deprisa. No parece haber ""coherencia temporal"" entre un 
 GRAVE Dependiendo de la resolución, no todo se llena con barras. En 1280x720 se queda un espacio sin ellas.
 2 Estructura, abstracción y parámetros
 GRAVE ¿Por qué Fire tiene un Update y Bars no? Mantenéis la posición en el bucle principal y se la pasáis al Draw*() en lugar de que lo guarden las barras.
-GRAVE ¿Por qué las dimensiones de la pantalla se especifican en Platform en lugar de en Renderer? Pasa lo mismo con el esquema (pantalla completa o no, número de display buffers).
 Que PS4Renderer::Clear() llame a PutPixel() es un desastre para el rendimiento. En lo que se refiere a encapsulación tiene sentido, pero en este caso ocasiona un cuello de botella artificial, especialmente en modo tiled. Deberíais recorrer la memoria del display buffer directamente para no tener que tener que calcular continuamente la posición en memoria (y transformar el Color).
 GRAVE No deberíais enlazar con SDLtest.lib. Ese nombre ¿no os da la idea de que sirve para comprobar que SDL funciona? ¿Por qué lo necesitáis en vuestra práctica?
 3 Calidad del código
@@ -194,9 +153,6 @@ NUNCA METER CODIGO EN EL .H
 -USAR CONST PARA PROTEGERSE DE LOS MALOS USOS.
 -USAR ASSERT.
 
--INICIALIZACION DE LA VENTANA ES EN EL RENDERER NO EN EL PLATFORM. (PS4)
-
-
 COHERENCIA TEMPORAL -> RECOMIENDA QUE LA IMPLEMENTACION LA METAMOS EN EL "SISTEMA DE ENTIDAD" SI TNEMOS PUERTA, CADA ENTIDAD RECUERDE CUANDO FUE LA ULTIMA VEZ QUE CAMBIO SU ESTADO
 "OYE ABRETE" MARCA EL INSTANTE, COMO LA VERSION PINTADA ESTA SUCIA Y TENGO QUE VOLVER A ...
 TENEMOS UN CONTADOR DE NUMEROS DE FRAMES A PINTAR PARA PINTAR EL ULTIMO ESTADO Y AL MODIFICAR EL ESTADO "EMPIEZA A ABRIRTE" O LO QUE SEA, EL CONTADOR SE PONGA EN DONDE TOQUE
@@ -204,16 +160,17 @@ SI EL NUMERO DEL INDICE NO ES 0 SE PINTA Y SE RESTAURA
 
 LA ENTIDAD TIENE UN METODO RENDER
 
-
-
 ------------------
 
 Algunos TODO:
 -PlatformPC.h.
 	-Utilizamos vector.
-	-GetWindow(). Borrar
 -PlatformPC.cpp.
 	-BigEndian. Crear metodo
+
+-Input.h.
+	-Init.Texture filtering
+	-Observer. Es putero?????
 
 En todo: 
 -Parametros const & ????????
@@ -221,3 +178,4 @@ En todo:
 -CERRAR LA VENTANA CON LA 'X' no funcionaç
 -ctrl + k + d
 -no se donde va rect.h
+-RendererThread. Me ha dado perezota

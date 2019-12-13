@@ -6,6 +6,7 @@
 #include <stdio.h> 
 #include "../Color.h"
 #include "../Image.h"
+#include "../../Utilities/Rect.h"
 
 //Inicialización de atributos estáticos
 int RendererPC::_screenWidth = 0;
@@ -73,19 +74,17 @@ void RendererPC::PutPixel(int x, int y, Color color)
 	SDL_RenderDrawPoint(renderer, x, y);
 }
 
-void RendererPC::DrawRect(Image* image, int posX, int posY, int sx1, int sy1, int sx2, int sy2)
+void RendererPC::DrawRect(Image* image, int posX, int posY, Rect sRect)
 {
 	int imageWidth = image->GetWidth();
 
 	Color* colorArray = image->GetColorArray();
 
-	for (int i = sy1; i < sy2; i++)
+	for (int i = 0; i < sRect.Height; i++)
 	{
-		for (int j = sx1; j < sx2; j++)
+		for (int j = 0; j < sRect.Width; j++)
 		{
-			int auxJ = j - sx1;
-			int auxI = i - sy1;
-			PutPixel(posX + auxJ, posY + auxI, colorArray[i * imageWidth + j]);
+			PutPixel(posX + j, posY + i, colorArray[(i + sRect.Y) * imageWidth + (j + sRect.X)]);
 		}
 	}
 

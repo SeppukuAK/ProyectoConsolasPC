@@ -92,7 +92,9 @@
     <ClInclude Include="..\Src\Renderer\PC\RendererPC.h" />
     <ClInclude Include="..\Src\Renderer\Renderer.h" />
     <ClInclude Include="..\Src\Renderer\RendererThread.h" />
+    <ClInclude Include="..\Src\Utilities\Clamp.h" />
     <ClInclude Include="..\Src\Utilities\ConcurrentQueue.h" />
+    <ClInclude Include="..\Src\Utilities\Rect.h" />
   </ItemGroup>
   <Import Condition="'$(ConfigurationType)' == 'Makefile' and Exists('$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets')" Project="$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

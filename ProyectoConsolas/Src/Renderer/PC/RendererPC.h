@@ -5,6 +5,7 @@ class SDL_Window;
 class SDL_Renderer;
 class Color;
 class Image;
+class Rect;
 
 /*
 	Clase con métodos estáticos. Maneja el renderBuffer
@@ -45,7 +46,7 @@ public:
 	/*
 		Pinta una seccion de una imagen en la posición especificada
 	*/
-	static void DrawRect(Image* image, int posX, int posY, int sx1, int sy1, int sx2, int sy2);
+	static void DrawRect(Image* image, int posX, int posY, Rect sRect);
 
 	/*
 		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.

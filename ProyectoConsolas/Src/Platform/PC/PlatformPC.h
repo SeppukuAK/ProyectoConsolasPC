@@ -11,6 +11,7 @@ union SDL_Event;
 /*
 	Clase con métodos estáticos. Inicializa atributos de la plataforma.
 	Gestiona la ventana. Detecta cerrar la ventana.
+	Proporciona facilidades para que otros se registren para recibir eventos. Observer
 */
 class PlatformPC
 {

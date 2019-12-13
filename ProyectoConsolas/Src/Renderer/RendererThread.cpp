@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include <iostream>		
 #include "../Logic/Sprite.h"
+#include "../Utilities/Clamp.h"
 
 using namespace std;
 
@@ -107,14 +108,3 @@ void RendererThread::DrawRain(Color* background, int* heightDiffs, bool forcePai
 	}
 
 }
-
-int RendererThread::Clamp(int min, int max, int value)
-{
-	if (value < min)
-		return min;
-	else if (value > max)
-		return max;
-	else
-		return value;
-}
-

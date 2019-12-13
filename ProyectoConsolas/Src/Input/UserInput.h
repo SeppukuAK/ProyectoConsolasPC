@@ -22,9 +22,10 @@ public:
 	//joystick izquierdo
 	//Va desde -1.0(izq) a 1.0(der) 
 	//Zonas muertas: (-0.8 a -0.2) y (0.2 a 0.8)
-	float LeftJoystickHor;
+	float HorizontalAxis;
+	float VerticalAxis;
 
 	//Constructora
-	UserInput() : Key_1(false), Key_2(false), Key_3(false), Key_O(false), Key_P(false), Cross(false), Square(false), Triangle(false), Circle(false), L1(false), R1(false), L2(-1.0), R2(-1.0), LeftJoystickHor(0) {}
+	UserInput() : Key_1(false), Key_2(false), Key_3(false), Key_O(false), Key_P(false), Cross(false), Square(false), Triangle(false), Circle(false), L1(false), R1(false), L2(-1.0), R2(-1.0), HorizontalAxis(0), VerticalAxis(0) {}
 
 };

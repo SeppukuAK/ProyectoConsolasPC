@@ -3,13 +3,13 @@
 #include "Renderer/RendererThread.h"
 #include "Input/Input.h"
 
-#include "Logic/Waves.h"
+//#include "Logic/Waves.h"
 #include "Logic/Door.h"
 
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
-#include <iostream>		/* cout */		
 #include <chrono>		/* chrono */
+#include <iostream>		/* cout */		
 
 //Utilizado para el deltaTime
 using namespace std::chrono_literals;
@@ -120,6 +120,7 @@ int main(int argc, char* args[])
 		auto delta_time = clock::now() - time_start;
 		time_start = clock::now();
 		lag += std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
+		float deltaTime = delta_time.count() / 100000000.0f;
 
 		Input::Tick();
 
@@ -128,8 +129,10 @@ int main(int argc, char* args[])
 			lag -= timestep;
 
 			//Paso de simulación
-			door->Update(delta_time.count() / 100000000.0f);
+			door->Update(deltaTime);
 			//waves->Update();
+
+			cout << Input::GetUserInput().HorizontalAxis << endl;
 			//TODO:	cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
 		}
 

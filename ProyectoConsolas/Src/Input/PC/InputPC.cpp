@@ -1,5 +1,4 @@
 
-
 //Se envuelve todo para evitar que se compile si no estamos en la plataforma
 #if PLATFORM_PC
 
@@ -9,20 +8,20 @@
 #include "../../Platform/Platform.h"
 #include <stdlib.h>     /* abs */
 #include <SDL.h>		/* SDL. Pintado */
+#include "../../Utilities/Clamp.h"
 
 //TODO: Estos const tienen que estar aquí??
 
-//-32768 and 32767
-const float JOYSTICK_MAX_VALUE = 30000;
-const float JOYSTICK_DEAD_ZONE = 8000; //TODO: ESTE ES EL DEADZONE PARA LOS STICKS, CUAL ES EL DEADZONE PARA LOS TRIGGERS?
-
-const float TRIGGER_MAX_VALUE = 32767;
-const float TRIGGER_DEAD_ZONE = 5000;
-
-
 //Inicialización de atributos estáticos
+//-32768 and 32767
+const int InputPC::JOYSTICK_MAX_VALUE = 30000;
+const int InputPC::JOYSTICK_DEAD_ZONE = 8000; //TODO: ESTE ES EL DEADZONE PARA LOS STICKS, CUAL ES EL DEADZONE PARA LOS TRIGGERS?
+
+const int InputPC::TRIGGER_MAX_VALUE = 32767;
+const int InputPC::TRIGGER_DEAD_ZONE = 5000;
+
 SDL_GameController* InputPC::gameController = NULL;
-InputPC::Observer InputPC::observer;
+InputPC::Observer InputPC::observer = InputPC::Observer();
 std::queue<SDL_Event> InputPC::eventQueue = std::queue<SDL_Event>();
 UserInput InputPC::userInput = UserInput();
 
@@ -49,7 +48,6 @@ bool InputPC::Observer::HandleEvent(SDL_Event e)
 	case SDL_CONTROLLERBUTTONUP:
 		switch (e.cbutton.button)
 		{
-			//BOTONES
 		case SDL_CONTROLLER_BUTTON_A:
 		case SDL_CONTROLLER_BUTTON_B:
 		case SDL_CONTROLLER_BUTTON_X:
@@ -67,6 +65,7 @@ bool InputPC::Observer::HandleEvent(SDL_Event e)
 			switch (e.caxis.axis)
 			{
 			case SDL_CONTROLLER_AXIS_LEFTX:
+			case SDL_CONTROLLER_AXIS_LEFTY:
 			case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
 			case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
 				eventConsumed = true;
@@ -85,6 +84,7 @@ bool InputPC::Observer::HandleEvent(SDL_Event e)
 
 void InputPC::Init()
 {
+	//TODO: Que hacemos con esto?
 	////Set texture filtering to linear
 	//if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
 	//{
@@ -92,7 +92,7 @@ void InputPC::Init()
 	//}
 
 	//Comprobamos si hay joysticks conectados
-	if (SDL_NumJoysticks() < 1)		//TODO: ESTO ES ASI CON GAMECONTROLLER?
+	if (SDL_NumJoysticks() < 1)
 	{
 		printf("Warning: No joysticks connected!\n");
 	}
@@ -106,6 +106,7 @@ void InputPC::Init()
 		}
 	}
 
+	//La clase observa los eventos
 	PlatformPC::RegisterObserver(&observer);
 }
 
@@ -120,7 +121,6 @@ void InputPC::Release()
 
 void InputPC::Tick()
 {
-
 	//Procesa los eventos de la cola
 	while (!eventQueue.empty())
 	{
@@ -174,7 +174,6 @@ void InputPC::Tick()
 		case SDL_CONTROLLERBUTTONDOWN:
 			switch (e.cbutton.button)
 			{
-				//BOTONES
 			case SDL_CONTROLLER_BUTTON_A:
 				userInput.Cross = true;
 				break;
@@ -199,7 +198,6 @@ void InputPC::Tick()
 		case SDL_CONTROLLERBUTTONUP:
 			switch (e.cbutton.button)
 			{
-				//BOTONES
 			case SDL_CONTROLLER_BUTTON_A:
 				userInput.Cross = false;
 				break;
@@ -224,39 +222,32 @@ void InputPC::Tick()
 			//Eventos que utilizan ejes ( TRIGGERS Y STICKERS ) 
 		case SDL_CONTROLLERAXISMOTION:
 		{
-			//Detecto si estoy usando el mando 0
+			//Mando 0
 			if (e.caxis.which == 0)
 			{
 				switch (e.caxis.axis)
 				{
-					//JOYSTICK IZQUIERDO
-
-					//X axis motion LEFT AND RIGHT
 				case SDL_CONTROLLER_AXIS_LEFTX:
-				{
 					//Aplicación de deadzone
 					if (abs(e.caxis.value) < JOYSTICK_DEAD_ZONE)
-						userInput.LeftJoystickHor = 0;
+						userInput.HorizontalAxis = 0;
 					else
-					{
-						userInput.LeftJoystickHor = e.caxis.value / JOYSTICK_MAX_VALUE;
-
-						//Clamp a [-1,+1]
-						if (userInput.LeftJoystickHor < -1)
-							userInput.LeftJoystickHor = -1;
-						else if (userInput.LeftJoystickHor > 1)
-							userInput.LeftJoystickHor = 1;
-					}
+						userInput.HorizontalAxis = Clamp(-1.0f, 1.0f, (float)e.caxis.value / JOYSTICK_MAX_VALUE);
 
 					break;
-				}
-				//TODO: SDL_CONTROLLERAXXISLEFTY
+				case SDL_CONTROLLER_AXIS_LEFTY:
+					//Aplicación de deadzone
+					if (abs(e.caxis.value) < JOYSTICK_DEAD_ZONE)
+						userInput.VerticalAxis = 0;
+					else
+						userInput.VerticalAxis = Clamp(-1.0f, 1.0f, (float)e.caxis.value / JOYSTICK_MAX_VALUE);
+
+					break;
+
 
 				//GATILLOS
-
 				//Los gatillos analogicos se mapean a los ejes 2 y 5 en mandos de xbox (y 3 y 4 en caso de los mandos de PS4.) ????
 				//TODO: No es una metralleta. Para que deje de ser disparo los 2 gatillos tienen que estar sueltos. Hay que convertirlos de analogico a digital.
-				//TODO: CREO QUE ESTA MAL
 				case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
 
 					//Aplicación de deadzone
@@ -266,7 +257,7 @@ void InputPC::Tick()
 					{
 						//(0-30000) --> (0-60000) --> [-1,+1]
 						//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
-						userInput.L2 = (2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
+						userInput.L2 = (float)(2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
 					}
 
 					break;
@@ -279,7 +270,7 @@ void InputPC::Tick()
 					{
 						//(0-30000) --> (0-60000) --> [-1,+1]
 						//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
-						userInput.R2 = (2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
+						userInput.R2 = (float)(2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
 					}
 					break;
 
@@ -298,7 +289,6 @@ void InputPC::Tick()
 void InputPC::AddEvent(SDL_Event e)
 {
 	eventQueue.push(e);
-
 }
 
 #endif
