@@ -35,6 +35,7 @@ void Door::Init(Image* doorFrameImage, Image* doorsImage, int doorAnimFrames)
 		doorSprites[i] = new Sprite(doorsImage, sRect);
 	}
 }
+
 void Door::Release()
 {
 	delete doorFrameSprite;

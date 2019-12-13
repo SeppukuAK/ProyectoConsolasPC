@@ -83,6 +83,9 @@
     <ClCompile Include="..\Src\Logic\Sprite.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\Logic\Dollar.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Renderer\Renderer.h">
@@ -135,6 +138,9 @@
     </ClInclude>
     <ClInclude Include="..\Src\Utilities\Clamp.h">
       <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Dollar.h">
+      <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

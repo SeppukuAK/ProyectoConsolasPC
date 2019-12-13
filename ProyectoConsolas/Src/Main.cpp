@@ -5,6 +5,7 @@
 
 //#include "Logic/Waves.h"
 #include "Logic/Door.h"
+#include "Logic/Dollar.h"
 
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
@@ -25,8 +26,16 @@ const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 
 //Lógica
 
+//Game
+const int NUM_DOORS = 9;
+const int X_OFFSET = 32;
+
 //Door
 const int DOOR_ANIM_FRAMES = 4;
+
+//Dollar
+const int DOLLAR_WIDTH = 64;
+
 ////Waves
 ////const float ENERGY_WAVE = 31/ 32;
 //const int HEIGHT_WAVE = 5000;
@@ -87,6 +96,20 @@ int main(int argc, char* args[])
 	Door::Init(images[ImageType::DOOR_FRAME],images[ImageType::DOORS],DOOR_ANIM_FRAMES);
 	Door* door = new Door(32,48);
 
+	//Dollar
+	Dollar::Init(images[ImageType::DOLLARS]);
+	Dollar** dollars = new Dollar*[NUM_DOORS];
+	DollarState dollarsState[NUM_DOORS];
+	
+	int posX = X_OFFSET;
+	for (int i = 0; i < NUM_DOORS; i++)
+	{
+		dollarsState[i] = DollarState::DOLLAR_EMPTY;
+		dollars[i] = new Dollar(posX, 0);
+		posX += DOLLAR_WIDTH;
+	}
+
+
 	//Se lanza la hebra de renderizado
 	RendererThread::Start();
 
@@ -126,12 +149,19 @@ int main(int argc, char* args[])
 
 		Input::Tick();
 
+		if (Input::GetUserInput().Key_O)
+			dollarsState[4] = DollarState::DOLLAR_SELECTED;
+
 		// update game logic as lag permits
 		while (lag >= timestep) {
 			lag -= timestep;
 
 			//Paso de simulación
 			door->Update(deltaTime);
+
+			for (int i = 0; i < NUM_DOORS; i++)
+				dollars[i]->Update(dollarsState[i]);
+
 			//waves->Update();
 
 			//cout << Input::GetUserInput().HorizontalAxis << endl;
@@ -143,6 +173,9 @@ int main(int argc, char* args[])
 			;
 
 		door->Render();
+		for (int i = 0; i < NUM_DOORS; i++)
+			dollars[i]->Render();
+
 		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
 
 		//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
@@ -156,9 +189,15 @@ int main(int argc, char* args[])
 
 	RendererThread::Stop();
 
+	for (int i = 0; i < NUM_DOORS; ++i)
+		delete[] dollars[i];
+
+	delete[] dollars;
+	dollars = nullptr;
+	Dollar::Release();
+
 	delete door;
 	door = nullptr;
-
 	Door::Release();
 
 	//delete waves;
