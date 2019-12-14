@@ -2,20 +2,25 @@
 #include "../Renderer/Image.h"
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
+#include "../Renderer/Renderer.h"
 #include "../Renderer/RendererThread.h"
+#include <iostream>
 
-const float Dollar::ANIM_RATE = 5.0f;
+//const float Dollar::ANIM_RATE = 5.0f;
 const int Dollar::NUM_SPRITES = 6;
-const int Dollar::ANIM_FRAMES = 2;
+//const int Dollar::ANIM_FRAMES = 2;
 
 Sprite** Dollar::dollarSprites = nullptr;
-Sprite** Dollar::dollarAnimSprites = nullptr;
 
 Dollar::Dollar(int x, int y) : _x(x), _y(y)
 {
-	frameIndex = 0;
-	animTimer = 0.0f;
-//	state = DollarState::DOLLAR_EMPTY;
+	//frameIndex = 0;
+	//animTimer = 0.0f;
+	_visible = false;
+	_moneyReceived = false;
+	changedState = true;
+	dollarState = DollarState::DOLLAR_EMPTY;
+	lastFrameStateChanged = 0;
 }
 
 void Dollar::Init(Image* dollarImage)
@@ -27,7 +32,6 @@ void Dollar::Init(Image* dollarImage)
 	sRect.X = 0;
 	sRect.Y = 0;
 
-
 	dollarSprites = new Sprite * [NUM_SPRITES];
 
 	for (int i = 0; i < NUM_SPRITES; i++)
@@ -35,28 +39,10 @@ void Dollar::Init(Image* dollarImage)
 		sRect.X = i * sRect.Width;
 		dollarSprites[i] = new Sprite(dollarImage, sRect);
 	}
-
-	//Anim dollars
-
-	dollarAnimSprites = new Sprite * [ANIM_FRAMES];
-
-
-	for (int i = 0; i < ANIM_FRAMES; i++)
-	{
-		dollarAnimSprites[i] = dollarSprites[DOLLAR_ANIM_0+i];
-	}
-
 }
 
 void Dollar::Release()
 {
-	for (int i = 0; i < ANIM_FRAMES; ++i)
-		delete[] dollarAnimSprites[i];
-
-	delete[] dollarAnimSprites;
-	dollarAnimSprites = nullptr;
-
-
 	for (int i = 0; i < NUM_SPRITES; ++i)
 		delete[] dollarSprites[i];
 
@@ -64,35 +50,68 @@ void Dollar::Release()
 	dollarSprites = nullptr;
 }
 
-
-
-void Dollar::Update(DollarState newState, float deltaTime)
+void Dollar::Update(float delta,float deltaTime)
 {
-	state = newState;
-	animTimer += deltaTime;
-
-	//Se ha ganado un dolar
-	if (state == DOLLAR_WIN) {
-		if (animTimer >= ANIM_RATE)
-		{
-			frameIndex = (frameIndex + 1) % ANIM_FRAMES;
-			animTimer = 0.0f;
-		}
+	DollarState newDollarState;
+	if (_visible && _moneyReceived)
+	{
+		newDollarState = DollarState::DOLLAR_VISIBLE_MONEY;
 	}
+	else if (_visible)
+	{
+		newDollarState = DollarState::DOLLAR_VISIBLE;
+	}
+	else if (_moneyReceived)
+	{
+		newDollarState = DollarState::DOLLAR_MONEY;
+	}
+	else
+	{
+		newDollarState = DollarState::DOLLAR_EMPTY;
+	}
+
+	if (dollarState != newDollarState)
+	{
+		lastFrameStateChanged = delta;
+		dollarState = newDollarState;
+		changedState = true;
+
+	}
+	else
+	{
+		if (lastFrameStateChanged + Renderer::GetNumBuffers() > delta)
+		{
+			changedState = true;
+
+		}
+		else
+			changedState = false;
+	}
+
+	//state = DOLLAR_WIN;
+	//animTimer += deltaTime;
+
+	////Se ha ganado un dolar
+	//if (state == DOLLAR_WIN) {
+	//	if (animTimer >= ANIM_RATE)
+	//	{
+	//		frameIndex = (frameIndex + 1) % ANIM_FRAMES;
+	//		animTimer = 0.0f;
+	//	}
+	//}
 }
 
 void Dollar::Render()
 {
-	drawDollarCommand.Type = RendererCommandType::DRAW_SPRITE;
-	drawDollarCommand.Param.DrawSpriteParams.PosX = _x;
-	drawDollarCommand.Param.DrawSpriteParams.PosY = _y;
-	drawDollarCommand.Param.DrawSpriteParams.Sprite = dollarSprites[frameIndex];
-	RendererThread::EnqueueCommand(drawDollarCommand);
+	if (changedState)
+	{
+		std::cout << "Me pinto" << std::endl;
 
-	//Anim
-	drawDollarAnimCommand.Type = RendererCommandType::DRAW_SPRITE;
-	drawDollarAnimCommand.Param.DrawSpriteParams.PosX = _x;
-	drawDollarAnimCommand.Param.DrawSpriteParams.PosY = _y;
-	drawDollarAnimCommand.Param.DrawSpriteParams.Sprite = dollarAnimSprites[frameIndex];
-	RendererThread::EnqueueCommand(drawDollarAnimCommand);
+		RenderCommand drawDollarCommand;
+		drawDollarCommand.Type = RendererCommandType::DRAW_SPRITE;
+		drawDollarCommand.Param.DrawSpriteParams.PosX = _x;
+		drawDollarCommand.Param.DrawSpriteParams.PosY = _y;
+		drawDollarCommand.Param.DrawSpriteParams.Sprite = dollarSprites[dollarState];
+		RendererThread::EnqueueCommand(drawDollarCommand);
+	}
 }

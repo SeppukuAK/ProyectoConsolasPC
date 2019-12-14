@@ -28,7 +28,9 @@ const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 
 //Game
 const int NUM_DOORS = 9;
-const int X_OFFSET = 32;
+const int NUM_VISIBLE_DOORS = 3;
+
+const int GAME_X_OFFSET = 32;
 
 //Door
 const int DOOR_ANIM_FRAMES = 4;
@@ -100,16 +102,19 @@ int main(int argc, char* args[])
 	//Dollar
 	Dollar::Init(images[ImageType::DOLLARS]);
 	Dollar** dollars = new Dollar*[NUM_DOORS];
-	DollarState dollarsState[NUM_DOORS];
 	
-	int posX = X_OFFSET;
+	int posX = GAME_X_OFFSET;
 	for (int i = 0; i < NUM_DOORS; i++)
 	{
-		dollarsState[i] = DollarState::DOLLAR_EMPTY;
 		dollars[i] = new Dollar(posX, 0);
 		posX += DOLLAR_WIDTH;
 	}
 
+	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+		dollars[i]->SetVisible(true);
+
+	//Puerta mas a la izquierda
+	int doorIndex = 0;
 
 	//Se lanza la hebra de renderizado
 	RendererThread::Start();
@@ -151,41 +156,48 @@ int main(int argc, char* args[])
 		Input::Tick();
 
 		if (Input::GetUserInput().Key_O)
-			dollarsState[4] = DollarState::DOLLAR_SELECTED;
+		{
+			dollars[doorIndex]->SetVisible(false);
+			doorIndex = (doorIndex + 1) % NUM_DOORS;
+			dollars[(doorIndex + 2) % NUM_DOORS]->SetVisible(true);
+		}
+
+		bool update = lag >= timestep;
 
 		// update game logic as lag permits
 		while (lag >= timestep) {
-			lag -= timestep;
-
+			
 			//Paso de simulación
 			door->Update(deltaTime);
 
 			for (int i = 0; i < NUM_DOORS; i++)
-				dollars[i]->Update(dollarsState[i], deltaTime);
+				dollars[i]->Update(tick,deltaTime);
 
 			//waves->Update();
 
-			//cout << Input::GetUserInput().HorizontalAxis << endl;
-			//TODO:	cout << "Update: " << tick << " " << delta_time.count()/100000000.0f << endl;
+			lag -= timestep;
 		}
 
 		//Contención. Se para la hebra si el render va muy retrasado
 		while (RendererThread::GetPendingFrames() >= NUM_BUFFERS)
 			;
 
-		door->Render();
-		for (int i = 0; i < NUM_DOORS; i++)
-			dollars[i]->Render();
+		if (update)
+		{
+			door->Render();
+			for (int i = 0; i < NUM_DOORS; i++)
+				dollars[i]->Render();
 
-		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
+			//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
 
-		//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
-		//rendererThread->EnqueueCommand(waves->GetRenderCommand());
+			//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
+			//rendererThread->EnqueueCommand(waves->GetRenderCommand());
 
-		RendererThread::EnqueueCommand(presentCommand);
+			RendererThread::EnqueueCommand(presentCommand);
 
-		//Delay
-		tick++;
+			//Delay
+			tick++;
+		}
 	}
 
 	RendererThread::Stop();

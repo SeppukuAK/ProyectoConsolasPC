@@ -172,6 +172,9 @@ Algunos TODO:
 	-Init.Texture filtering
 	-Observer. Es putero?????
 
+-Dollar.cpp
+	-TODO: Renderer::GetNumBuffers(). Variable estatica????
+
 En todo: 
 -Parametros const & ????????
 -Atributos que se usan todo el rato declarados en la clase?????????
