@@ -41,6 +41,7 @@ bool PlatformPC::Tick()
 	*/
 	while (SDL_PollEvent(&e) != 0)
 	{
+
 		switch (e.type)
 		{
 		case SDL_QUIT:

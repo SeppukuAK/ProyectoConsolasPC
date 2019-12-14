@@ -96,13 +96,13 @@ int main(int argc, char* args[])
 	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
 
 	//Puerta
-	Door::Init(images[ImageType::DOOR_FRAME],images[ImageType::DOORS],DOOR_ANIM_FRAMES);
-	Door* door = new Door(32,48);
+	Door::Init(images[ImageType::DOOR_FRAME], images[ImageType::DOORS], DOOR_ANIM_FRAMES);
+	Door* door = new Door(32, 48);
 
 	//Dollar
 	Dollar::Init(images[ImageType::DOLLARS]);
-	Dollar** dollars = new Dollar*[NUM_DOORS];
-	
+	Dollar** dollars = new Dollar * [NUM_DOORS];
+
 	int posX = GAME_X_OFFSET;
 	for (int i = 0; i < NUM_DOORS; i++)
 	{
@@ -151,53 +151,67 @@ int main(int argc, char* args[])
 		auto delta_time = clock::now() - time_start;
 		time_start = clock::now();
 		lag += std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
+
 		float deltaTime = delta_time.count() / 100000000.0f;
+		//std::cout << deltaTime << std::endl;
 
 		Input::Tick();
 
 		if (Input::GetUserInput().Key_O)
 		{
+			if (doorIndex == 0)
+				doorIndex = NUM_DOORS - 1;
+			else
+				doorIndex -= 1;
+
+			dollars[doorIndex]->SetVisible(true);
+			dollars[(doorIndex + 3) % NUM_DOORS]->SetVisible(false);
+		}
+		if (Input::GetUserInput().Key_P)
+		{
 			dollars[doorIndex]->SetVisible(false);
 			doorIndex = (doorIndex + 1) % NUM_DOORS;
 			dollars[(doorIndex + 2) % NUM_DOORS]->SetVisible(true);
 		}
+		if (Input::GetUserInput().Key_1)
+		{
+			dollars[doorIndex]->SetMoneyReceived(true);
 
-		bool update = lag >= timestep;
+		}
 
 		// update game logic as lag permits
 		while (lag >= timestep) {
-			
+
 			//Paso de simulación
-			door->Update(deltaTime);
+			//door->Update(deltaTime);
 
 			for (int i = 0; i < NUM_DOORS; i++)
-				dollars[i]->Update(tick,deltaTime);
+				dollars[i]->Update(tick, deltaTime);
 
 			//waves->Update();
 
 			lag -= timestep;
 		}
 
+
 		//Contención. Se para la hebra si el render va muy retrasado
 		while (RendererThread::GetPendingFrames() >= NUM_BUFFERS)
 			;
 
-		if (update)
-		{
-			door->Render();
-			for (int i = 0; i < NUM_DOORS; i++)
-				dollars[i]->Render();
+		//door->Render();
+		for (int i = 0; i < NUM_DOORS; i++)
+			dollars[i]->Render();
 
-			//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
+		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
 
-			//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
-			//rendererThread->EnqueueCommand(waves->GetRenderCommand());
+		//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
+		//rendererThread->EnqueueCommand(waves->GetRenderCommand());
 
-			RendererThread::EnqueueCommand(presentCommand);
+		RendererThread::EnqueueCommand(presentCommand);
 
-			//Delay
-			tick++;
-		}
+		//Delay
+		tick++;
+
 	}
 
 	RendererThread::Stop();

@@ -6,16 +6,15 @@
 #include "../Renderer/RendererThread.h"
 #include <iostream>
 
-//const float Dollar::ANIM_RATE = 5.0f;
+const float Dollar::ANIM_RATE = 0.3f;
 const int Dollar::NUM_SPRITES = 6;
-//const int Dollar::ANIM_FRAMES = 2;
 
 Sprite** Dollar::dollarSprites = nullptr;
 
 Dollar::Dollar(int x, int y) : _x(x), _y(y)
 {
 	//frameIndex = 0;
-	//animTimer = 0.0f;
+	animTimer = 0.0f;
 	_visible = false;
 	_moneyReceived = false;
 	changedState = true;
@@ -55,7 +54,23 @@ void Dollar::Update(float delta,float deltaTime)
 	DollarState newDollarState;
 	if (_visible && _moneyReceived)
 	{
-		newDollarState = DollarState::DOLLAR_VISIBLE_MONEY;
+		//Fin de la animación
+		if (animTimer >= ANIM_RATE * 2)
+			newDollarState = DollarState::DOLLAR_VISIBLE_MONEY;
+
+		else
+		{
+			animTimer += deltaTime;
+
+			if (animTimer >= ANIM_RATE * 2)
+				newDollarState = DollarState::DOLLAR_VISIBLE_MONEY;
+			if (animTimer >= ANIM_RATE)
+				newDollarState = DollarState::DOLLAR_ANIM_1;
+			else
+				newDollarState = DollarState::DOLLAR_ANIM_0;
+
+		}
+
 	}
 	else if (_visible)
 	{
@@ -88,25 +103,13 @@ void Dollar::Update(float delta,float deltaTime)
 			changedState = false;
 	}
 
-	//state = DOLLAR_WIN;
-	//animTimer += deltaTime;
-
-	////Se ha ganado un dolar
-	//if (state == DOLLAR_WIN) {
-	//	if (animTimer >= ANIM_RATE)
-	//	{
-	//		frameIndex = (frameIndex + 1) % ANIM_FRAMES;
-	//		animTimer = 0.0f;
-	//	}
-	//}
 }
 
 void Dollar::Render()
 {
 	if (changedState)
 	{
-		std::cout << "Me pinto" << std::endl;
-
+		//std::cout << "Pinto" << std::endl;	//TODO: SE PINTA MAS VECES DE LAS NECESARIAS AL INICIO
 		RenderCommand drawDollarCommand;
 		drawDollarCommand.Type = RendererCommandType::DRAW_SPRITE;
 		drawDollarCommand.Param.DrawSpriteParams.PosX = _x;

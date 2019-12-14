@@ -174,7 +174,8 @@ Algunos TODO:
 
 -Dollar.cpp
 	-TODO: Renderer::GetNumBuffers(). Variable estatica????
-
+	//TODO: SE PINTA MAS VECES DE LAS NECESARIAS AL INICIO
+	
 En todo: 
 -Parametros const & ????????
 -Atributos que se usan todo el rato declarados en la clase?????????

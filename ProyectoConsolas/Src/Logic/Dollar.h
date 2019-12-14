@@ -7,11 +7,9 @@ enum DollarState { DOLLAR_EMPTY, DOLLAR_VISIBLE, DOLLAR_MONEY, DOLLAR_VISIBLE_MO
 
 class Dollar
 {
-
 private:
-	//static const float ANIM_RATE;
+	static const float ANIM_RATE;
 	static const int NUM_SPRITES;
-	//static const int ANIM_FRAMES;
 
 	static Sprite** dollarSprites;
 
@@ -21,8 +19,7 @@ private:
 	bool changedState;
 	DollarState dollarState;
 	int lastFrameStateChanged;		//Ultimo tick en el que ha habido un cambio de estado
-	//int frameIndex;
-	//float animTimer;
+	float animTimer;
 
 public:
 	static void Init(Image* dollarImage);

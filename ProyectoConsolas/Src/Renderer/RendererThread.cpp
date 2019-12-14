@@ -74,6 +74,8 @@ void RendererThread::RenderLoop()
 		pendingFrames--;
 		Renderer::Present();
 	}
+
+
 }
 
 void RendererThread::DrawRain(Color* background, int* heightDiffs, bool forcePaint)
