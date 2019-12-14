@@ -15,6 +15,5 @@ public:
 
 	//Método que pinta el sprite a partir de una posición (esquina sup izquierda del sprite)
 	void Draw(int posX, int posY);
-
 };
 

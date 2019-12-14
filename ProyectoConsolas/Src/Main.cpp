@@ -5,6 +5,7 @@
 
 //#include "Logic/Waves.h"
 #include "Logic/Door.h"
+#include "Logic/FrameDoor.h"
 #include "Logic/Dollar.h"
 
 #include <stdlib.h>		/* srand, rand */
@@ -31,6 +32,10 @@ const int NUM_DOORS = 9;
 const int NUM_VISIBLE_DOORS = 3;
 
 const int GAME_X_OFFSET = 32;
+
+//FrameDoor
+const int FRAME_DOOR_WIDTH = 192;
+const int FRAME_DOOR_OFFSETY = 48;
 
 //Door
 const int DOOR_ANIM_FRAMES = 4;
@@ -96,8 +101,8 @@ int main(int argc, char* args[])
 	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
 
 	//Puerta
-	Door::Init(images[ImageType::DOOR_FRAME], images[ImageType::DOORS], DOOR_ANIM_FRAMES);
-	Door* door = new Door(32, 48);
+	Door::Init(images[ImageType::DOORS]);
+	Door* door = new Door(32 + GAME_X_OFFSET, 24 + FRAME_DOOR_OFFSETY);
 
 	//Dollar
 	Dollar::Init(images[ImageType::DOLLARS]);
@@ -112,6 +117,16 @@ int main(int argc, char* args[])
 
 	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 		dollars[i]->SetVisible(true);
+
+	//FrameDoor
+	FrameDoor::Init(images[ImageType::DOOR_FRAME]);
+	FrameDoor** frameDoors = new FrameDoor * [NUM_VISIBLE_DOORS];
+	posX = GAME_X_OFFSET;
+	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+	{
+		frameDoors[i] = new FrameDoor(posX, FRAME_DOOR_OFFSETY);
+		posX += FRAME_DOOR_WIDTH;
+	}
 
 	//Puerta mas a la izquierda
 	int doorIndex = 0;
@@ -152,9 +167,6 @@ int main(int argc, char* args[])
 		time_start = clock::now();
 		lag += std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
 
-		float deltaTime = delta_time.count() / 100000000.0f;
-		//std::cout << deltaTime << std::endl;
-
 		Input::Tick();
 
 		if (Input::GetUserInput().Key_O)
@@ -179,28 +191,46 @@ int main(int argc, char* args[])
 
 		}
 
+		if (Input::GetUserInput().Key_2)
+		{
+			door->SetClosed(false);
+		}
+		if (Input::GetUserInput().Key_3)
+		{
+			door->SetClosed(true);
+		}
+
+
 		// update game logic as lag permits
 		while (lag >= timestep) {
 
 			//Paso de simulación
-			//door->Update(deltaTime);
 
 			for (int i = 0; i < NUM_DOORS; i++)
-				dollars[i]->Update(tick, deltaTime);
+				dollars[i]->Update(tick, timestep.count() / 1000000000.0f);
+
+			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+				frameDoors[i]->Update(tick, timestep.count() / 1000000000.0f);
+
+			door->Update(tick, timestep.count() / 1000000000.0f);
 
 			//waves->Update();
 
 			lag -= timestep;
 		}
 
-
 		//Contención. Se para la hebra si el render va muy retrasado
 		while (RendererThread::GetPendingFrames() >= NUM_BUFFERS)
 			;
 
-		//door->Render();
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Render();
+
+		//FrameDoor
+		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+			frameDoors[i]->Render();
+
+		door->Render();
 
 		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
 
@@ -219,9 +249,16 @@ int main(int argc, char* args[])
 	for (int i = 0; i < NUM_DOORS; ++i)
 		delete[] dollars[i];
 
+	for (int i = 0; i < NUM_VISIBLE_DOORS; ++i)
+		delete[] frameDoors[i];
+
 	delete[] dollars;
 	dollars = nullptr;
 	Dollar::Release();
+
+	delete[] frameDoors;
+	frameDoors = nullptr;
+	FrameDoor::Release();
 
 	delete door;
 	door = nullptr;

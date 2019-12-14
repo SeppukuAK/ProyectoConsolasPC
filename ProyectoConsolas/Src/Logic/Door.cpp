@@ -1,35 +1,32 @@
 #include "Door.h"
 #include "../Renderer/Image.h"
-#include "Sprite.h"
 #include "../Utilities/Rect.h"
+#include "Sprite.h"
 
-const float Door::ANIM_RATE = 5.0f;
+const float Door::ANIM_RATE = 1.0f;
+const int Door::NUM_SPRITES = 4;
 
-int Door::_doorAnimFrames = 0;
-Sprite* Door::doorFrameSprite = nullptr;
 Sprite** Door::doorSprites = nullptr;
 
-void Door::Init(Image* doorFrameImage, Image* doorsImage, int doorAnimFrames)
+Door::Door(int x, int y) : Entity(x, y)
 {
-	_doorAnimFrames = doorAnimFrames;
+	sprites = doorSprites;
+	_closed = true;
+	animTimer = 0.0f;
+}
 
-	//Creación sprite DoorFrame
-	Rect sRect;
-	sRect.Width = doorFrameImage->GetWidth();
-	sRect.Height = doorFrameImage->GetHeight();
-	sRect.X = 0;
-	sRect.Y = 0;
-
-	doorFrameSprite = new Sprite(doorFrameImage, sRect);
-
+void Door::Init(Image* doorsImage)
+{
 	//Creación sprites DoorsAnims
-	doorSprites = new Sprite * [_doorAnimFrames];
+	Rect sRect;
 
-	sRect.Width = doorsImage->GetWidth() / _doorAnimFrames;
+	doorSprites = new Sprite * [NUM_SPRITES];
+
+	sRect.Width = doorsImage->GetWidth() / NUM_SPRITES;
 	sRect.Height = doorsImage->GetHeight();
 	sRect.Y = 0;
 
-	for (int i = 0; i < _doorAnimFrames; i++)
+	for (int i = 0; i < NUM_SPRITES; i++)
 	{
 		sRect.X = i * sRect.Width;
 		doorSprites[i] = new Sprite(doorsImage, sRect);
@@ -38,52 +35,80 @@ void Door::Init(Image* doorFrameImage, Image* doorsImage, int doorAnimFrames)
 
 void Door::Release()
 {
-	delete doorFrameSprite;
-	doorFrameSprite = nullptr;
-
-	for (int i = 0; i < _doorAnimFrames; ++i)
+	for (int i = 0; i < NUM_SPRITES; ++i)
 		delete[] doorSprites[i];
 
 	delete[] doorSprites;
 	doorSprites = nullptr;
 }
 
-Door::Door(int x, int y) : _x(x), _y(y)
+void Door::Update(float delta, float deltaTime) 
 {
-	frameIndex = 0;
-	animTimer = 0.0f;
+	int newDoorState;
 
-	//Creación de los comandos
-	//Marco de la puerta
-	drawDoorFrameCommand.Type = RendererCommandType::DRAW_SPRITE;
-	drawDoorFrameCommand.Param.DrawSpriteParams.Sprite = doorFrameSprite;
-	drawDoorFrameCommand.Param.DrawSpriteParams.PosX = _x;
-	drawDoorFrameCommand.Param.DrawSpriteParams.PosY = _y;
-
-	//Puerta 
-	drawDoorCommand.Type = RendererCommandType::DRAW_SPRITE;
-	drawDoorCommand.Param.DrawSpriteParams.Sprite = doorSprites[frameIndex];
-	drawDoorCommand.Param.DrawSpriteParams.PosX = _x+32;
-	drawDoorCommand.Param.DrawSpriteParams.PosY = _y+24;
-}
-
-Door::~Door()
-{
-}
-
-void Door::Update(float deltaTime) {
-	animTimer += deltaTime;
-
-	if (animTimer >= ANIM_RATE)
+	switch (currentState)
 	{
-		frameIndex = (frameIndex + 1) % _doorAnimFrames;
-		drawDoorCommand.Param.DrawSpriteParams.Sprite = doorSprites[frameIndex];
-		animTimer = 0.0f;
+		//Se empieza a abrir en este Frame
+	case DoorState::DOOR_CLOSED:
+		if (_closed)
+			newDoorState = DoorState::DOOR_CLOSED;
+		else
+		{
+			animTimer = 0.0f;
+			newDoorState = DoorState::DOOR_OPENING_0;
+		}
+		break;
+
+	case DoorState::DOOR_OPENING_0:
+		animTimer += deltaTime;
+
+		if (_closed)
+		{
+			if (animTimer >= ANIM_RATE)
+				newDoorState = DoorState::DOOR_CLOSED;
+			else
+				newDoorState = DoorState::DOOR_OPENING_0;
+
+		}		
+		else
+		{
+			if (animTimer >= ANIM_RATE / 2)
+				newDoorState = DoorState::DOOR_OPENING_1;
+			else
+				newDoorState = DoorState::DOOR_OPENING_0;
+		}
+		break;
+
+	case DoorState::DOOR_OPENING_1:
+		animTimer += deltaTime;
+		if (_closed)
+		{
+			if (animTimer >= ANIM_RATE / 2)
+				newDoorState = DoorState::DOOR_OPENING_0;
+			else
+				newDoorState = DoorState::DOOR_OPENING_1;
+
+		}
+		else
+		{
+			if (animTimer >= ANIM_RATE)
+				newDoorState = DoorState::DOOR_OPENED;
+			else
+				newDoorState = DoorState::DOOR_OPENING_1;
+		}
+
+		break;
+
+	case DoorState::DOOR_OPENED:
+		if (_closed)
+		{
+			animTimer = 0.0f;
+			newDoorState = DoorState::DOOR_OPENING_1;
+		}
+		else
+			newDoorState = DoorState::DOOR_OPENED;
+		break;
 	}
-}
 
-void Door::Render() {
-	RendererThread::EnqueueCommand(drawDoorFrameCommand);
-
-	RendererThread::EnqueueCommand(drawDoorCommand);
+	CheckState(delta, newDoorState);
 }

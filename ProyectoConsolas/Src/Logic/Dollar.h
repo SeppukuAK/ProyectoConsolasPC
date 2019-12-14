@@ -1,24 +1,22 @@
 #pragma once
+#include "Entity.h"
 
 class Image;
 class Sprite;
 
-enum DollarState { DOLLAR_EMPTY, DOLLAR_VISIBLE, DOLLAR_MONEY, DOLLAR_VISIBLE_MONEY, DOLLAR_ANIM_0, DOLLAR_ANIM_1 };
 
-class Dollar
+class Dollar : public Entity
 {
 private:
+	enum DollarState { DOLLAR_EMPTY, DOLLAR_VISIBLE, DOLLAR_MONEY, DOLLAR_VISIBLE_MONEY, DOLLAR_ANIM_0, DOLLAR_ANIM_1 };
+
 	static const float ANIM_RATE;
 	static const int NUM_SPRITES;
 
 	static Sprite** dollarSprites;
 
-	int _x, _y;
 	bool _visible;
 	bool _moneyReceived;
-	bool changedState;
-	DollarState dollarState;
-	int lastFrameStateChanged;		//Ultimo tick en el que ha habido un cambio de estado
 	float animTimer;
 
 public:
@@ -27,8 +25,7 @@ public:
 
 	Dollar(int x, int y);
 
-	void Update(float delta, float deltaTime);
-	void Render();
+	void Update(float delta, float deltaTime) override;
 
 	inline bool GetMoneyReceived() const { return _moneyReceived; };
 	inline void SetVisible(bool visible) { _visible = visible; };

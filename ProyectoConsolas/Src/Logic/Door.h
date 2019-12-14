@@ -1,33 +1,33 @@
 #pragma once
 
-#include "../Renderer/RendererThread.h"
+#include "Entity.h"
 
 class Image;
 class Sprite;
 
-class Door
+class Door : public Entity
 {
 private:
-	static const float ANIM_RATE;
+	enum DoorState { DOOR_CLOSED, DOOR_OPENING_0, DOOR_OPENING_1, DOOR_OPENED };
 
-	static int _doorAnimFrames;
-	static Sprite* doorFrameSprite;
+	static const float ANIM_RATE;
+	static const int NUM_SPRITES;
+
 	static Sprite** doorSprites;
 
-	int _x, _y;
-	int frameIndex;
+	bool _closed;
+
 	float animTimer;
-	RenderCommand drawDoorFrameCommand;
-	RenderCommand drawDoorCommand;
 
 public:
-	static void Init(Image* doorFrameImage, Image* doorsImage, int doorAnimFrames);
+	static void Init(Image* doorsImage);
 	static void Release();
 
 	Door(int x, int y);
-	~Door();
 
-	void Update(float deltaTime);
-	void Render();
+	void Update(float delta, float deltaTime) override;
+
+	inline void SetClosed(bool closed) { _closed = closed; };
+
 };
 
