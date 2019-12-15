@@ -4,11 +4,9 @@
 class Image;
 class Sprite;
 
-
 class FrameDoor : public Entity
 {
 private:
-
 	static Sprite* frameDoorSprite;
 
 public:
@@ -18,7 +16,5 @@ public:
 	FrameDoor(int x, int y);
 
 	void Update(float delta, float deltaTime) override;
-
-
 };
 

@@ -2,11 +2,16 @@
 #include "../Renderer/Image.h"
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
+#include <iostream>
+
+using namespace std;
 
 const float Door::ANIM_RATE = 1.0f;
 const int Door::NUM_SPRITES = 4;
+const int Door::BACKGROUND_PIXELS = 32;
 
 Sprite** Door::doorSprites = nullptr;
+Rect* Door::doorRects = nullptr;
 
 Door::Door(int x, int y) : Entity(x, y)
 {
@@ -18,18 +23,21 @@ Door::Door(int x, int y) : Entity(x, y)
 void Door::Init(Image* doorsImage)
 {
 	//Creación sprites DoorsAnims
-	Rect sRect;
-
 	doorSprites = new Sprite * [NUM_SPRITES];
-
-	sRect.Width = doorsImage->GetWidth() / NUM_SPRITES;
-	sRect.Height = doorsImage->GetHeight();
-	sRect.Y = 0;
+	doorRects = new Rect[NUM_SPRITES];
 
 	for (int i = 0; i < NUM_SPRITES; i++)
 	{
+		Rect sRect;
+		sRect.Width = doorsImage->GetWidth() / NUM_SPRITES;
+		sRect.Height = doorsImage->GetHeight();
+		sRect.Y = 0;
 		sRect.X = i * sRect.Width;
 		doorSprites[i] = new Sprite(doorsImage, sRect);
+
+		sRect.Width -= BACKGROUND_PIXELS * i;
+		sRect.X += BACKGROUND_PIXELS * i;
+		doorRects[i] = sRect;
 	}
 }
 
@@ -40,11 +48,14 @@ void Door::Release()
 
 	delete[] doorSprites;
 	doorSprites = nullptr;
+
+	delete doorRects;
+	doorRects = nullptr;
 }
 
-void Door::Update(float delta, float deltaTime) 
+void Door::Update(float delta, float deltaTime)
 {
-	int newDoorState;
+	int newDoorState = 0;
 
 	switch (currentState)
 	{
@@ -69,7 +80,7 @@ void Door::Update(float delta, float deltaTime)
 			else
 				newDoorState = DoorState::DOOR_OPENING_0;
 
-		}		
+		}
 		else
 		{
 			if (animTimer >= ANIM_RATE / 2)
@@ -111,4 +122,9 @@ void Door::Update(float delta, float deltaTime)
 	}
 
 	CheckState(delta, newDoorState);
+}
+
+void Door::Render() {
+	if (changedState)
+		sprites[currentState]->DrawPartially(_x + BACKGROUND_PIXELS * currentState, _y, doorRects[currentState]);
 }

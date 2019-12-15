@@ -17,7 +17,6 @@ class PlatformPC
 {
 private:
 	static const std::string mediaPath;					//Ruta donde se encuentran los recursos
-
 	static std::vector<InputObserver*> observers;		//Observadores del input
 
 public:

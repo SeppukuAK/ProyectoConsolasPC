@@ -7,6 +7,7 @@
 #include "Logic/Door.h"
 #include "Logic/FrameDoor.h"
 #include "Logic/Dollar.h"
+#include "Logic/Client.h"
 
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
@@ -104,10 +105,15 @@ int main(int argc, char* args[])
 	Door::Init(images[ImageType::DOORS]);
 	Door* door = new Door(32 + GAME_X_OFFSET, 24 + FRAME_DOOR_OFFSETY);
 
+	//Cliente
+	Client::Init(images[ImageType::CLIENT]);
+	Client * client = new Client(32 + GAME_X_OFFSET, 24 + FRAME_DOOR_OFFSETY, door);
+
 	//Dollar
 	Dollar::Init(images[ImageType::DOLLARS]);
 	Dollar** dollars = new Dollar * [NUM_DOORS];
 
+	
 	int posX = GAME_X_OFFSET;
 	for (int i = 0; i < NUM_DOORS; i++)
 	{
@@ -188,7 +194,6 @@ int main(int argc, char* args[])
 		if (Input::GetUserInput().Key_1)
 		{
 			dollars[doorIndex]->SetMoneyReceived(true);
-
 		}
 
 		if (Input::GetUserInput().Key_2)
@@ -213,7 +218,7 @@ int main(int argc, char* args[])
 				frameDoors[i]->Update(tick, timestep.count() / 1000000000.0f);
 
 			door->Update(tick, timestep.count() / 1000000000.0f);
-
+			client->Update(tick, timestep.count() / 1000000000.0f);
 			//waves->Update();
 
 			lag -= timestep;
@@ -231,6 +236,7 @@ int main(int argc, char* args[])
 			frameDoors[i]->Render();
 
 		door->Render();
+		client->Render();
 
 		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
 
@@ -249,17 +255,23 @@ int main(int argc, char* args[])
 	for (int i = 0; i < NUM_DOORS; ++i)
 		delete[] dollars[i];
 
-	for (int i = 0; i < NUM_VISIBLE_DOORS; ++i)
-		delete[] frameDoors[i];
-
 	delete[] dollars;
 	dollars = nullptr;
 	Dollar::Release();
+
+	for (int i = 0; i < NUM_VISIBLE_DOORS; ++i)
+		delete[] frameDoors[i];
 
 	delete[] frameDoors;
 	frameDoors = nullptr;
 	FrameDoor::Release();
 
+	//Cliente
+	delete client;
+	client = nullptr;
+	Client::Release();
+
+	//Puerta
 	delete door;
 	door = nullptr;
 	Door::Release();

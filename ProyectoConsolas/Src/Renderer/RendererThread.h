@@ -3,7 +3,9 @@
 #include <atomic> 
 #include "../Utilities/ConcurrentQueue.h"
 #include "Color.h"
+#include "../Utilities/Rect.h"
 
+class Image;
 class Sprite;
 
 //Parámetros de los diferentes comandos
@@ -28,9 +30,10 @@ struct RenderCommandRainParams
 
 struct RenderCommandDrawSpriteParams
 {
-	Sprite* Sprite;
+	Image* Image;
+	Rect SourceRect;//No es puntero porque al procesar el comando, el rectángulo puede haberse destruido
 	int PosX;
-	int PosY; 
+	int PosY;
 };
 
 /*
@@ -67,7 +70,7 @@ struct RenderCommand
 class RendererThread
 {
 private:
-	static std::thread *t;						//Hilo
+	static std::thread* t;						//Hilo
 	static Queue<RenderCommand> commandQueue; 	//Cola concurrente (compartida entre hebras) de comandos
 
 	//Escritura y lectura seguras

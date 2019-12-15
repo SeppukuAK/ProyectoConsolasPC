@@ -92,6 +92,9 @@
     <ClCompile Include="..\Src\Logic\FrameDoor.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\Logic\Client.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Renderer\Renderer.h">
@@ -152,6 +155,9 @@
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\Logic\FrameDoor.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Client.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>

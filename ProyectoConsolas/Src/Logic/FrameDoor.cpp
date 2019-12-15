@@ -2,10 +2,7 @@
 #include "../Renderer/Image.h"
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
-
 #include <iostream>
-
-
 
 Sprite* FrameDoor::frameDoorSprite = nullptr;
 

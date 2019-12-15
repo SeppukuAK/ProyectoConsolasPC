@@ -4,6 +4,7 @@
 
 class Image;
 class Sprite;
+class Rect;
 
 class Door : public Entity
 {
@@ -14,20 +15,24 @@ private:
 	static const int NUM_SPRITES;
 
 	static Sprite** doorSprites;
+	static Rect* doorRects;
 
 	bool _closed;
 
 	float animTimer;
 
 public:
+	static const int BACKGROUND_PIXELS;
+
 	static void Init(Image* doorsImage);
 	static void Release();
 
 	Door(int x, int y);
 
-	void Update(float delta, float deltaTime) override;
+	virtual void Update(float delta, float deltaTime) override;
+	virtual void Render() override;
 
 	inline void SetClosed(bool closed) { _closed = closed; };
-
+	inline int GetCurrentState()const { return currentState; };
 };
 

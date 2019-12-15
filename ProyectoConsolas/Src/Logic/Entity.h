@@ -4,19 +4,17 @@ class Sprite;
 
 class Entity
 {
-private:
-	int _x, _y;
-	bool changedState;
-	int lastFrameStateChanged;		//Ultimo tick en el que ha habido un cambio de estado
-
 protected:
+	int _x, _y;
+	int lastFrameStateChanged;		//Ultimo tick en el que ha habido un cambio de estado
 	Sprite** sprites;
 	int currentState;
+	bool changedState;
 
 public:
 	Entity(int x, int y);
 	virtual void Update(float delta, float deltaTime) = 0;
-	void Render();
+	virtual void Render();
 
 protected:
 	void CheckState(float delta, int newState);

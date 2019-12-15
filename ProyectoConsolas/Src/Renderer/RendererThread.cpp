@@ -62,7 +62,7 @@ void RendererThread::RenderLoop()
 				break;
 			case RendererCommandType::DRAW_SPRITE:
 				RenderCommandDrawSpriteParams drawSpriteParams = sigCommand.Param.DrawSpriteParams;
-				drawSpriteParams.Sprite->Draw(drawSpriteParams.PosX, drawSpriteParams.PosY);
+				Renderer::DrawRect(drawSpriteParams.Image, drawSpriteParams.PosX, drawSpriteParams.PosY, drawSpriteParams.SourceRect);
 				break;
 			default:
 				break;

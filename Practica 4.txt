@@ -175,6 +175,7 @@ Algunos TODO:
 -Dollar.cpp
 	-TODO: Renderer::GetNumBuffers(). Variable estatica????
 	//TODO: SE PINTA MAS VECES DE LAS NECESARIAS AL INICIO
+	-Dollar si recibes mas de 1, tambien se hace animacion
 	
 En todo: 
 -Parametros const & ????????

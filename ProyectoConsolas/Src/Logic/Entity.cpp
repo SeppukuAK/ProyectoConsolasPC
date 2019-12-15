@@ -1,7 +1,7 @@
 #include "Entity.h"
-#include "../Renderer/Renderer.h"
-#include "../Renderer/RendererThread.h"
 #include <iostream>
+#include "../Renderer/Renderer.h"
+#include "Sprite.h"
 
 Entity::Entity(int x, int y) : _x(x), _y(y)
 {
@@ -27,12 +27,5 @@ void Entity::CheckState(float delta, int newState)
 void Entity::Render()
 {
 	if (changedState)
-	{
-		RenderCommand drawCommand;
-		drawCommand.Type = RendererCommandType::DRAW_SPRITE;
-		drawCommand.Param.DrawSpriteParams.PosX = _x;
-		drawCommand.Param.DrawSpriteParams.PosY = _y;
-		drawCommand.Param.DrawSpriteParams.Sprite = sprites[currentState];
-		RendererThread::EnqueueCommand(drawCommand);
-	}
+		sprites[currentState]->Draw(_x,_y);
 }
