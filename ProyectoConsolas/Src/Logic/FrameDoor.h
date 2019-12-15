@@ -15,6 +15,6 @@ public:
 
 	FrameDoor(int x, int y);
 
-	void Update(float delta, float deltaTime) override;
+	void Update(float delta, float time) override;
 };
 

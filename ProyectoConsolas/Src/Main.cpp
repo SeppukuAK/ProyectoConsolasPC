@@ -29,6 +29,10 @@ const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 //Lógica
 
 //Game
+const float MIN_SECONDS_OPENING_DOOR = 4.0f;
+const float MAX_SECONDS_OPENING_DOOR = 10.0f;
+const float DOOR_OPENED_TIME = 2.0f;	//Incluye el tiempo abriendose
+
 const int NUM_DOORS = 9;
 const int NUM_VISIBLE_DOORS = 3;
 
@@ -40,10 +44,17 @@ const int FRAME_DOOR_OFFSETY = 48;
 
 //Door
 const int DOOR_ANIM_FRAMES = 4;
+const int DOOR_OFFSET_Y = 24;
 
 //Dollar
 const int DOLLAR_WIDTH = 64;
 
+static float RandomFloat(float a, float b) {
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = b - a;
+	float r = random * diff;
+	return a + r;
+}
 
 ////Waves
 ////const float ENERGY_WAVE = 31/ 32;
@@ -98,44 +109,53 @@ int main(int argc, char* args[])
 
 	//Inicialización lógica
 
-	//Ondas
-	//Waves* waves = new Waves(background, HEIGHT_WAVE, MIN_FRAMES_BETWEEN_WAVES, MAX_FRAMES_BETWEEN_WAVES);
-
-	//Puerta
+	//Puertas
+	//Inicialización
+	FrameDoor::Init(images[ImageType::DOOR_FRAME]);
 	Door::Init(images[ImageType::DOORS]);
-	Door* door = new Door(32 + GAME_X_OFFSET, 24 + FRAME_DOOR_OFFSETY);
 
-	//Cliente
-	Client::Init(images[ImageType::CLIENT]);
-	Client * client = new Client(32 + GAME_X_OFFSET, 24 + FRAME_DOOR_OFFSETY, door);
+	//Creación objetos
+	FrameDoor** frameDoors = new FrameDoor * [NUM_VISIBLE_DOORS];
+	Door** doors = new Door * [NUM_VISIBLE_DOORS];
+	float nextClosingDoorSeconds[NUM_VISIBLE_DOORS];	//Creación del array de instantes de tiempo en los que se cierran las puertas
+	float nextOpeningDoorSeconds[NUM_VISIBLE_DOORS];	//Creación del array de instantes de tiempo en los que se abren las puertas
 
-	//Dollar
-	Dollar::Init(images[ImageType::DOLLARS]);
-	Dollar** dollars = new Dollar * [NUM_DOORS];
-
-	
-	int posX = GAME_X_OFFSET;
-	for (int i = 0; i < NUM_DOORS; i++)
+	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 	{
-		dollars[i] = new Dollar(posX, 0);
-		posX += DOLLAR_WIDTH;
+		frameDoors[i] = new FrameDoor(GAME_X_OFFSET + i * FRAME_DOOR_WIDTH, FRAME_DOOR_OFFSETY);
+		doors[i] = new Door(2 * GAME_X_OFFSET + i * FRAME_DOOR_WIDTH, DOOR_OFFSET_Y + FRAME_DOOR_OFFSETY);
+		nextClosingDoorSeconds[i] = 0.0f;
+		nextOpeningDoorSeconds[i] = 0.0f;
 	}
 
+	//Cliente
+	//Inicialización
+	Client::Init(images[ImageType::CLIENT]);
+
+	//Creación objetos
+	//Client * client = new Client(32 + GAME_X_OFFSET, 24 + FRAME_DOOR_OFFSETY, door);
+
+	//Dollar
+	//Inicialización
+	Dollar::Init(images[ImageType::DOLLARS]);
+
+	//Creación objetos
+	Dollar** dollars = new Dollar * [NUM_DOORS];
+
+	for (int i = 0; i < NUM_DOORS; i++)
+		dollars[i] = new Dollar(i*DOLLAR_WIDTH + GAME_X_OFFSET, 0);
+
+
+	//Configuración de la escena
+
+	//Inicializar UI
 	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 		dollars[i]->SetVisible(true);
 
-	//FrameDoor
-	FrameDoor::Init(images[ImageType::DOOR_FRAME]);
-	FrameDoor** frameDoors = new FrameDoor * [NUM_VISIBLE_DOORS];
-	posX = GAME_X_OFFSET;
-	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
-	{
-		frameDoors[i] = new FrameDoor(posX, FRAME_DOOR_OFFSETY);
-		posX += FRAME_DOOR_WIDTH;
-	}
-
-	//Puerta mas a la izquierda
+	//Puerta seleccionada (mas a la izquierda)
 	int doorIndex = 0;
+	
+	float gameTimer = 0.0f;
 
 	//Se lanza la hebra de renderizado
 	RendererThread::Start();
@@ -159,7 +179,9 @@ int main(int argc, char* args[])
 	while (RendererThread::GetPendingFrames() > 0)
 		;
 
+	//Variables bucle
 	int tick = 0;
+	float deltaTime = timestep.count() / 1000000000.0f;//Tiempo entre frames
 
 	using clock = std::chrono::high_resolution_clock;
 
@@ -191,34 +213,52 @@ int main(int argc, char* args[])
 			doorIndex = (doorIndex + 1) % NUM_DOORS;
 			dollars[(doorIndex + 2) % NUM_DOORS]->SetVisible(true);
 		}
-		if (Input::GetUserInput().Key_1)
-		{
-			dollars[doorIndex]->SetMoneyReceived(true);
-		}
-
-		if (Input::GetUserInput().Key_2)
-		{
-			door->SetClosed(false);
-		}
-		if (Input::GetUserInput().Key_3)
-		{
-			door->SetClosed(true);
-		}
-
 
 		// update game logic as lag permits
-		while (lag >= timestep) {
-
-			//Paso de simulación
-
-			for (int i = 0; i < NUM_DOORS; i++)
-				dollars[i]->Update(tick, timestep.count() / 1000000000.0f);
+		while (lag >= timestep) 
+		{
+			gameTimer += deltaTime;
 
 			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
-				frameDoors[i]->Update(tick, timestep.count() / 1000000000.0f);
+			{
+				//Se abre una puerta
+				if (doors[i]->IsClosed())
+				{
+					if(nextOpeningDoorSeconds[i] == 0.0f)
+						nextOpeningDoorSeconds[i] = gameTimer + RandomFloat(MIN_SECONDS_OPENING_DOOR, MAX_SECONDS_OPENING_DOOR);
 
-			door->Update(tick, timestep.count() / 1000000000.0f);
-			client->Update(tick, timestep.count() / 1000000000.0f);
+					if (gameTimer > nextOpeningDoorSeconds[i]) {
+						doors[i]->SetClosed(false);
+						nextClosingDoorSeconds[i] = 0.0f;
+					}
+				}
+
+				//Se comprueba si la puerta esta abierta
+				if (doors[i]->IsOpened()) 
+				{
+					if (nextClosingDoorSeconds[i] == 0.0f)
+						nextClosingDoorSeconds[i] = gameTimer + DOOR_OPENED_TIME;
+
+					if (gameTimer > nextClosingDoorSeconds[i])
+					{
+						doors[i]->SetClosed(true);
+						dollars[(doorIndex + i) % NUM_DOORS]->WinMoney();
+						nextOpeningDoorSeconds[i] = 0.0f;
+					}
+				}
+
+			}
+			//Paso de simulación
+			//Puerta
+			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+			{
+				frameDoors[i]->Update(tick, gameTimer);
+				doors[i]->Update(tick, gameTimer);
+			}
+			//Dolares
+			for (int i = 0; i < NUM_DOORS; i++)
+				dollars[i]->Update(tick, gameTimer);
+
 			//waves->Update();
 
 			lag -= timestep;
@@ -228,15 +268,17 @@ int main(int argc, char* args[])
 		while (RendererThread::GetPendingFrames() >= NUM_BUFFERS)
 			;
 
+		//Doors
+		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+		{
+			frameDoors[i]->Render();
+			doors[i]->Render();
+		}
+
+		//Dollars
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Render();
 
-		//FrameDoor
-		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
-			frameDoors[i]->Render();
-
-		door->Render();
-		client->Render();
 
 		//rendererThread->EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
 
@@ -247,11 +289,11 @@ int main(int argc, char* args[])
 
 		//Delay
 		tick++;
-
 	}
 
 	RendererThread::Stop();
 
+	//Dollars
 	for (int i = 0; i < NUM_DOORS; ++i)
 		delete[] dollars[i];
 
@@ -259,26 +301,26 @@ int main(int argc, char* args[])
 	dollars = nullptr;
 	Dollar::Release();
 
-	for (int i = 0; i < NUM_VISIBLE_DOORS; ++i)
-		delete[] frameDoors[i];
+	//Cliente
+	Client::Release();
 
+	//Puertas
+	for (int i = 0; i < NUM_VISIBLE_DOORS; ++i) {
+		delete[] doors[i];
+		delete[] frameDoors[i];
+	}
+
+	//Puerta
+	delete[] doors;
+	doors = nullptr;
+	Door::Release();
+
+	//FrameDoor
 	delete[] frameDoors;
 	frameDoors = nullptr;
 	FrameDoor::Release();
 
-	//Cliente
-	delete client;
-	client = nullptr;
-	Client::Release();
-
-	//Puerta
-	delete door;
-	door = nullptr;
-	Door::Release();
-
-	//delete waves;
-	//waves = nullptr;
-
+	//Liberar recursos
 	for (int i = 0; i < ImageType::SIZE; i++)
 	{
 		delete images[i];

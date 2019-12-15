@@ -13,7 +13,7 @@ protected:
 
 public:
 	Entity(int x, int y);
-	virtual void Update(float delta, float deltaTime) = 0;
+	virtual void Update(float delta, float time) = 0;
 	virtual void Render();
 
 protected:

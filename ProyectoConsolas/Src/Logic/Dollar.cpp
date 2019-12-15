@@ -5,18 +5,19 @@
 
 #include <iostream>
 
-const float Dollar::ANIM_RATE = 0.2f;
+const float Dollar::ANIM_RATE = 0.4f;
 const int Dollar::NUM_SPRITES = 6;
 
 Sprite** Dollar::dollarSprites = nullptr;
 
-Dollar::Dollar(int x, int y) : Entity(x,y)
+Dollar::Dollar(int x, int y) : Entity(x, y)
 {
 	sprites = dollarSprites;
 
-	animTimer = 0.0f;
+	endAnimTime = 0.0f;
 	_visible = false;
 	_moneyReceived = false;
+	winingMoney = false;
 }
 
 void Dollar::Init(Image* dollarImage)
@@ -46,26 +47,46 @@ void Dollar::Release()
 	dollarSprites = nullptr;
 }
 
-void Dollar::Update(float delta,float deltaTime)
+void Dollar::Update(float delta, float time)
 {
 	int newDollarState;
-	if (_visible && _moneyReceived)
+
+	//Recibiendo ahora la moneda
+	if (_visible && winingMoney)
 	{
-		//Fin de la animación
-		if (animTimer >= ANIM_RATE * 2)
-			newDollarState = DollarState::DOLLAR_VISIBLE_MONEY;
-
-		else
+		switch (currentState)
 		{
-			animTimer += deltaTime;
-
-			if (animTimer >= ANIM_RATE)
+		case DollarState::DOLLAR_VISIBLE:
+		case DollarState::DOLLAR_VISIBLE_MONEY:
+			//Se inicia la animación
+			_moneyReceived = true;
+			endAnimTime = time + ANIM_RATE;
+			newDollarState = DollarState::DOLLAR_ANIM_0;
+			break;
+		case DollarState::DOLLAR_ANIM_0:
+			if (time >= endAnimTime - ANIM_RATE / 2)
 				newDollarState = DollarState::DOLLAR_ANIM_1;
 			else
 				newDollarState = DollarState::DOLLAR_ANIM_0;
+			break;
+
+		case DollarState::DOLLAR_ANIM_1:
+			//Fin de la animación
+			if (time >= endAnimTime)
+			{
+				winingMoney = false;
+				newDollarState = DollarState::DOLLAR_VISIBLE_MONEY;
+			}
+			else
+				newDollarState = DollarState::DOLLAR_ANIM_1;
+			break;
 
 		}
 	}
+
+	else if (_visible && _moneyReceived)
+		newDollarState = DollarState::DOLLAR_VISIBLE_MONEY;
+
 	else if (_visible)
 		newDollarState = DollarState::DOLLAR_VISIBLE;
 

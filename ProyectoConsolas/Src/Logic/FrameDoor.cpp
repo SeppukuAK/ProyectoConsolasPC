@@ -29,7 +29,7 @@ void FrameDoor::Release()
 	frameDoorSprite = nullptr;
 }
 
-void FrameDoor::Update(float delta, float deltaTime)
+void FrameDoor::Update(float delta, float time)
 {	
 	CheckState(delta, 0);
 }

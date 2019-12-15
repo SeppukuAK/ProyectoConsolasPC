@@ -17,7 +17,7 @@ Door::Door(int x, int y) : Entity(x, y)
 {
 	sprites = doorSprites;
 	_closed = true;
-	animTimer = 0.0f;
+	endAnimTime = 0.0f;
 }
 
 void Door::Init(Image* doorsImage)
@@ -53,7 +53,7 @@ void Door::Release()
 	doorRects = nullptr;
 }
 
-void Door::Update(float delta, float deltaTime)
+void Door::Update(float delta, float time)
 {
 	int newDoorState = 0;
 
@@ -63,19 +63,19 @@ void Door::Update(float delta, float deltaTime)
 	case DoorState::DOOR_CLOSED:
 		if (_closed)
 			newDoorState = DoorState::DOOR_CLOSED;
+
+		//Se empieza a abrir
 		else
 		{
-			animTimer = 0.0f;
+			endAnimTime = time + ANIM_RATE;
 			newDoorState = DoorState::DOOR_OPENING_0;
 		}
 		break;
 
 	case DoorState::DOOR_OPENING_0:
-		animTimer += deltaTime;
-
 		if (_closed)
 		{
-			if (animTimer >= ANIM_RATE)
+			if (time >= endAnimTime)
 				newDoorState = DoorState::DOOR_CLOSED;
 			else
 				newDoorState = DoorState::DOOR_OPENING_0;
@@ -83,7 +83,7 @@ void Door::Update(float delta, float deltaTime)
 		}
 		else
 		{
-			if (animTimer >= ANIM_RATE / 2)
+			if (time >= endAnimTime - ANIM_RATE / 2)
 				newDoorState = DoorState::DOOR_OPENING_1;
 			else
 				newDoorState = DoorState::DOOR_OPENING_0;
@@ -91,10 +91,9 @@ void Door::Update(float delta, float deltaTime)
 		break;
 
 	case DoorState::DOOR_OPENING_1:
-		animTimer += deltaTime;
 		if (_closed)
 		{
-			if (animTimer >= ANIM_RATE / 2)
+			if (time >= endAnimTime - ANIM_RATE / 2)
 				newDoorState = DoorState::DOOR_OPENING_0;
 			else
 				newDoorState = DoorState::DOOR_OPENING_1;
@@ -102,7 +101,7 @@ void Door::Update(float delta, float deltaTime)
 		}
 		else
 		{
-			if (animTimer >= ANIM_RATE)
+			if (time >= endAnimTime)
 				newDoorState = DoorState::DOOR_OPENED;
 			else
 				newDoorState = DoorState::DOOR_OPENING_1;
@@ -113,7 +112,7 @@ void Door::Update(float delta, float deltaTime)
 	case DoorState::DOOR_OPENED:
 		if (_closed)
 		{
-			animTimer = 0.0f;
+			endAnimTime = time + ANIM_RATE;
 			newDoorState = DoorState::DOOR_OPENING_1;
 		}
 		else
@@ -128,3 +127,4 @@ void Door::Render() {
 	if (changedState)
 		sprites[currentState]->DrawPartially(_x + BACKGROUND_PIXELS * currentState, _y, doorRects[currentState]);
 }
+

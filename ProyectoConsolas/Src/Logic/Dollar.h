@@ -17,7 +17,9 @@ private:
 
 	bool _visible;
 	bool _moneyReceived;
-	float animTimer;
+
+	float endAnimTime;
+	bool winingMoney;
 
 public:
 	static void Init(Image* dollarImage);
@@ -25,10 +27,9 @@ public:
 
 	Dollar(int x, int y);
 
-	void Update(float delta, float deltaTime) override;
+	void Update(float delta, float time) override;
 
-	inline bool GetMoneyReceived() const { return _moneyReceived; };
 	inline void SetVisible(bool visible) { _visible = visible; };
-	inline void SetMoneyReceived(bool moneyReceived) { _moneyReceived = moneyReceived; };
+	inline void WinMoney() { winingMoney = true; };
 };
 

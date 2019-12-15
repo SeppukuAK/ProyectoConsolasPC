@@ -19,7 +19,7 @@ private:
 
 	bool _closed;
 
-	float animTimer;
+	float endAnimTime;
 
 public:
 	static const int BACKGROUND_PIXELS;
@@ -29,10 +29,12 @@ public:
 
 	Door(int x, int y);
 
-	virtual void Update(float delta, float deltaTime) override;
+	virtual void Update(float delta, float time) override;
 	virtual void Render() override;
 
 	inline void SetClosed(bool closed) { _closed = closed; };
 	inline int GetCurrentState()const { return currentState; };
+	inline bool IsClosed() const { return (currentState == DoorState::DOOR_CLOSED); };
+	inline bool IsOpened()const { return (currentState == DoorState::DOOR_OPENED); };
 };
 
