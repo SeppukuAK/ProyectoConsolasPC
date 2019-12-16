@@ -54,6 +54,12 @@
     <Filter Include="Header Files\Utilities">
       <UniqueIdentifier>{a2c4fd3b-c113-4944-989f-1c61591cbe36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Logic\_old">
+      <UniqueIdentifier>{453dedc7-2b1d-4307-aef3-c125f5db07e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logic\_old">
+      <UniqueIdentifier>{725847a1-4821-49a9-b69c-ca9345af2e51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\Main.cpp">
@@ -64,9 +70,6 @@
     </ClCompile>
     <ClCompile Include="..\Src\Renderer\PC\RendererPC.cpp">
       <Filter>Source Files\Renderer\PC</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Logic\Waves.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="..\Src\Renderer\RendererThread.cpp">
       <Filter>Source Files\Renderer</Filter>
@@ -95,6 +98,12 @@
     <ClCompile Include="..\Src\Logic\Client.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\Logic\WestBank.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\Waves.cpp">
+      <Filter>Source Files\Logic\_old</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Renderer\Renderer.h">
@@ -108,9 +117,6 @@
     </ClInclude>
     <ClInclude Include="..\Src\Platform\PC\PlatformPC.h">
       <Filter>Header Files\Platform\PC</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\Logic\Waves.h">
-      <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\Renderer\RendererThread.h">
       <Filter>Header Files\Renderer</Filter>
@@ -159,6 +165,12 @@
     </ClInclude>
     <ClInclude Include="..\Src\Logic\Client.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\WestBank.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Waves.h">
+      <Filter>Header Files\Logic\_old</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

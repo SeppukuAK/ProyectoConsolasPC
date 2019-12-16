@@ -185,3 +185,4 @@ En todo:
 -no se donde va rect.h
 -RendererThread. Me ha dado perezota
 -FrameRate esta mal. Va demasiado rapido
+-DELETE BIEN?? . Array [] . Elementos normal

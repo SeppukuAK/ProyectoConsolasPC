@@ -75,6 +75,7 @@
     <ClCompile Include="..\Src\Logic\FrameDoor.cpp" />
     <ClCompile Include="..\Src\Logic\Sprite.cpp" />
     <ClCompile Include="..\Src\Logic\Waves.cpp" />
+    <ClCompile Include="..\Src\Logic\WestBank.cpp" />
     <ClCompile Include="..\Src\Main.cpp" />
     <ClCompile Include="..\Src\Platform\PC\PlatformPC.cpp" />
     <ClCompile Include="..\Src\Renderer\Image.cpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="..\Src\Logic\FrameDoor.h" />
     <ClInclude Include="..\Src\Logic\Sprite.h" />
     <ClInclude Include="..\Src\Logic\Waves.h" />
+    <ClInclude Include="..\Src\Logic\WestBank.h" />
     <ClInclude Include="..\Src\Platform\PC\PlatformPC.h" />
     <ClInclude Include="..\Src\Platform\Platform.h" />
     <ClInclude Include="..\Src\Renderer\Color.h" />
