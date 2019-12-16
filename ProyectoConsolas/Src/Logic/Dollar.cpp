@@ -52,17 +52,10 @@ void Dollar::Update(float delta, float time)
 	int newDollarState;
 
 	//Recibiendo ahora la moneda
-	if (_visible && winingMoney)
+	if (winingMoney)
 	{
 		switch (currentState)
 		{
-		case DollarState::DOLLAR_VISIBLE:
-		case DollarState::DOLLAR_VISIBLE_MONEY:
-			//Se inicia la animación
-			_moneyReceived = true;
-			endAnimTime = time + ANIM_RATE;
-			newDollarState = DollarState::DOLLAR_ANIM_0;
-			break;
 		case DollarState::DOLLAR_ANIM_0:
 			if (time >= endAnimTime - ANIM_RATE / 2)
 				newDollarState = DollarState::DOLLAR_ANIM_1;
@@ -79,6 +72,12 @@ void Dollar::Update(float delta, float time)
 			}
 			else
 				newDollarState = DollarState::DOLLAR_ANIM_1;
+			break;
+		default:
+			//Se inicia la animación
+			_moneyReceived = true;
+			endAnimTime = time + ANIM_RATE;
+			newDollarState = DollarState::DOLLAR_ANIM_0;
 			break;
 
 		}

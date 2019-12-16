@@ -246,8 +246,8 @@ int main(int argc, char* args[])
 						nextOpeningDoorSeconds[i] = 0.0f;
 					}
 				}
-
 			}
+
 			//Paso de simulación
 			//Puerta
 			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
