@@ -41,5 +41,8 @@ public:
 	inline int GetCurrentState()const { return currentState; };
 	inline bool IsClosed() const { return (currentState == DoorState::DOOR_CLOSED); };
 	inline bool IsOpened()const { return (currentState == DoorState::DOOR_OPENED); };
+	inline int GetPosX()const { return _x; };
+	inline int GetPosY()const { return _y; };
+
 };
 

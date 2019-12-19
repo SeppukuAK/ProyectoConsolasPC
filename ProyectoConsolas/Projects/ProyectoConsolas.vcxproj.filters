@@ -110,6 +110,9 @@
     <ClCompile Include="..\Src\Logic\Bang.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\Logic\Thief.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Renderer\Renderer.h">
@@ -182,6 +185,9 @@
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\Logic\DeathBackground.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Thief.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>

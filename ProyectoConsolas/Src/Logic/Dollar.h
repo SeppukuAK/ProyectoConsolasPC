@@ -36,5 +36,8 @@ public:
 
 	inline void SetVisible(bool visible) { _visible = visible; };
 	inline void WinMoney() { winingMoney = true; };
+
+	//Si ya esta ganado ese dolar
+	inline bool HasAlreadyWonDollar() { return _moneyReceived; };
 };
 

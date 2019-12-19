@@ -11,20 +11,15 @@ class Door;
 	Tienen el mismo ancho que el ancho que deja una puerta completamente abierta
 	TODO: LADRON TAMBIEN
 */
-class Client : public Entity
+class Thief : public Entity
 {
-public: 
-	static const int NUM_SPRITES;
-
 private:
-	enum ClientState { CLIENT_IDLE, CLIENT_DEAD_0, CLIENT_DEAD_1 };
+	enum ClientState { THIEF_IDLE, THIEF_DEAD_0, THIEF_DEAD_1 };
 
 	static const float ANIM_RATE;
-
-	static Sprite** clientSprites;
-
-	float endAnimTime;
-	bool dying;
+	static const int NUM_SPRITES;
+	static const int TOTAL_SPRITES;
+	static Sprite** thiefSprites;
 
 	float animTimer;
 	static int spriteWidth;
@@ -38,8 +33,7 @@ public:
 	static void Init(Image* clientImage);
 	static void Release();
 
-	Client(int x, int y, Door* door);
-	void Reset() override;
+	Thief(int x, int y, Door* door);
 
 	virtual void Update(float delta, float deltaTime) override;
 	virtual void Render() override;

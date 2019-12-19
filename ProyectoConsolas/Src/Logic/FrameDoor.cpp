@@ -37,12 +37,17 @@ void FrameDoor::Update(float delta, float time)
 
 void FrameDoor::RenderWithDelta(int posX) {
 	Rect rLeft = scrollRect;
-	Rect rRight = scrollRect;
 	rLeft.X = scrollRect.Width - posX;
-	rRight.X = 0;
 	rLeft.Width = posX;
+
+
+	Rect rRight = scrollRect;
+	rRight.X = 0;
 	rRight.Width = scrollRect.Width - posX;
+
 	sprites[currentState]->DrawPartially(_x + posX, _y, rRight);
 	sprites[currentState]->DrawPartially(_x, _y, rLeft);
+
+
 
 }

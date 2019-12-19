@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 class Image;
 class FrameDoor;
@@ -6,6 +7,8 @@ class Door;
 class Dollar;
 class DeathBackground;
 class Bang;
+class Client;
+class Thief;
 
 class WestBank
 {
@@ -39,6 +42,8 @@ private:
 	//FrameDoor
 	static int posX;
 
+
+
 	//Carga de recursos. Asumen una resolución de juego de 640 x 360
 	static Image** images;
 
@@ -48,12 +53,23 @@ private:
 	static DeathBackground* deathBackground;
 	static Bang* bang;
 
+	//Client
+	static std::vector <Client*> clients; //Vector de clientes(puede haber más de uno a la vez)
+
+	//Thief
+	static std::vector<Thief*> thieves; //Vector de clientes(puede haber más de uno a la vez)
+
+	static int personChosen;		//Persona elegida (Cliente o Bandido)
+
 	//Puertas
 	static float nextClosingDoorSeconds;	//Instante de tiempo en los que se cierra las puerta
 	static float nextOpeningDoorSeconds;	//Instante de tiempo en los que se abre las puerta
 	static int doorChosenIndex;				//Puerta elegida para abrirse
 	static int oldDoorChosenIndex;			//Anterior Puerta elegida para abrirse
 	static bool allDoorsClosed;
+
+	//Dolares
+	static int dollarsWon;
 
 	//UI
 
