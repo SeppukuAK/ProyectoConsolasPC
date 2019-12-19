@@ -177,8 +177,8 @@ void WestBank::ResetScene()
 	}
 
 	//Inicializar UI
-	for (int i = doorIndex; i < NUM_VISIBLE_DOORS; i++)
-		dollars[i]->SetVisible(true);
+	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+		dollars[i + doorIndex]->SetVisible(true);
 
 	nextResetGameSeconds = 0.0f;
 
@@ -243,6 +243,7 @@ void WestBank::Update(float time, float tick)
 
 			//A la puerta le toca abrirse
 			else if (time > nextOpeningDoorSeconds) {
+				allDoorsClosed = false;
 				doors[doorChosenIndex]->SetClosed(false);
 				nextOpeningDoorSeconds = 0.0f;
 				nextClosingDoorSeconds = 0.0f;
@@ -269,7 +270,6 @@ void WestBank::Update(float time, float tick)
 				dollars[(doorIndex + doorChosenIndex) % NUM_DOORS]->WinMoney();
 				nextOpeningDoorSeconds = 0.0f;
 				nextClosingDoorSeconds = 0.0f;
-				allDoorsClosed = true;
 
 				//Se elige la nueva puerta
 				oldDoorChosenIndex = doorChosenIndex;
@@ -296,9 +296,16 @@ void WestBank::Update(float time, float tick)
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Update(tick, time);
 
-		posX++;//Se aumenta la posicion del frameDoor
-		if (posX == FrameDoor::GetFrameDoorWidth())
+		posX+=5;//Se aumenta la posicion del frameDoor
+		if (posX > FrameDoor::GetFrameDoorWidth())
+		{
+			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+			{
+				frameDoors[i]->Reset();
+
+			}
 			gameState = GameState::GAMEPLAY;
+		}
 
 		break;
 	}
@@ -307,9 +314,16 @@ void WestBank::Update(float time, float tick)
 		//Dolares
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Update(tick, time);
-		posX--;
-		if (posX == 0)
+
+		posX-=5;
+
+		if (posX < 0)
+		{
+			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+				frameDoors[i]->Reset();
+
 			gameState = GameState::GAMEPLAY;
+		}
 
 		break;
 	}
