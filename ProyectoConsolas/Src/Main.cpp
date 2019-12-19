@@ -13,8 +13,8 @@ using namespace std;
 
 //Atributos de la ventana
 const int NUM_BUFFERS = 1;							//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 2-16 //TODO: DETECTAR ERROR?
-const int SCREEN_WIDTH = 1920;
-const int SCREEN_HEIGHT = 1080;						//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;						//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
 
 const double MS_PER_UPDATE = 1000.0 / 60;
 

@@ -35,7 +35,7 @@ public:
 
 	Thief(int x, int y, Door* door);
 
-	virtual void Update(float delta, float deltaTime) override;
+	virtual void Update(float delta) override;
 	virtual void Render() override;
 
 };

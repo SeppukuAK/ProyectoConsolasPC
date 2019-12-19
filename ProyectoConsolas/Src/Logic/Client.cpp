@@ -69,14 +69,14 @@ void Client::Update(float delta)
 	if (dying) {
 		switch (currentState) {
 		case ClientState::CLIENT_DEAD_0:
-			if (time >= endAnimTime - ANIM_RATE / 2) {
+			if (Time::time >= endAnimTime - ANIM_RATE / 2) {
 				newClientState = ClientState::CLIENT_DEAD_1;
 				dying = false;
 			}
 
 		case ClientState::CLIENT_IDLE:
 			//Se inicia la animaci�n
-			endAnimTime = time + ANIM_RATE;
+			endAnimTime = Time::time + ANIM_RATE;
 			newClientState = ClientState::CLIENT_DEAD_0;
 			break;
 		}

@@ -353,13 +353,13 @@ void WestBank::Update(float tick)
 		{
 			//Si no se ha planificado cuando se tiene que abrir una puerta, se planifica
 			if (nextOpeningDoorSeconds == 0.0f) {
-				nextOpeningDoorSeconds = time + RandomFloat(MIN_SECONDS_OPENING_DOOR, MAX_SECONDS_OPENING_DOOR);
+				nextOpeningDoorSeconds = Time::time + RandomFloat(MIN_SECONDS_OPENING_DOOR, MAX_SECONDS_OPENING_DOOR);
 
 			}
 
 			//A la puerta le toca abrirse
 			//Se decide si toca cliente o bandido
-			else if (time > nextOpeningDoorSeconds) {
+			else if (Time::time > nextOpeningDoorSeconds) {
 				allDoorsClosed = false;
 				doors[doorChosenIndex]->SetClosed(false);
 				nextOpeningDoorSeconds = 0.0f;
@@ -434,16 +434,16 @@ void WestBank::Update(float tick)
 		//Puerta
 		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 		{
-			frameDoors[i]->Update(tick, time);
-			doors[i]->Update(tick, time);
+			frameDoors[i]->Update(tick);
+			doors[i]->Update(tick);
 
 			//Compruebo si existe el cliente
 			if (clients[i] != nullptr)
-				clients[i]->Update(tick, time);
+				clients[i]->Update(tick);
 
 			//Compruebo si existe el cliente
 			if (thieves[i] != nullptr)
-				thieves[i]->Update(tick, time);
+				thieves[i]->Update(tick);
 
 		}
 

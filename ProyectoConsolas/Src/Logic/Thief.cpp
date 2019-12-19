@@ -51,7 +51,7 @@ void Thief::Release()
 	thiefSprites = nullptr;
 }
 
-void Thief::Update(float delta, float deltaTime)
+void Thief::Update(float delta)
 {
 	int newClientState = 0;
 	CheckState(delta, newClientState);
