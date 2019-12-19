@@ -9,6 +9,7 @@
 #include "Dollar.h"
 #include "DeathBackground.h"
 #include "Bang.h"
+#include "../Utilities/Time.h"
 
 #include <iostream>
 using namespace std;
@@ -18,6 +19,13 @@ const float WestBank::MIN_SECONDS_OPENING_DOOR = 0.5f;
 const float WestBank::MAX_SECONDS_OPENING_DOOR = 3.0f;
 const float WestBank::DOOR_OPENED_TIME = 2.0f;	//Incluye el tiempo abriendose
 const float WestBank::BANG_TIME = 2.0f;
+const float WestBank::FIRE_RATE = 1.0f;
+const float WestBank::DEADZONE_TRIGGER_ACTIVE = 0.5f;
+const float WestBank::DEADZONE_TRIGGER_REPOSE = -0.5f;
+
+const float WestBank::DEADZONE_AXIS_CENTER = 0.2f;
+const float WestBank::DEADZONE_AXIS_DIRECTION = 0.8f;
+
 
 const int WestBank::NUM_DOORS = 9;
 const int WestBank::NUM_VISIBLE_DOORS = 3;
@@ -47,6 +55,8 @@ int WestBank::doorIndex = 0;
 
 WestBank::GameState WestBank::gameState = GameState::GAMEPLAY;
 float WestBank::nextResetGameSeconds = 0.0f;
+float WestBank::nextFire = 0.0f;
+bool WestBank::canShoot = true;
 
 void WestBank::Init()
 {
@@ -102,7 +112,7 @@ void WestBank::Release()
 
 void WestBank::LoadResources()
 {
-	images = new Image *[ImageType::SIZE];
+	images = new Image * [ImageType::SIZE];
 
 	images[ImageType::DOOR_FRAME] = Platform::LoadImage("SpritesSheetsWestBank/marcoPuerta.rgba");
 	images[ImageType::DOORS] = Platform::LoadImage("SpritesSheetsWestBank/puertas.rgba");
@@ -120,8 +130,8 @@ void WestBank::InitScene()
 	Door::Init(images[ImageType::DOORS]);
 
 	//Creaci�n objetos
-	frameDoors = new FrameDoor *[NUM_VISIBLE_DOORS];
-	doors = new Door *[NUM_VISIBLE_DOORS];
+	frameDoors = new FrameDoor * [NUM_VISIBLE_DOORS];
+	doors = new Door * [NUM_VISIBLE_DOORS];
 
 	float frameDoorWidth = images[ImageType::DOOR_FRAME]->GetWidth();
 	float frameDoorOffsetY = images[ImageType::DOLLARS]->GetHeight();
@@ -144,7 +154,7 @@ void WestBank::InitScene()
 	Dollar::Init(images[ImageType::DOLLARS]);
 
 	//Creaci�n objetos
-	dollars = new Dollar *[NUM_DOORS];
+	dollars = new Dollar * [NUM_DOORS];
 
 	float dollarWidth = images[ImageType::DOLLARS]->GetWidth() / Dollar::NUM_SPRITES;
 
@@ -188,7 +198,8 @@ void WestBank::ResetScene()
 	nextOpeningDoorSeconds = 0.0f;
 	oldDoorChosenIndex = -1;
 	allDoorsClosed = true;
-
+	nextFire = 0.0f;
+	canShoot = true;
 }
 
 void WestBank::Input()
@@ -198,7 +209,7 @@ void WestBank::Input()
 		//Scroll
 		if (allDoorsClosed)
 		{
-			if (Input::GetUserInput().Key_O)
+			if (Input::GetUserInput().L1 || Input::GetUserInput().Key_O)
 			{
 				if (doorIndex == 0)
 					doorIndex = NUM_DOORS - 1;
@@ -210,7 +221,8 @@ void WestBank::Input()
 				gameState = GameState::SCROLL_LEFT;
 				posX = 0;
 			}
-			if (Input::GetUserInput().Key_P)
+			
+			else if (Input::GetUserInput().R1 || Input::GetUserInput().Key_P)
 			{
 				dollars[doorIndex]->SetVisible(false);
 				doorIndex = (doorIndex + 1) % NUM_DOORS;
@@ -220,36 +232,83 @@ void WestBank::Input()
 
 			}
 		}
-		if (Input::GetUserInput().Key_1)
+
+		//Recarga. Si se han soltado todas las teclas de disparo y los triggers de disparo y ha pasado el tiempo necesario, puedo disparar
+		if (Input::GetUserInput().L2 < DEADZONE_TRIGGER_REPOSE && Input::GetUserInput().R2 < DEADZONE_TRIGGER_REPOSE 
+			&& 	!Input::GetUserInput().Key_1 && !Input::GetUserInput().Key_2 && !Input::GetUserInput().Key_3
+			&& Time::time > nextFire)
 		{
-			gameState = WestBank::GameState::DEATH;
+			canShoot = true;
 		}
 
+		if (canShoot)
+		{
+			int dir = -1;	//Disparo no valido
+
+			//Input de mando
+			if (Input::GetUserInput().L2 > DEADZONE_TRIGGER_ACTIVE || Input::GetUserInput().R2 > DEADZONE_TRIGGER_ACTIVE)
+			{
+				float horizontalAxis = Input::GetUserInput().HorizontalAxis;
+
+				//Centro --> [-DEADZONE_AXIS_CENTER,DEADZONE_AXIS_CENTER]
+				if (horizontalAxis > -DEADZONE_AXIS_CENTER && horizontalAxis < DEADZONE_AXIS_CENTER)
+					dir = 1;
+
+				//Izquierda --> [-1,-DEADZONE_AXIS_DIRECTION]
+				else if (horizontalAxis < -DEADZONE_AXIS_DIRECTION)
+					dir = 0;
+
+				//Derecha --> [DEADZONE_AXIS_DIRECTION,1
+				else if (horizontalAxis > DEADZONE_AXIS_DIRECTION)
+					dir = 2;
+
+			}
+
+			//Centro 
+			else if (Input::GetUserInput().Key_2)
+				dir = 1;
+
+			//Izquierda
+			else if ( Input::GetUserInput().Key_1)
+				dir = 0;
+
+			//Derecha 
+			else if (Input::GetUserInput().Key_3)
+				dir = 2;
+
+			//Direccion valida
+			if (dir != -1)
+			{
+				canShoot = false;
+				nextFire = Time::time + FIRE_RATE;
+
+				cout << "FIRE: " << dir << endl;
+			}
+		}
 	}
 }
 
-void WestBank::Update(float time, float tick)
+void WestBank::Update(float tick)
 {
 	switch (gameState)
 	{
 	case GameState::GAMEPLAY:
 	{
-
 		if (doors[doorChosenIndex]->IsClosed())
 		{
 			//Si no se ha planificado cuando se tiene que abrir una puerta, se planifica
 			if (nextOpeningDoorSeconds == 0.0f)
-				nextOpeningDoorSeconds = time + RandomFloat(MIN_SECONDS_OPENING_DOOR, MAX_SECONDS_OPENING_DOOR);
+				nextOpeningDoorSeconds = Time::time + RandomFloat(MIN_SECONDS_OPENING_DOOR, MAX_SECONDS_OPENING_DOOR);
 
 			//A la puerta le toca abrirse
-			else if (time > nextOpeningDoorSeconds) {
+			else if (Time::time > nextOpeningDoorSeconds) {
 				allDoorsClosed = false;
 				doors[doorChosenIndex]->SetClosed(false);
 				nextOpeningDoorSeconds = 0.0f;
 				nextClosingDoorSeconds = 0.0f;
 			}
 			//Si a la puerta actual no le toca abrirse y la anterior est� cerrada, est�n todas cerradas
-			else if(oldDoorChosenIndex >= 0 && doors[oldDoorChosenIndex]->IsClosed())
+			else if (oldDoorChosenIndex >= 0 && doors[oldDoorChosenIndex]->IsClosed())
 			{
 				allDoorsClosed = true;
 				oldDoorChosenIndex = -1;
@@ -261,10 +320,10 @@ void WestBank::Update(float time, float tick)
 		{
 			//Si no se ha planificado el cierre, se planifica
 			if (nextClosingDoorSeconds == 0.0f)
-				nextClosingDoorSeconds = time + DOOR_OPENED_TIME;
+				nextClosingDoorSeconds = Time::time + DOOR_OPENED_TIME;
 
 			//A la puerta le toca cerrarse(est� abierta)
-			else if (time > nextClosingDoorSeconds)
+			else if (Time::time > nextClosingDoorSeconds)
 			{
 				doors[doorChosenIndex]->SetClosed(true);
 				dollars[(doorIndex + doorChosenIndex) % NUM_DOORS]->WinMoney();
@@ -281,12 +340,12 @@ void WestBank::Update(float time, float tick)
 		//Puerta
 		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 		{
-			frameDoors[i]->Update(tick, time);
-			doors[i]->Update(tick, time);
+			frameDoors[i]->Update(tick);
+			doors[i]->Update(tick);
 		}
 		//Dolares
 		for (int i = 0; i < NUM_DOORS; i++)
-			dollars[i]->Update(tick, time);
+			dollars[i]->Update(tick);
 
 		break;
 	}
@@ -294,10 +353,10 @@ void WestBank::Update(float time, float tick)
 	{
 		//Dolares
 		for (int i = 0; i < NUM_DOORS; i++)
-			dollars[i]->Update(tick, time);
+			dollars[i]->Update(tick);
 
-		posX+=5;//Se aumenta la posicion del frameDoor
-		if (posX > FrameDoor::GetFrameDoorWidth())
+		posX += 5;//Se aumenta la posicion del frameDoor
+		if (posX > FrameDoor::GetFrameDoorWidth() - 1)
 		{
 			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 			{
@@ -313,9 +372,9 @@ void WestBank::Update(float time, float tick)
 	{
 		//Dolares
 		for (int i = 0; i < NUM_DOORS; i++)
-			dollars[i]->Update(tick, time);
+			dollars[i]->Update(tick);
 
-		posX-=5;
+		posX -= 5;
 
 		if (posX < 0)
 		{
@@ -331,17 +390,17 @@ void WestBank::Update(float time, float tick)
 	{
 		if (nextResetGameSeconds == 0.0f)
 		{
-			nextResetGameSeconds = time + BANG_TIME;
+			nextResetGameSeconds = Time::time + BANG_TIME;
 		}
 
-		else if (time >= nextResetGameSeconds)
+		else if (Time::time >= nextResetGameSeconds)
 		{
 			ResetScene();
 		}
 		else
 		{
-			deathBackground->Update(tick, time);
-			bang->Update(tick, time);
+			deathBackground->Update(tick);
+			bang->Update(tick);
 		}
 
 		break;

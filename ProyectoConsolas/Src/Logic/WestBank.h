@@ -27,6 +27,15 @@ private:
 	static const float MIN_SECONDS_OPENING_DOOR;
 	static const float MAX_SECONDS_OPENING_DOOR;
 	static const float DOOR_OPENED_TIME;	//Incluye el tiempo abriendose
+	static const float FIRE_RATE;	
+
+	//Conversión a digital de los triggers
+	static const float DEADZONE_TRIGGER_ACTIVE;
+	static const float DEADZONE_TRIGGER_REPOSE;
+
+	static const float DEADZONE_AXIS_CENTER;
+	static const float DEADZONE_AXIS_DIRECTION;
+
 
 	static const int NUM_DOORS;
 	static const int NUM_VISIBLE_DOORS;
@@ -62,6 +71,8 @@ private:
 	static GameState gameState;			//Estado actual de la escena
 	static int doorIndex;				//Puerta seleccionada (mas a la izquierda)
 	static float nextResetGameSeconds;	//Instante de tiempo en que se reseteará el juego
+	static float nextFire;				//Instante de tiempo en el que se puede disparar
+	static bool canShoot;
 
 public:
 	/*
@@ -75,7 +86,7 @@ public:
 	static void Release();
 
 	static void Input();
-	static void Update(float time, float tick);
+	static void Update(float tick);
 	static void Render();
 
 private:

@@ -20,7 +20,6 @@ public:
 
 	FrameDoor(int x, int y);
 
-	void Update(float delta, float time) override;
 	//virtual void Render() override;
 	void RenderWithDelta(int posX);
 	static int GetFrameDoorWidth() { return scrollRect.Width; };

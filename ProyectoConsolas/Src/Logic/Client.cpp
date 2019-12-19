@@ -4,6 +4,7 @@
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
 #include <iostream>
+#include "../Utilities/Time.h"
 
 using namespace std;
 
@@ -49,10 +50,10 @@ void Client::Release()
 	clientSprites = nullptr;
 }
 
-void Client::Update(float delta, float deltaTime)
+void Client::Update(float delta)
 {
 	int newClientState = 0;
-	CheckState(delta, newClientState);
+	CheckState(Time::time, newClientState);
 
 	if (_door->GetCurrentState() != doorState) {
 		changedState = true;

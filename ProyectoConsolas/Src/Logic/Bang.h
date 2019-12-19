@@ -23,6 +23,6 @@ public:
 	Bang(int x, int y);
 	void Reset() override;
 
-	virtual void Update(float delta, float time) override;
+	virtual void Update(float delta) override;
 };
 

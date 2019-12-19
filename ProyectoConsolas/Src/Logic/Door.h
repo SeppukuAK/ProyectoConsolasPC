@@ -34,7 +34,7 @@ public:
 	Door(int x, int y);
 	void Reset() override;
 
-	virtual void Update(float delta, float time) override;
+	virtual void Update(float delta) override;
 	virtual void Render() override;
 
 	inline void SetClosed(bool closed) { _closed = closed; };

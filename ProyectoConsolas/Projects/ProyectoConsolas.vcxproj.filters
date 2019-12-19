@@ -60,6 +60,9 @@
     <Filter Include="Header Files\Logic\_old">
       <UniqueIdentifier>{725847a1-4821-49a9-b69c-ca9345af2e51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{3827b7c4-df17-4899-b41c-1b43975e0f94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\Main.cpp">
@@ -109,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="..\Src\Logic\Bang.cpp">
       <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Utilities\Time.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +189,9 @@
     </ClInclude>
     <ClInclude Include="..\Src\Logic\DeathBackground.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Utilities\Time.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

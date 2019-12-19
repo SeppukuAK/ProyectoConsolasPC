@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include <iostream>
 #include "WestBank.h"
+#include "../Utilities/Time.h"
 
 const int Bang::NUM_SPRITES = 6;
 
@@ -48,15 +49,14 @@ void Bang::Reset()
 	endAnimTime = 0.0f;
 }
 
-
-void Bang::Update(float delta, float time)
+void Bang::Update(float delta)
 {
 	int newBangState = 0;
 
 	if (endAnimTime == 0.0f)
-		endAnimTime = time + WestBank::BANG_TIME;
+		endAnimTime = Time::time + WestBank::BANG_TIME;
 
-	float leftTime = endAnimTime - time;
+	float leftTime = endAnimTime - Time::time;
 	if (leftTime >= 0)
 	{
 		float currentTime = WestBank::BANG_TIME - leftTime;

@@ -32,7 +32,7 @@ public:
 	Dollar(int x, int y);
 	void Reset() override;
 
-	void Update(float delta, float time) override;
+	void Update(float delta) override;
 
 	inline void SetVisible(bool visible) { _visible = visible; };
 	inline void WinMoney() { winingMoney = true; };

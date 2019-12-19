@@ -2,6 +2,7 @@
 #include "../Renderer/Image.h"
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
+#include "../Utilities/Time.h"
 
 #include <iostream>
 
@@ -59,7 +60,7 @@ void Dollar::Release()
 	dollarSprites = nullptr;
 }
 
-void Dollar::Update(float delta, float time)
+void Dollar::Update(float delta)
 {
 	int newDollarState;
 
@@ -69,7 +70,7 @@ void Dollar::Update(float delta, float time)
 		switch (currentState)
 		{
 		case DollarState::DOLLAR_ANIM_0:
-			if (time >= endAnimTime - ANIM_RATE / 2)
+			if (Time::time >= endAnimTime - ANIM_RATE / 2)
 				newDollarState = DollarState::DOLLAR_ANIM_1;
 			else
 				newDollarState = DollarState::DOLLAR_ANIM_0;
@@ -77,7 +78,7 @@ void Dollar::Update(float delta, float time)
 
 		case DollarState::DOLLAR_ANIM_1:
 			//Fin de la animación
-			if (time >= endAnimTime)
+			if (Time::time >= endAnimTime)
 			{
 				winingMoney = false;
 				newDollarState = DollarState::DOLLAR_VISIBLE_MONEY;
@@ -88,7 +89,7 @@ void Dollar::Update(float delta, float time)
 		default:
 			//Se inicia la animación
 			_moneyReceived = true;
-			endAnimTime = time + ANIM_RATE;
+			endAnimTime = Time::time + ANIM_RATE;
 			newDollarState = DollarState::DOLLAR_ANIM_0;
 			break;
 
