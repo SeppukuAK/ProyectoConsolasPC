@@ -28,6 +28,7 @@ const int WestBank::GAME_X_OFFSET = 32;
 const int WestBank::DOOR_OFFSET_Y = 24;
 
 //Inicialización atributos estáticos
+int WestBank::posX = 0;
 Image** WestBank::images = nullptr;
 FrameDoor** WestBank::frameDoors = nullptr;
 Door** WestBank::doors = nullptr;
@@ -174,14 +175,17 @@ void WestBank::Input()
 
 				dollars[doorIndex]->SetVisible(true);
 				dollars[(doorIndex + 3) % NUM_DOORS]->SetVisible(false);
-				gameState = GameState::SCROLL;
+				gameState = GameState::SCROLL_LEFT;
+				posX = 0;
 			}
 			if (Input::GetUserInput().Key_P)
 			{
 				dollars[doorIndex]->SetVisible(false);
 				doorIndex = (doorIndex + 1) % NUM_DOORS;
 				dollars[(doorIndex + 2) % NUM_DOORS]->SetVisible(true);
-				gameState = GameState::SCROLL;
+				gameState = GameState::SCROLL_RIGHT;
+				posX = FrameDoor::GetFrameDoorWidth();
+
 			}
 		}
 		if (Input::GetUserInput().Key_1)
@@ -189,7 +193,7 @@ void WestBank::Input()
 			gameState = WestBank::GameState::DEATH;
 		}
 
-		cout << Input::GetUserInput().HorizontalAxis << endl;
+	//	cout << Input::GetUserInput().HorizontalAxis << endl;
 
 	}
 }
@@ -256,15 +260,29 @@ void WestBank::Update(float time, float tick)
 
 		break;
 	}
-	case GameState::SCROLL:
+	case GameState::SCROLL_LEFT:
 	{
 		//Dolares
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Update(tick, time);
 
+		posX++;//Se aumenta la posicion del frameDoor
+		if (posX == FrameDoor::GetFrameDoorWidth())
+			gameState = GameState::GAMEPLAY;
+
 		break;
 	}
+	case GameState::SCROLL_RIGHT:
+	{
+		//Dolares
+		for (int i = 0; i < NUM_DOORS; i++)
+			dollars[i]->Update(tick, time);
+		posX--;
+		if (posX == 0)
+			gameState = GameState::GAMEPLAY;
 
+		break;
+	}
 	case GameState::DEATH:
 	{
 		deathBackground->Update(tick, time);
@@ -293,11 +311,18 @@ void WestBank::Render()
 
 		break;
 	}
-	case GameState::SCROLL:
+	case GameState::SCROLL_LEFT:
+	case GameState::SCROLL_RIGHT:
 	{
 		//Dollars
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Render();
+
+		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+		{
+			frameDoors[i]->RenderWithDelta(posX);
+
+		}
 		break;
 	}
 	case GameState::DEATH:

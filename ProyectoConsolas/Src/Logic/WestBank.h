@@ -18,7 +18,7 @@ private:
 	/*
 		Posibles estados de la escena
 	*/
-	enum GameState { GAMEPLAY, SCROLL, DEATH };
+	enum GameState { GAMEPLAY, SCROLL_LEFT, SCROLL_RIGHT, DEATH };
 
 	//Game
 	static const float MIN_SECONDS_OPENING_DOOR;
@@ -33,6 +33,9 @@ private:
 
 	//Door
 	static const int DOOR_OFFSET_Y;
+
+	//FrameDoor
+	static int posX;
 
 	//Carga de recursos. Asumen una resolución de juego de 640 x 360
 	static Image** images;

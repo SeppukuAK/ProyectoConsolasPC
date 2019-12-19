@@ -36,6 +36,15 @@ struct RenderCommandDrawSpriteParams
 	int PosY;
 };
 
+//TODO:ADRI
+struct RenderCommandDrawSpriteWithDeltaParams
+{
+	Image* Image;
+	Rect SourceRect;//No es puntero porque al procesar el comando, el rectángulo puede haberse destruido
+	int PosX;
+	int PosY;
+	int delta;
+};
 /*
 	Todos los campos están en la misma región de memoria
 	No se pueden usar tipos con constructoras (clases)

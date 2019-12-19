@@ -18,6 +18,7 @@ void Sprite::Draw(int posX, int posY) {
 	RendererThread::EnqueueCommand(drawCommand);
 }
 
+
 void Sprite::DrawPartially(int posX, int posY, Rect partialRect)
 {
 	RenderCommand drawCommand;
@@ -29,5 +30,6 @@ void Sprite::DrawPartially(int posX, int posY, Rect partialRect)
 	RendererThread::EnqueueCommand(drawCommand);
 
 }
+
 
 

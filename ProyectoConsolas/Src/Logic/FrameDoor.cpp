@@ -5,6 +5,7 @@
 #include <iostream>
 
 Sprite* FrameDoor::frameDoorSprite = nullptr;
+Rect FrameDoor::scrollRect;
 
 FrameDoor::FrameDoor(int x, int y) : Entity(x, y)
 {
@@ -14,13 +15,12 @@ FrameDoor::FrameDoor(int x, int y) : Entity(x, y)
 void FrameDoor::Init(Image* frameDoorImage)
 {
 	//Fondo dolar
-	Rect sRect;
-	sRect.Width = frameDoorImage->GetWidth();
-	sRect.Height = frameDoorImage->GetHeight();
-	sRect.X = 0;
-	sRect.Y = 0;
+	scrollRect.Width = frameDoorImage->GetWidth();
+	scrollRect.Height = frameDoorImage->GetHeight();
+	scrollRect.X = 0;
+	scrollRect.Y = 0;
 
-	frameDoorSprite = new Sprite(frameDoorImage, sRect);
+	frameDoorSprite = new Sprite(frameDoorImage, scrollRect);
 }
 
 void FrameDoor::Release()
@@ -30,8 +30,19 @@ void FrameDoor::Release()
 }
 
 void FrameDoor::Update(float delta, float time)
-{	
+{
 	CheckState(delta, 0);
 }
 
 
+void FrameDoor::RenderWithDelta(int posX) {
+	Rect rLeft = scrollRect;
+	Rect rRight = scrollRect;
+	rLeft.X = scrollRect.Width - posX;
+	rRight.X = 0;
+	rLeft.Width = posX;
+	rRight.Width = scrollRect.Width - posX;
+	sprites[currentState]->DrawPartially(_x + posX, _y, rRight);
+	sprites[currentState]->DrawPartially(_x, _y, rLeft);
+
+}
