@@ -10,6 +10,7 @@
 #include "DeathBackground.h"
 #include "Bang.h"
 #include "../Utilities/Time.h"
+#include "../Renderer/Renderer.h"
 
 #include <iostream>
 using namespace std;
@@ -166,8 +167,9 @@ void WestBank::InitScene()
 	Bang::Init(images[ImageType::BANG]);
 	bang = new Bang(200, 200);
 
-	ResetScene();
+	Renderer::SetScale(Renderer::GetWidth() / (NUM_VISIBLE_DOORS * frameDoorWidth));
 
+	ResetScene();
 }
 
 void WestBank::ResetScene()
@@ -221,7 +223,7 @@ void WestBank::Input()
 				gameState = GameState::SCROLL_LEFT;
 				posX = 0;
 			}
-			
+
 			else if (Input::GetUserInput().R1 || Input::GetUserInput().Key_P)
 			{
 				dollars[doorIndex]->SetVisible(false);
@@ -234,8 +236,8 @@ void WestBank::Input()
 		}
 
 		//Recarga. Si se han soltado todas las teclas de disparo y los triggers de disparo y ha pasado el tiempo necesario, puedo disparar
-		if (Input::GetUserInput().L2 < DEADZONE_TRIGGER_REPOSE && Input::GetUserInput().R2 < DEADZONE_TRIGGER_REPOSE 
-			&& 	!Input::GetUserInput().Key_1 && !Input::GetUserInput().Key_2 && !Input::GetUserInput().Key_3
+		if (Input::GetUserInput().L2 < DEADZONE_TRIGGER_REPOSE && Input::GetUserInput().R2 < DEADZONE_TRIGGER_REPOSE
+			&& !Input::GetUserInput().Key_1 && !Input::GetUserInput().Key_2 && !Input::GetUserInput().Key_3
 			&& Time::time > nextFire)
 		{
 			canShoot = true;
@@ -269,7 +271,7 @@ void WestBank::Input()
 				dir = 1;
 
 			//Izquierda
-			else if ( Input::GetUserInput().Key_1)
+			else if (Input::GetUserInput().Key_1)
 				dir = 0;
 
 			//Derecha 
@@ -355,7 +357,7 @@ void WestBank::Update(float tick)
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Update(tick);
 
-		posX += 5;//Se aumenta la posicion del frameDoor
+		posX += 2;//Se aumenta la posicion del frameDoor
 		if (posX > FrameDoor::GetFrameDoorWidth() - 1)
 		{
 			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
@@ -374,7 +376,7 @@ void WestBank::Update(float tick)
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Update(tick);
 
-		posX -= 5;
+		posX -= 2;
 
 		if (posX < 0)
 		{
