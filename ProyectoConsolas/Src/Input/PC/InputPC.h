@@ -7,6 +7,7 @@
 struct _SDL_GameController;
 typedef struct _SDL_GameController SDL_GameController;
 union SDL_Event;
+
 /*
 	Clase con métodos estáticos.
 */

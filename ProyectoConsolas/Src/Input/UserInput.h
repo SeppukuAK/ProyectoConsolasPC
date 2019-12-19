@@ -1,11 +1,14 @@
 #pragma once
 
+/*
+	Contiene información actual del input del usuario
+*/
 class UserInput
 {
 public:
 	//GAMEPAD
 	float HorizontalAxis;	//Joystick izquierdo	[-1.0f,1.0f]
-	bool L1, R1;			//Desplazamiento para cambiar puertas
+	bool L1, R1;			
 	float L2, R2;			//Gatillos(triggers) analógicos [-1.0f,1.0f]
 
 	//PC
@@ -14,7 +17,6 @@ public:
 	//bool Cross, Square, Triangle, Circle;
 	//float VerticalAxis;
 
-	//Constructora
 	UserInput() : HorizontalAxis(0.0f), L1(false), R1(false), L2(-1.0f), R2(-1.0f), Key_1(false), Key_2(false), Key_3(false), Key_O(false), Key_P(false) {}
 
 };

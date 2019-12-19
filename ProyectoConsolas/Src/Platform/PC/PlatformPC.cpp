@@ -41,22 +41,27 @@ bool PlatformPC::Tick()
 	*/
 	while (SDL_PollEvent(&e) != 0)
 	{
-
 		switch (e.type)
 		{
 		case SDL_QUIT:
 		case SDL_MOUSEBUTTONDOWN:
+		{
 			quit = true;
 			break;
+		}
 		case SDL_KEYDOWN:
+		{
 			if (e.key.keysym.sym == SDLK_ESCAPE)
 				quit = true;
 			else
 				NotifyObservers(e);
 			break;
+		}
 		default:
+		{
 			NotifyObservers(e);
 			break;
+		}
 		}
 	}
 

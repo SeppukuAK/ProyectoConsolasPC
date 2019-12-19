@@ -101,3 +101,9 @@ En todo:
 -TODOS LOS SWITCH TIENEN QUE TENER LLAVES COMO EN RENDERER_THREAD (DABA WARNING EN PS4)
 -TIME ESTARIA MUY BIEN SIENDO ESTÁTICA
 -Existen todos los objetos desde el inicio o se van borrando y creando con los cambios de escena??????????
+-Const main no se si son especificas de la plataforma
+
+------------------
+COSAS DEL ENUNCIADO:
+-PC TERMINA AL HACER CLICK CON RATON O PULSAR TECLA ESCAPE. A veces va a veces no
+-DISPARAR EN INPUT

@@ -19,12 +19,16 @@ using namespace std;
 //Game
 const float WestBank::MIN_SECONDS_OPENING_DOOR = 0.5f;
 const float WestBank::MAX_SECONDS_OPENING_DOOR = 3.0f;
-const float WestBank::DOOR_OPENED_TIME = 2.0f;	//Incluye el tiempo abriendose
+const float WestBank::DOOR_OPENED_TIME = 2.0f;	
 const float WestBank::BANG_TIME = 2.0f;
 const float WestBank::FIRE_RATE = 1.0f;
+
+//Pantalla de juego
+const int WestBank::GAME_WIDTH = 640;
+const int WestBank::GAME_HEIGHT = 360;
+
 const float WestBank::DEADZONE_TRIGGER_ACTIVE = 0.5f;
 const float WestBank::DEADZONE_TRIGGER_REPOSE = -0.5f;
-
 const float WestBank::DEADZONE_AXIS_CENTER = 0.2f;
 const float WestBank::DEADZONE_AXIS_DIRECTION = 0.8f;
 
@@ -70,6 +74,8 @@ bool WestBank::canShoot = true;
 
 void WestBank::Init()
 {
+	Renderer::SetScale(Renderer::GetWidth() / GAME_WIDTH);
+
 	LoadResources();
 	InitScene();
 }
@@ -188,8 +194,6 @@ void WestBank::InitScene()
 	Bang::Init(images[ImageType::BANG]);
 	bang = new Bang(200, 200);
 
-	Renderer::SetScale(Renderer::GetWidth() / (NUM_VISIBLE_DOORS * frameDoorWidth));
-
 	ResetScene();
 }
 
@@ -240,89 +244,97 @@ void WestBank::ResetScene()
 	canShoot = true;
 }
 
+void WestBank::CheckMovement()
+{
+	if (Input::GetUserInput().L1 || Input::GetUserInput().Key_O)
+	{
+		if (doorIndex == 0)
+			doorIndex = NUM_DOORS - 1;
+		else
+			doorIndex -= 1;
+
+		dollars[doorIndex]->SetVisible(true);
+		dollars[(doorIndex + 3) % NUM_DOORS]->SetVisible(false);
+		gameState = GameState::SCROLL_LEFT;
+		posX = 0;
+	}
+
+	else if (Input::GetUserInput().R1 || Input::GetUserInput().Key_P)
+	{
+		dollars[doorIndex]->SetVisible(false);
+		doorIndex = (doorIndex + 1) % NUM_DOORS;
+		dollars[(doorIndex + 2) % NUM_DOORS]->SetVisible(true);
+		gameState = GameState::SCROLL_RIGHT;
+		posX = FrameDoor::GetFrameDoorWidth();
+	}
+}
+
+void WestBank::CheckShoot()
+{
+	//Recarga. Si se han soltado todas las teclas de disparo y los triggers de disparo y ha pasado el tiempo necesario, puedo disparar
+	if (Input::GetUserInput().L2 < DEADZONE_TRIGGER_REPOSE && Input::GetUserInput().R2 < DEADZONE_TRIGGER_REPOSE
+		&& !Input::GetUserInput().Key_1 && !Input::GetUserInput().Key_2 && !Input::GetUserInput().Key_3
+		&& Time::time > nextFire)
+	{
+		canShoot = true;
+	}
+
+	//Disparo
+	if (canShoot)
+	{
+		int dir = -1;	//Disparo no valido
+
+		//Input de mando. 
+		if (Input::GetUserInput().L2 > DEADZONE_TRIGGER_ACTIVE || Input::GetUserInput().R2 > DEADZONE_TRIGGER_ACTIVE)	// Conversion a digital de los triggers
+		{
+			float horizontalAxis = Input::GetUserInput().HorizontalAxis;
+
+			//Centro --> [-DEADZONE_AXIS_CENTER,DEADZONE_AXIS_CENTER]
+			if (horizontalAxis > -DEADZONE_AXIS_CENTER && horizontalAxis < DEADZONE_AXIS_CENTER)
+				dir = 1;
+
+			//Izquierda --> [-1,-DEADZONE_AXIS_DIRECTION]
+			else if (horizontalAxis < -DEADZONE_AXIS_DIRECTION)
+				dir = 0;
+
+			//Derecha --> [DEADZONE_AXIS_DIRECTION,1
+			else if (horizontalAxis > DEADZONE_AXIS_DIRECTION)
+				dir = 2;
+		}
+
+		//Centro 
+		else if (Input::GetUserInput().Key_2)
+			dir = 1;
+
+		//Izquierda
+		else if (Input::GetUserInput().Key_1)
+			dir = 0;
+
+		//Derecha 
+		else if (Input::GetUserInput().Key_3)
+			dir = 2;
+
+		//Direccion valida
+		if (dir != -1)
+		{
+			canShoot = false;
+			nextFire = Time::time + FIRE_RATE;
+			//TODO: DISPARAR
+		}
+	}
+}
+
 void WestBank::Input()
 {
+	//Solamente se detecta input en estado de juego
 	if (gameState == GameState::GAMEPLAY)
 	{
 		//Scroll
 		if (allDoorsClosed)
-		{
-			if (Input::GetUserInput().L1 || Input::GetUserInput().Key_O)
-			{
-				if (doorIndex == 0)
-					doorIndex = NUM_DOORS - 1;
-				else
-					doorIndex -= 1;
+			CheckMovement();
 
-				dollars[doorIndex]->SetVisible(true);
-				dollars[(doorIndex + 3) % NUM_DOORS]->SetVisible(false);
-				gameState = GameState::SCROLL_LEFT;
-				posX = 0;
-			}
-
-			else if (Input::GetUserInput().R1 || Input::GetUserInput().Key_P)
-			{
-				dollars[doorIndex]->SetVisible(false);
-				doorIndex = (doorIndex + 1) % NUM_DOORS;
-				dollars[(doorIndex + 2) % NUM_DOORS]->SetVisible(true);
-				gameState = GameState::SCROLL_RIGHT;
-				posX = FrameDoor::GetFrameDoorWidth();
-
-			}
-		}
-
-		//Recarga. Si se han soltado todas las teclas de disparo y los triggers de disparo y ha pasado el tiempo necesario, puedo disparar
-		if (Input::GetUserInput().L2 < DEADZONE_TRIGGER_REPOSE && Input::GetUserInput().R2 < DEADZONE_TRIGGER_REPOSE
-			&& !Input::GetUserInput().Key_1 && !Input::GetUserInput().Key_2 && !Input::GetUserInput().Key_3
-			&& Time::time > nextFire)
-		{
-			canShoot = true;
-		}
-
-		if (canShoot)
-		{
-			int dir = -1;	//Disparo no valido
-
-			//Input de mando
-			if (Input::GetUserInput().L2 > DEADZONE_TRIGGER_ACTIVE || Input::GetUserInput().R2 > DEADZONE_TRIGGER_ACTIVE)
-			{
-				float horizontalAxis = Input::GetUserInput().HorizontalAxis;
-
-				//Centro --> [-DEADZONE_AXIS_CENTER,DEADZONE_AXIS_CENTER]
-				if (horizontalAxis > -DEADZONE_AXIS_CENTER && horizontalAxis < DEADZONE_AXIS_CENTER)
-					dir = 1;
-
-				//Izquierda --> [-1,-DEADZONE_AXIS_DIRECTION]
-				else if (horizontalAxis < -DEADZONE_AXIS_DIRECTION)
-					dir = 0;
-
-				//Derecha --> [DEADZONE_AXIS_DIRECTION,1
-				else if (horizontalAxis > DEADZONE_AXIS_DIRECTION)
-					dir = 2;
-
-			}
-
-			//Centro 
-			else if (Input::GetUserInput().Key_2)
-				dir = 1;
-
-			//Izquierda
-			else if (Input::GetUserInput().Key_1)
-				dir = 0;
-
-			//Derecha 
-			else if (Input::GetUserInput().Key_3)
-				dir = 2;
-
-			//Direccion valida
-			if (dir != -1)
-			{
-				canShoot = false;
-				nextFire = Time::time + FIRE_RATE;
-
-				cout << "FIRE: " << dir << endl;
-			}
-		}
+		//Disparo
+		CheckShoot();
 	}
 }
 

@@ -6,7 +6,7 @@ class Image;
 class Sprite;
 
 /*
-	Pared con puerta
+	Pared con puerta. 3 de ellas crean la escena de juego
 */
 class FrameDoor : public Entity
 {
@@ -16,12 +16,10 @@ private:
 
 public:
 	static void Init(Image* doorFrameImage);
-	static void Release();
+	static void Release();	
+	static int GetFrameDoorWidth() { return scrollRect.Width; };
 
 	FrameDoor(int x, int y);
-
-	//virtual void Render() override;
 	void RenderWithDelta(int posX);
-	static int GetFrameDoorWidth() { return scrollRect.Width; };
 };
 

@@ -10,6 +10,9 @@ class Bang;
 class Client;
 class Thief;
 
+/*
+
+*/
 class WestBank
 {
 public:
@@ -27,21 +30,25 @@ private:
 	enum GameState { GAMEPLAY, SCROLL_LEFT, SCROLL_RIGHT, DEATH };
 
 	//Game
+	static const int GAME_WIDTH;
+	static const int GAME_HEIGHT;
+	static const int NUM_DOORS;
+	static const int NUM_VISIBLE_DOORS;
+
+	//Attributes
 	static const float MIN_SECONDS_OPENING_DOOR;
 	static const float MAX_SECONDS_OPENING_DOOR;
 	static const float DOOR_OPENED_TIME;	//Incluye el tiempo abriendose
 	static const float FIRE_RATE;	
 
-	//Conversi�n a digital de los triggers
+	//Input
+
+	//Hay una zona del joystick en la que el disparo no es valido
+	static const float DEADZONE_AXIS_CENTER;		//Reposo
+	static const float DEADZONE_AXIS_DIRECTION;		//Izquierda o derecha
 	static const float DEADZONE_TRIGGER_ACTIVE;
 	static const float DEADZONE_TRIGGER_REPOSE;
 
-	static const float DEADZONE_AXIS_CENTER;
-	static const float DEADZONE_AXIS_DIRECTION;
-
-
-	static const int NUM_DOORS;
-	static const int NUM_VISIBLE_DOORS;
 
 	static const int GAME_X_OFFSET;
 
@@ -50,8 +57,6 @@ private:
 
 	//FrameDoor
 	static int posX;
-
-
 
 	//Carga de recursos. Asumen una resoluci�n de juego de 640 x 360
 	static Image** images;
@@ -87,6 +92,8 @@ private:
 	static GameState gameState;			//Estado actual de la escena
 	static int doorIndex;				//Puerta seleccionada (mas a la izquierda)
 	static float nextResetGameSeconds;	//Instante de tiempo en que se resetear� el juego
+
+	//Input
 	static float nextFire;				//Instante de tiempo en el que se puede disparar
 	static bool canShoot;
 
@@ -101,6 +108,9 @@ public:
 	*/
 	static void Release();
 
+	/*
+		Detección disparo y cambio de puertas en estado de juego
+	*/
 	static void Input();
 	static void Update(float tick);
 	static void Render();
@@ -118,6 +128,14 @@ private:
 	static void InitScene();
 
 	static void ResetScene();
+
+	//Input
+	static void CheckMovement();
+
+	/*
+		Detección de disparo y recarga
+	*/
+	static void CheckShoot();
 
 	/*
 		Devuelve un float entre el rango pasado
