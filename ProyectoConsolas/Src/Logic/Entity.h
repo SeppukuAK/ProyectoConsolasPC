@@ -13,6 +13,8 @@ protected:
 
 public:
 	Entity(int x, int y);
+	virtual void Reset();
+
 	virtual void Update(float delta, float time);
 	virtual void Render();
 

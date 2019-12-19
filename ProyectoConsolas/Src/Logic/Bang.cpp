@@ -3,6 +3,7 @@
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
 #include <iostream>
+#include "WestBank.h"
 
 const int Bang::NUM_SPRITES = 6;
 
@@ -11,7 +12,7 @@ Sprite** Bang::bangSprites = nullptr;
 void Bang::Init(Image* bangImage)
 {
 	//Fondo dolar
-	bangSprites = new Sprite *[NUM_SPRITES];
+	bangSprites = new Sprite * [NUM_SPRITES];
 
 	Rect sRect;
 	sRect.Width = bangImage->GetWidth() / NUM_SPRITES;
@@ -35,23 +36,32 @@ void Bang::Release()
 	bangSprites = nullptr;
 }
 
-Bang::Bang(int x, int y, float duration) : Entity(x, y), _duration(duration)
+Bang::Bang(int x, int y) : Entity(x, y)
 {
 	sprites = bangSprites;
-
-	startAnimTime = 0.0f;
+	endAnimTime = 0.0f;
 }
+
+void Bang::Reset()
+{
+	Entity::Reset();
+	endAnimTime = 0.0f;
+}
+
 
 void Bang::Update(float delta, float time)
 {
-	int newDollarState;
+	int newBangState = 0;
 
-	//No se ha calculado el tiempo final de la animación
+	if (endAnimTime == 0.0f)
+		endAnimTime = time + WestBank::BANG_TIME;
 
-	if (startAnimTime == 0.0f)
-		startAnimTime = time;
+	float leftTime = endAnimTime - time;
+	if (leftTime >= 0)
+	{
+		float currentTime = WestBank::BANG_TIME - leftTime;
+		newBangState = (currentTime * NUM_SPRITES) / WestBank::BANG_TIME;
+	}
 
-	newDollarState = ((time - startAnimTime) * NUM_SPRITES ) / _duration;
-
-	CheckState(delta, newDollarState);
+	CheckState(delta, newBangState);
 }

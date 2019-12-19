@@ -14,14 +14,14 @@ private:
 
 	static Sprite** bangSprites;
 
-	float _duration;
-	float startAnimTime;
+	float endAnimTime;
 
 public:
 	static void Init(Image* bangImage);
 	static void Release();
 
-	Bang(int x, int y, float duration);
+	Bang(int x, int y);
+	void Reset() override;
 
 	virtual void Update(float delta, float time) override;
 };

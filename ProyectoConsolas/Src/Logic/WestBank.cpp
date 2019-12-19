@@ -27,21 +27,26 @@ const int WestBank::GAME_X_OFFSET = 32;
 //Door
 const int WestBank::DOOR_OFFSET_Y = 24;
 
-//Inicialización atributos estáticos
+//Inicializaciï¿½n atributos estï¿½ticos
 int WestBank::posX = 0;
 Image** WestBank::images = nullptr;
+
 FrameDoor** WestBank::frameDoors = nullptr;
 Door** WestBank::doors = nullptr;
+Dollar** WestBank::dollars = nullptr;
+DeathBackground* WestBank::deathBackground = nullptr;
+Bang* WestBank::bang = nullptr;
+
 float WestBank::nextClosingDoorSeconds = 0.0f;
 float WestBank::nextOpeningDoorSeconds = 0.0f;
 int WestBank::doorChosenIndex = 0;
 int WestBank::oldDoorChosenIndex = -1;
 bool WestBank::allDoorsClosed = true;
-Dollar** WestBank::dollars = nullptr;
-Bang* WestBank::bang = nullptr;
-DeathBackground* WestBank::deathBackground = nullptr;
-WestBank::GameState WestBank::gameState = WestBank::GameState::GAMEPLAY;
+
 int WestBank::doorIndex = 0;
+
+WestBank::GameState WestBank::gameState = GameState::GAMEPLAY;
+float WestBank::nextResetGameSeconds = 0.0f;
 
 void WestBank::Init()
 {
@@ -110,11 +115,11 @@ void WestBank::LoadResources()
 void WestBank::InitScene()
 {
 	//Puertas
-	//Inicialización
+	//Inicializaciï¿½n
 	FrameDoor::Init(images[ImageType::DOOR_FRAME]);
 	Door::Init(images[ImageType::DOORS]);
 
-	//Creación objetos
+	//Creaciï¿½n objetos
 	frameDoors = new FrameDoor *[NUM_VISIBLE_DOORS];
 	doors = new Door *[NUM_VISIBLE_DOORS];
 
@@ -128,17 +133,17 @@ void WestBank::InitScene()
 	}
 
 	//Cliente
-	//Inicialización
+	//Inicializaciï¿½n
 	Client::Init(images[ImageType::CLIENT]);
 
-	//Creación objetos
+	//Creaciï¿½n objetos
 	//Client * client = new Client(32 + GAME_X_OFFSET, 24 + frameDoorOffsetY, door);
 
 	//Dollar
-	//Inicialización
+	//Inicializaciï¿½n
 	Dollar::Init(images[ImageType::DOLLARS]);
 
-	//Creación objetos
+	//Creaciï¿½n objetos
 	dollars = new Dollar *[NUM_DOORS];
 
 	float dollarWidth = images[ImageType::DOLLARS]->GetWidth() / Dollar::NUM_SPRITES;
@@ -149,14 +154,41 @@ void WestBank::InitScene()
 	deathBackground = new DeathBackground();
 
 	Bang::Init(images[ImageType::BANG]);
-	bang = new Bang(200, 200, BANG_TIME);
+	bang = new Bang(200, 200);
 
-	//Configuración de la escena
-	doorChosenIndex = rand() % NUM_VISIBLE_DOORS;
+	ResetScene();
+
+}
+
+void WestBank::ResetScene()
+{
+	gameState = GameState::GAMEPLAY;
+	deathBackground->Reset();
+	bang->Reset();
+
+	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+	{
+		frameDoors[i]->Reset();
+		doors[i]->Reset();
+	}
+	for (int i = 0; i < NUM_DOORS; i++)
+	{
+		dollars[i]->Reset();
+	}
 
 	//Inicializar UI
-	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+	for (int i = doorIndex; i < NUM_VISIBLE_DOORS; i++)
 		dollars[i]->SetVisible(true);
+
+	nextResetGameSeconds = 0.0f;
+
+	//Configuraciï¿½n de la escena
+	doorChosenIndex = rand() % NUM_VISIBLE_DOORS;
+	nextClosingDoorSeconds = 0.0f;
+	nextOpeningDoorSeconds = 0.0f;
+	oldDoorChosenIndex = -1;
+	allDoorsClosed = true;
+
 }
 
 void WestBank::Input()
@@ -193,8 +225,6 @@ void WestBank::Input()
 			gameState = WestBank::GameState::DEATH;
 		}
 
-	//	cout << Input::GetUserInput().HorizontalAxis << endl;
-
 	}
 }
 
@@ -217,7 +247,7 @@ void WestBank::Update(float time, float tick)
 				nextOpeningDoorSeconds = 0.0f;
 				nextClosingDoorSeconds = 0.0f;
 			}
-			//Si a la puerta actual no le toca abrirse y la anterior está cerrada, están todas cerradas
+			//Si a la puerta actual no le toca abrirse y la anterior estï¿½ cerrada, estï¿½n todas cerradas
 			else if(oldDoorChosenIndex >= 0 && doors[oldDoorChosenIndex]->IsClosed())
 			{
 				allDoorsClosed = true;
@@ -232,7 +262,7 @@ void WestBank::Update(float time, float tick)
 			if (nextClosingDoorSeconds == 0.0f)
 				nextClosingDoorSeconds = time + DOOR_OPENED_TIME;
 
-			//A la puerta le toca cerrarse(está abierta)
+			//A la puerta le toca cerrarse(estï¿½ abierta)
 			else if (time > nextClosingDoorSeconds)
 			{
 				doors[doorChosenIndex]->SetClosed(true);
@@ -247,7 +277,7 @@ void WestBank::Update(float time, float tick)
 			}
 		}
 
-		//Paso de simulación
+		//Paso de simulaciï¿½n
 		//Puerta
 		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 		{
@@ -285,8 +315,21 @@ void WestBank::Update(float time, float tick)
 	}
 	case GameState::DEATH:
 	{
-		deathBackground->Update(tick, time);
-		bang->Update(tick, time);
+		if (nextResetGameSeconds == 0.0f)
+		{
+			nextResetGameSeconds = time + BANG_TIME;
+		}
+
+		else if (time >= nextResetGameSeconds)
+		{
+			ResetScene();
+		}
+		else
+		{
+			deathBackground->Update(tick, time);
+			bang->Update(tick, time);
+		}
+
 		break;
 	}
 	}
@@ -302,7 +345,7 @@ void WestBank::Render()
 		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 		{
 			frameDoors[i]->Render();
-			doors[i]->Render();		//TODO: La zona abierta no debería pintarse, sino sustituirse por el personaje que abre la puerta
+			doors[i]->Render();		//TODO: La zona abierta no deberï¿½a pintarse, sino sustituirse por el personaje que abre la puerta
 		}
 
 		//Dollars

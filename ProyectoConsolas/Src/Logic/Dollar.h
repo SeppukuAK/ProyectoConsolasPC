@@ -30,6 +30,7 @@ public:
 	static void Release();
 
 	Dollar(int x, int y);
+	void Reset() override;
 
 	void Update(float delta, float time) override;
 

@@ -20,6 +20,17 @@ Dollar::Dollar(int x, int y) : Entity(x, y)
 	winingMoney = false;
 }
 
+void Dollar::Reset()
+{
+	Entity::Reset();
+
+	endAnimTime = 0.0f;
+	_visible = false;
+	_moneyReceived = false;
+	winingMoney = false;
+}
+
+
 void Dollar::Init(Image* dollarImage)
 {
 	//Fondo dolar
@@ -37,6 +48,7 @@ void Dollar::Init(Image* dollarImage)
 		dollarSprites[i] = new Sprite(dollarImage, sRect);
 	}
 }
+
 
 void Dollar::Release()
 {
@@ -97,5 +109,6 @@ void Dollar::Update(float delta, float time)
 
 	CheckState(delta, newDollarState);
 }
+
 
 

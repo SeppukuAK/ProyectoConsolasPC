@@ -20,6 +20,15 @@ Door::Door(int x, int y) : Entity(x, y)
 	endAnimTime = 0.0f;
 }
 
+void Door::Reset()
+{
+	Entity::Reset();
+
+	endAnimTime = 0.0f;
+	_closed = true;
+}
+
+
 void Door::Init(Image* doorsImage)
 {
 	//Creación sprites DoorsAnims

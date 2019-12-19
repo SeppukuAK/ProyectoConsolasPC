@@ -6,8 +6,15 @@
 Entity::Entity(int x, int y) : _x(x), _y(y)
 {
 	sprites = nullptr;
-	changedState = true;
-	currentState = 0;
+	changedState = false;
+	currentState = -1;
+	lastFrameStateChanged = 0;
+}
+
+void Entity::Reset()
+{
+	changedState = false;
+	currentState = -1;
 	lastFrameStateChanged = 0;
 }
 
@@ -20,7 +27,7 @@ void Entity::CheckState(float delta, int newState)
 		changedState = true;
 	}
 	else
-		changedState = lastFrameStateChanged + Renderer::GetNumBuffers() > delta;
+		changedState = (lastFrameStateChanged + Renderer::GetNumBuffers()) > delta;
 
 }
 
@@ -34,3 +41,4 @@ void Entity::Render()
 	if (changedState)
 		sprites[currentState]->Draw(_x,_y);
 }
+

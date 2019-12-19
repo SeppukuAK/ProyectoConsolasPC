@@ -9,6 +9,9 @@ class Bang;
 
 class WestBank
 {
+public:
+	static const float BANG_TIME;
+
 private:
 	/*
 		Imágenes disponibles en la escena
@@ -24,7 +27,6 @@ private:
 	static const float MIN_SECONDS_OPENING_DOOR;
 	static const float MAX_SECONDS_OPENING_DOOR;
 	static const float DOOR_OPENED_TIME;	//Incluye el tiempo abriendose
-	static const float BANG_TIME;	
 
 	static const int NUM_DOORS;
 	static const int NUM_VISIBLE_DOORS;
@@ -40,9 +42,13 @@ private:
 	//Carga de recursos. Asumen una resolución de juego de 640 x 360
 	static Image** images;
 
-	//Puertas
 	static FrameDoor** frameDoors;			//Pared con puerta. 3 De ellas consecutivas crean la escena principal de juego
 	static Door** doors;
+	static Dollar** dollars;
+	static DeathBackground* deathBackground;
+	static Bang* bang;
+
+	//Puertas
 	static float nextClosingDoorSeconds;	//Instante de tiempo en los que se cierra las puerta
 	static float nextOpeningDoorSeconds;	//Instante de tiempo en los que se abre las puerta
 	static int doorChosenIndex;				//Puerta elegida para abrirse
@@ -50,13 +56,12 @@ private:
 	static bool allDoorsClosed;
 
 	//UI
-	static Dollar** dollars;
-	static DeathBackground * deathBackground;
-	static Bang* bang;
+
 
 	//Atributos escena
 	static GameState gameState;			//Estado actual de la escena
 	static int doorIndex;				//Puerta seleccionada (mas a la izquierda)
+	static float nextResetGameSeconds;	//Instante de tiempo en que se reseteará el juego
 
 public:
 	/*
@@ -84,6 +89,8 @@ private:
 		Inicializa atributos y objetos del juego
 	*/
 	static void InitScene();
+
+	static void ResetScene();
 
 	/*
 		Devuelve un float entre el rango pasado
