@@ -6,20 +6,20 @@
 
 #include <stdlib.h>		/* srand, rand */
 #include <time.h>       /* time */
-#include <chrono>		/* chrono */
 #include <iostream>		/* cout */		
 
-//Utilizado para el deltaTime
-using namespace std::chrono_literals;
-constexpr std::chrono::nanoseconds timestep(16ms);	// we use a fixed timestep of 1 / (60 fps) = 16 milliseconds
+#include <chrono>
+#include <ctime>    
+#include <thread>		/* sleep_for */
 
 using namespace std;
 
 //Atributos de la ventana
 const int NUM_BUFFERS = 1;							//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 2-16 //TODO: DETECTAR ERROR?
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 360;						//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
-const Color SCREEN_CLEAR_COLOR = { 0,0,0,255 };
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;						//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
+
+const double MS_PER_UPDATE = 1000.0 / 60;
 
 ////Waves
 ////const float ENERGY_WAVE = 31/ 32;
@@ -41,26 +41,13 @@ int main(int argc, char* args[])
 
 	//Inicialización
 	Platform::Init();
+
 	Renderer::Init(SCREEN_WIDTH, SCREEN_HEIGHT, NUM_BUFFERS);
+
 	Input::Init();
 
 	//Se lanza la hebra de renderizado
 	RendererThread::Start();
-
-	//Creación de comandos iniciales
-	RenderCommand clearCommand;
-	clearCommand.Type = RendererCommandType::CLEAR;
-	clearCommand.Param.ClearParams.Color = SCREEN_CLEAR_COLOR;
-
-	RenderCommand presentCommand;
-	presentCommand.Type = RendererCommandType::END_FRAME;
-
-	//Limpieza inicial de los buffers
-	for (int i = 0; i < NUM_BUFFERS; i++)
-	{
-		RendererThread::EnqueueCommand(clearCommand);
-		RendererThread::EnqueueCommand(presentCommand);
-	}
 
 	//Inicialización juego
 	WestBank::Init();
@@ -71,48 +58,43 @@ int main(int argc, char* args[])
 
 	//Variables bucle
 	int tick = 0;
-	float time = 0.0f;
 
-	float deltaTime = timestep.count() / 1000000000.0f;//Tiempo entre frames
-
-	using clock = std::chrono::high_resolution_clock;
-
-	std::chrono::nanoseconds lag(0ns);
-	auto time_start = clock::now();
+	auto startGameTime = std::chrono::system_clock::now();
+	double previous = 0.0;
+	double lag = 0.0;
 
 	//Bucle principal. Hebra lógica.
 	while (Platform::Tick())
 	{
-		auto delta_time = clock::now() - time_start;
-		time_start = clock::now();
-		lag += std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
+		//GetCurrentTime
+		auto startFrameTime = std::chrono::system_clock::now();
+		std::chrono::duration<double> elapsed_seconds = startFrameTime - startGameTime;
+		double current = elapsed_seconds.count();
+
+		double elapsed = current - previous;
+		previous = current;
+		lag += elapsed * 1000;
 
 		Input::Tick();
-
 		WestBank::Input();
 
-		// update game logic as lag permits
-		while (lag >= timestep) 
+		while (lag >= MS_PER_UPDATE)
 		{
-			time += deltaTime;
-
-			WestBank::Update(time,tick);
-
+			WestBank::Update(current, tick);
 			//waves->Update();
-
-			lag -= timestep;
+			lag -= MS_PER_UPDATE;
 		}
 
 		//Contención. Se para la hebra si el render va muy retrasado
 		while (RendererThread::GetPendingFrames() >= NUM_BUFFERS)
 			;
 
-		//RendererThread::EnqueueCommand(clearCommand); // En esta práctica no se hace clear para mantener la coherencia de frames
+		//RendererThread::EnqueueClearCommand(); // En esta práctica no se hace clear para mantener la coherencia de frames
 
 		//Comunicación logica con render: se le envia a la hebra de render el comando con las nuevas condiciones de la logica.
 		WestBank::Render();
 
-		RendererThread::EnqueueCommand(presentCommand);
+		RendererThread::EnqueuePresentCommand();
 
 		//Delay
 		tick++;

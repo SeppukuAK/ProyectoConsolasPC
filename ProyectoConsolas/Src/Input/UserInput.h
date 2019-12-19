@@ -11,8 +11,8 @@ public:
 	//GAMEPAD
 
 	//Botones
-	bool Cross, Square, Triangle, Circle;
 	bool L1, R1; //Desplazamiento para cambiar puertas
+	//bool Cross, Square, Triangle, Circle;
 
 	//2 triggers analogicos (gatillos) 
 	//Va desde -1.0 a 1.0
@@ -23,9 +23,9 @@ public:
 	//Va desde -1.0(izq) a 1.0(der) 
 	//Zonas muertas: (-0.8 a -0.2) y (0.2 a 0.8)
 	float HorizontalAxis;
-	float VerticalAxis;
+	//float VerticalAxis;
 
 	//Constructora
-	UserInput() : Key_1(false), Key_2(false), Key_3(false), Key_O(false), Key_P(false), Cross(false), Square(false), Triangle(false), Circle(false), L1(false), R1(false), L2(-1.0), R2(-1.0), HorizontalAxis(0), VerticalAxis(0) {}
+	UserInput() : HorizontalAxis(0), L1(false), R1(false), L2(-1.0), R2(-1.0), Key_1(false), Key_2(false), Key_3(false), Key_O(false), Key_P(false) {}
 
 };

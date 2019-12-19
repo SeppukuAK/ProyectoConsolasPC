@@ -45,6 +45,11 @@ public:
 	*/
 	static Image* LoadImage(std::string path);
 
+	/*
+		Devuelve la ruta donde se encuentran los recursos
+	*/
+	static std::string GetMediaPath() { return mediaPath; };
+
 	/**
 	 * Register an observer
 	 * @param observer the observer object to be registered
@@ -57,10 +62,6 @@ public:
 	 */
 	static void RemoveObserver(InputObserver* observer);
 
-	/*
-		Devuelve la ruta donde se encuentran los recursos
-	*/
-	static std::string GetMediaPath() { return mediaPath; };
 
 private:
 

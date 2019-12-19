@@ -4,9 +4,13 @@
 
 class Image;
 class Sprite;
-class Rect;
+struct Rect;
 class Door;
 
+/*
+	Tienen el mismo ancho que el ancho que deja una puerta completamente abierta
+	TODO: LADRON TAMBIEN
+*/
 class Client : public Entity
 {
 private:

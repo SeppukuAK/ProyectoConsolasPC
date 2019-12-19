@@ -1,6 +1,6 @@
 #pragma once
 #include <queue>
-#include "../InputObserver.h"
+#include "InputObserver.h"
 #include "../UserInput.h"
 
 //Declaración adelantada para evitar inclusión adicional
@@ -27,7 +27,6 @@ private:
 	static const int JOYSTICK_MAX_VALUE;
 	static const int JOYSTICK_DEAD_ZONE;
 	static const int TRIGGER_MAX_VALUE;
-	static const int TRIGGER_DEAD_ZONE;
 
 	static SDL_GameController* gameController;	//Manejador del GameController
 	static Observer observer;					//Observa los eventos de Input de Platform. TODO: Puntero?????????
@@ -53,14 +52,14 @@ public:
 	static void Tick();
 
 	/*
-		Añade un evento a la cola de input para que se procese
-	*/
-	static void AddEvent(SDL_Event e);
-
-	/*
 		Devuelve la informacion de una entrada de input
 	*/
 	inline static UserInput GetUserInput() { return userInput; };
+
+	/*
+		Añade un evento a la cola de input para que se procese
+	*/
+	static void AddEvent(SDL_Event e);
 
 };
 

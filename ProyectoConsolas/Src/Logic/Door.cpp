@@ -44,7 +44,7 @@ void Door::Init(Image* doorsImage)
 void Door::Release()
 {
 	for (int i = 0; i < NUM_SPRITES; ++i)
-		delete[] doorSprites[i];
+		delete doorSprites[i];
 
 	delete[] doorSprites;
 	doorSprites = nullptr;

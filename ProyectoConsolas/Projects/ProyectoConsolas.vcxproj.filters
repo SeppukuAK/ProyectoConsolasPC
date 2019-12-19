@@ -104,6 +104,12 @@
     <ClCompile Include="..\Src\Logic\Waves.cpp">
       <Filter>Source Files\Logic\_old</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\Logic\DeathBackground.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\Bang.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Renderer\Renderer.h">
@@ -142,9 +148,6 @@
     <ClInclude Include="..\Src\Logic\Sprite.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Input\InputObserver.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Renderer\Color.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
@@ -171,6 +174,15 @@
     </ClInclude>
     <ClInclude Include="..\Src\Logic\Waves.h">
       <Filter>Header Files\Logic\_old</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Input\PC\InputObserver.h">
+      <Filter>Header Files\Input\PC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\Bang.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\DeathBackground.h">
+      <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

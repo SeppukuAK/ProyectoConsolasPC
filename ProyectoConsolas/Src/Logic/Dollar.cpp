@@ -41,7 +41,7 @@ void Dollar::Init(Image* dollarImage)
 void Dollar::Release()
 {
 	for (int i = 0; i < NUM_SPRITES; ++i)
-		delete[] dollarSprites[i];
+		delete dollarSprites[i];
 
 	delete[] dollarSprites;
 	dollarSprites = nullptr;

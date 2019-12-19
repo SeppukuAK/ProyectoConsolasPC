@@ -24,6 +24,11 @@ void Entity::CheckState(float delta, int newState)
 
 }
 
+void Entity::Update(float delta, float time)
+{
+	CheckState(delta, 0);
+}
+
 void Entity::Render()
 {
 	if (changedState)

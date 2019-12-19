@@ -18,7 +18,6 @@ const int InputPC::JOYSTICK_MAX_VALUE = 30000;
 const int InputPC::JOYSTICK_DEAD_ZONE = 8000; //TODO: ESTE ES EL DEADZONE PARA LOS STICKS, CUAL ES EL DEADZONE PARA LOS TRIGGERS?
 
 const int InputPC::TRIGGER_MAX_VALUE = 32767;
-const int InputPC::TRIGGER_DEAD_ZONE = 5000;
 
 SDL_GameController* InputPC::gameController = NULL;
 InputPC::Observer InputPC::observer = InputPC::Observer();
@@ -174,18 +173,18 @@ void InputPC::Tick()
 		case SDL_CONTROLLERBUTTONDOWN:
 			switch (e.cbutton.button)
 			{
-			case SDL_CONTROLLER_BUTTON_A:
-				userInput.Cross = true;
-				break;
-			case SDL_CONTROLLER_BUTTON_B:
-				userInput.Circle = true;
-				break;
-			case SDL_CONTROLLER_BUTTON_X:
-				userInput.Square = true;
-				break;
-			case SDL_CONTROLLER_BUTTON_Y:
-				userInput.Triangle = true;
-				break;
+			//case SDL_CONTROLLER_BUTTON_A:
+			//	userInput.Cross = true;
+			//	break;
+			//case SDL_CONTROLLER_BUTTON_B:
+			//	userInput.Circle = true;
+			//	break;
+			//case SDL_CONTROLLER_BUTTON_X:
+			//	userInput.Square = true;
+			//	break;
+			//case SDL_CONTROLLER_BUTTON_Y:
+			//	userInput.Triangle = true;
+			//	break;
 			case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
 				userInput.L1 = true;
 				break;
@@ -198,18 +197,18 @@ void InputPC::Tick()
 		case SDL_CONTROLLERBUTTONUP:
 			switch (e.cbutton.button)
 			{
-			case SDL_CONTROLLER_BUTTON_A:
-				userInput.Cross = false;
-				break;
-			case SDL_CONTROLLER_BUTTON_B:
-				userInput.Circle = false;
-				break;
-			case SDL_CONTROLLER_BUTTON_X:
-				userInput.Square = false;
-				break;
-			case SDL_CONTROLLER_BUTTON_Y:
-				userInput.Triangle = false;
-				break;
+			//case SDL_CONTROLLER_BUTTON_A:
+			//	userInput.Cross = false;
+			//	break;
+			//case SDL_CONTROLLER_BUTTON_B:
+			//	userInput.Circle = false;
+			//	break;
+			//case SDL_CONTROLLER_BUTTON_X:
+			//	userInput.Square = false;
+			//	break;
+			//case SDL_CONTROLLER_BUTTON_Y:
+			//	userInput.Triangle = false;
+			//	break;
 			case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
 				userInput.L1 = false;
 				break;
@@ -235,43 +234,32 @@ void InputPC::Tick()
 						userInput.HorizontalAxis = Clamp(-1.0f, 1.0f, (float)e.caxis.value / JOYSTICK_MAX_VALUE);
 
 					break;
-				case SDL_CONTROLLER_AXIS_LEFTY:
-					//Aplicación de deadzone
-					if (abs(e.caxis.value) < JOYSTICK_DEAD_ZONE)
-						userInput.VerticalAxis = 0;
-					else
-						userInput.VerticalAxis = Clamp(-1.0f, 1.0f, (float)e.caxis.value / JOYSTICK_MAX_VALUE);
+				//case SDL_CONTROLLER_AXIS_LEFTY:
+				//	//Aplicación de deadzone
+				//	if (abs(e.caxis.value) < JOYSTICK_DEAD_ZONE)
+				//		userInput.VerticalAxis = 0;
+				//	else
+				//		userInput.VerticalAxis = Clamp(-1.0f, 1.0f, (float)e.caxis.value / JOYSTICK_MAX_VALUE);
 
-					break;
+				//	break;
 
 
-				//GATILLOS
-				//Los gatillos analogicos se mapean a los ejes 2 y 5 en mandos de xbox (y 3 y 4 en caso de los mandos de PS4.) ????
-				//TODO: No es una metralleta. Para que deje de ser disparo los 2 gatillos tienen que estar sueltos. Hay que convertirlos de analogico a digital.
+					//GATILLOS
+					//Los gatillos analogicos se mapean a los ejes 2 y 5 en mandos de xbox (y 3 y 4 en caso de los mandos de PS4.) ????
+					//TODO: No es una metralleta. Para que deje de ser disparo los 2 gatillos tienen que estar sueltos. Hay que convertirlos de analogico a digital.
 				case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
 
-					//Aplicación de deadzone
-					if (e.caxis.value < TRIGGER_DEAD_ZONE)
-						userInput.L2 = -1;
-					else
-					{
-						//(0-30000) --> (0-60000) --> [-1,+1]
-						//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
-						userInput.L2 = (float)(2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
-					}
+					//(0-30000) --> (0-60000) --> [-1,+1]
+					//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
+					userInput.L2 = (float)(2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
 
 					break;
 
 				case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
-					//Aplicación de deadzone
-					if (e.caxis.value < TRIGGER_DEAD_ZONE)
-						userInput.R2 = -1;
-					else
-					{
-						//(0-30000) --> (0-60000) --> [-1,+1]
-						//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
-						userInput.R2 = (float)(2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
-					}
+
+					//(0-30000) --> (0-60000) --> [-1,+1]
+					//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
+					userInput.R2 = (float)(2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
 					break;
 
 				}

@@ -4,14 +4,18 @@
 class Image;
 class Sprite;
 
-
+/*
+	Distintos "sprites" de las "cajas" que indican el estado de una puerta. (Visible o No) (Recibe ingreso o no)
+*/
 class Dollar : public Entity
 {
+public:
+	static const int NUM_SPRITES;
+
 private:
 	enum DollarState { DOLLAR_EMPTY, DOLLAR_VISIBLE, DOLLAR_MONEY, DOLLAR_VISIBLE_MONEY, DOLLAR_ANIM_0, DOLLAR_ANIM_1 };
 
 	static const float ANIM_RATE;
-	static const int NUM_SPRITES;
 
 	static Sprite** dollarSprites;
 

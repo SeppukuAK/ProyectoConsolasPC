@@ -70,12 +70,18 @@ struct RenderCommand
 class RendererThread
 {
 private:
+	static const Color SCREEN_CLEAR_COLOR;
+
 	static std::thread* t;						//Hilo
 	static Queue<RenderCommand> commandQueue; 	//Cola concurrente (compartida entre hebras) de comandos
 
 	//Escritura y lectura seguras
 	static std::atomic <bool> quitRequested;	//Indica si se quiere parar la aplicación
 	static std::atomic <int> pendingFrames;	//Número de comandos de endframe encolados actualmente
+
+	//Comandos utiles durante toda la ejecución
+	static RenderCommand clearCommand;
+	static RenderCommand presentCommand;
 
 public:
 	/*
@@ -93,6 +99,9 @@ public:
 		Es llamado desde la hebra de logica.
 	*/
 	static void EnqueueCommand(RenderCommand renderCommand);
+
+	static void EnqueueClearCommand();
+	static void EnqueuePresentCommand();
 
 	/*
 		Devuelve cuantos comandos de endframe hay encolados actualmente

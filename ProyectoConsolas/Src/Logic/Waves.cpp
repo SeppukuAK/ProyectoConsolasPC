@@ -13,7 +13,7 @@ Waves::~Waves()
 {
 	//Limpiamos memoria
 	for (int i = 0; i < numBuffers; ++i)
-		delete[] diffBuffers[i];
+		delete diffBuffers[i];
 
 	delete[] diffBuffers;
 	diffBuffers = nullptr;

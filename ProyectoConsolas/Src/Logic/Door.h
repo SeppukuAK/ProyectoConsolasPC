@@ -4,11 +4,15 @@
 
 class Image;
 class Sprite;
-class Rect;
+struct Rect;
+
 
 class Door : public Entity
 {
 private:
+	/*
+		Cuatro posibles posiciones de la puerta. Todos los sprites tienen el mismo ancho.
+	*/
 	enum DoorState { DOOR_CLOSED, DOOR_OPENING_0, DOOR_OPENING_1, DOOR_OPENED };
 
 	static const float ANIM_RATE;

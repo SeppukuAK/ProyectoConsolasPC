@@ -43,7 +43,7 @@ void Client::Init(Image* clientImage)
 void Client::Release()
 {
 	for (int i = 0; i < NUM_SPRITES; ++i)
-		delete[] clientSprites[i];
+		delete clientSprites[i];
 
 	delete[] clientSprites;
 	clientSprites = nullptr;

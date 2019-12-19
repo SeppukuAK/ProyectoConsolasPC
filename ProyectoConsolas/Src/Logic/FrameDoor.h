@@ -4,6 +4,9 @@
 class Image;
 class Sprite;
 
+/*
+	Pared con puerta
+*/
 class FrameDoor : public Entity
 {
 private:

@@ -1,6 +1,6 @@
 #pragma once
 
-class Color;
+struct Color;
 
 /*
 	Contiene la información de una imagen: Su array de pixeles y su tamaño

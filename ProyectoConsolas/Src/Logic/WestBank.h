@@ -4,47 +4,56 @@ class Image;
 class FrameDoor;
 class Door;
 class Dollar;
+class DeathBackground;
+class Bang;
 
 class WestBank
 {
 private:
+	/*
+		Imágenes disponibles en la escena
+	*/
 	enum ImageType { DOOR_FRAME, DOORS, CLIENT, THIEF, DOLLARS, BANG, SIZE };
+
+	/*
+		Posibles estados de la escena
+	*/
+	enum GameState { GAMEPLAY, SCROLL, DEATH };
 
 	//Game
 	static const float MIN_SECONDS_OPENING_DOOR;
 	static const float MAX_SECONDS_OPENING_DOOR;
 	static const float DOOR_OPENED_TIME;	//Incluye el tiempo abriendose
+	static const float BANG_TIME;	
 
 	static const int NUM_DOORS;
 	static const int NUM_VISIBLE_DOORS;
 
 	static const int GAME_X_OFFSET;
 
-	//FrameDoor
-	static const int FRAME_DOOR_WIDTH;
-	static const int FRAME_DOOR_OFFSETY;
-
 	//Door
-	static const int DOOR_ANIM_FRAMES;
 	static const int DOOR_OFFSET_Y;
-
-	//Dollar
-	static const int DOLLAR_WIDTH;
 
 	//Carga de recursos. Asumen una resolución de juego de 640 x 360
 	static Image** images;
 
 	//Puertas
-	static FrameDoor** frameDoors;
+	static FrameDoor** frameDoors;			//Pared con puerta. 3 De ellas consecutivas crean la escena principal de juego
 	static Door** doors;
-	static float* nextClosingDoorSeconds;	//Creación del array de instantes de tiempo en los que se cierran las puertas
-	static float* nextOpeningDoorSeconds;	//Creación del array de instantes de tiempo en los que se abren las puertas
+	static float nextClosingDoorSeconds;	//Instante de tiempo en los que se cierra las puerta
+	static float nextOpeningDoorSeconds;	//Instante de tiempo en los que se abre las puerta
+	static int doorChosenIndex;				//Puerta elegida para abrirse
+	static int oldDoorChosenIndex;			//Anterior Puerta elegida para abrirse
+	static bool allDoorsClosed;
 
 	//UI
 	static Dollar** dollars;
+	static DeathBackground * deathBackground;
+	static Bang* bang;
 
 	//Atributos escena
-	static int doorIndex;		//Puerta seleccionada (mas a la izquierda)
+	static GameState gameState;			//Estado actual de la escena
+	static int doorIndex;				//Puerta seleccionada (mas a la izquierda)
 
 public:
 	/*

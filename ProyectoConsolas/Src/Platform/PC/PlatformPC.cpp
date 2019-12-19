@@ -5,7 +5,7 @@
 #include <iostream>		/* cout */
 #include <stdio.h>		/* fopen */
 #include <SDL.h>		/* SDL. Pintado */
-#include "../../Input/InputObserver.h"
+#include "../../Input/PC/InputObserver.h"
 #include "../../Renderer/Image.h"
 #include "../../Renderer/Color.h"
 

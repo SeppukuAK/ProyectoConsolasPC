@@ -3,9 +3,9 @@
 //Declaración adelantada para evitar inclusión adicional
 class SDL_Window;
 class SDL_Renderer;
-class Color;
+struct Color;
 class Image;
-class Rect;
+struct Rect;
 
 /*
 	Clase con métodos estáticos. Maneja el renderBuffer

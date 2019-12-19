@@ -6,10 +6,13 @@
 
 using namespace std;
 
+const Color RendererThread::SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 std::thread* RendererThread::t = nullptr;
 Queue<RenderCommand> RendererThread::commandQueue;
-std::atomic <bool> RendererThread::quitRequested = false;
-std::atomic <int> RendererThread::pendingFrames = 0;
+std::atomic <bool> RendererThread::quitRequested;
+std::atomic <int> RendererThread::pendingFrames;
+RenderCommand RendererThread::clearCommand = RenderCommand();
+RenderCommand RendererThread::presentCommand = RenderCommand();
 
 void RendererThread::Start()
 {
@@ -18,6 +21,18 @@ void RendererThread::Start()
 
 	//Recibe la funcion a ejecutar
 	t = new thread(&RendererThread::RenderLoop);
+
+	//Creación de comandos iniciales
+	clearCommand.Type = RendererCommandType::CLEAR;
+	clearCommand.Param.ClearParams.Color = SCREEN_CLEAR_COLOR;
+	presentCommand.Type = RendererCommandType::END_FRAME;
+
+	//Limpieza inicial de los buffers
+	for (int i = 0; i < Renderer::GetNumBuffers(); i++)
+	{
+		RendererThread::EnqueueCommand(clearCommand);
+		RendererThread::EnqueueCommand(presentCommand);
+	}
 }
 
 void RendererThread::Stop() {
@@ -40,6 +55,16 @@ void RendererThread::EnqueueCommand(RenderCommand renderCommand)
 	commandQueue.push(renderCommand);
 }
 
+void RendererThread::EnqueueClearCommand()
+{
+	EnqueueCommand(clearCommand);
+}
+
+void RendererThread::EnqueuePresentCommand()
+{
+	EnqueueCommand(presentCommand);
+}
+
 void RendererThread::RenderLoop()
 {
 	while (!quitRequested)
@@ -52,18 +77,26 @@ void RendererThread::RenderLoop()
 			switch (sigCommand.Type)
 			{
 			case RendererCommandType::CLEAR:
+			{
 				Renderer::Clear(sigCommand.Param.ClearParams.Color);
 				break;
+			}
 			case RendererCommandType::PUT_PIXEL:
+			{
 				Renderer::PutPixel(sigCommand.Param.PutPixelParams.X, sigCommand.Param.PutPixelParams.Y, sigCommand.Param.PutPixelParams.Color);
 				break;
+			}
 			case RendererCommandType::RENDER_RAIN_EFFECT:
+			{
 				DrawRain(sigCommand.Param.RainParams.Background, sigCommand.Param.RainParams.HeightDiff, sigCommand.Param.RainParams.ForcePaint);
 				break;
+			}
 			case RendererCommandType::DRAW_SPRITE:
+			{
 				RenderCommandDrawSpriteParams drawSpriteParams = sigCommand.Param.DrawSpriteParams;
 				Renderer::DrawRect(drawSpriteParams.Image, drawSpriteParams.PosX, drawSpriteParams.PosY, drawSpriteParams.SourceRect);
 				break;
+			}
 			default:
 				break;
 			}
