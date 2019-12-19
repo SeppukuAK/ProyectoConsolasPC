@@ -84,6 +84,7 @@
     <ClCompile Include="..\Src\Renderer\Image.cpp" />
     <ClCompile Include="..\Src\Renderer\PC\RendererPC.cpp" />
     <ClCompile Include="..\Src\Renderer\RendererThread.cpp" />
+    <ClCompile Include="..\Src\Utilities\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\Input\Input.h" />
@@ -111,6 +112,7 @@
     <ClInclude Include="..\Src\Utilities\Clamp.h" />
     <ClInclude Include="..\Src\Utilities\ConcurrentQueue.h" />
     <ClInclude Include="..\Src\Utilities\Rect.h" />
+    <ClInclude Include="..\Src\Utilities\Time.h" />
   </ItemGroup>
   <Import Condition="'$(ConfigurationType)' == 'Makefile' and Exists('$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets')" Project="$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

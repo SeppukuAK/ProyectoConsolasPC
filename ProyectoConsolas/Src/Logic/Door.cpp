@@ -3,6 +3,7 @@
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
 #include <iostream>
+#include "../Utilities/Time.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ void Door::Reset()
 
 void Door::Init(Image* doorsImage)
 {
-	//Creación sprites DoorsAnims
+	//Creaciï¿½n sprites DoorsAnims
 	doorSprites = new Sprite * [NUM_SPRITES];
 	doorRects = new Rect[NUM_SPRITES];
 
@@ -62,7 +63,7 @@ void Door::Release()
 	doorRects = nullptr;
 }
 
-void Door::Update(float delta, float time)
+void Door::Update(float delta)
 {
 	int newDoorState = 0;
 
@@ -76,7 +77,7 @@ void Door::Update(float delta, float time)
 		//Se empieza a abrir
 		else
 		{
-			endAnimTime = time + ANIM_RATE;
+			endAnimTime = Time::time + ANIM_RATE;
 			newDoorState = DoorState::DOOR_OPENING_0;
 		}
 		break;
@@ -84,7 +85,7 @@ void Door::Update(float delta, float time)
 	case DoorState::DOOR_OPENING_0:
 		if (_closed)
 		{
-			if (time >= endAnimTime)
+			if (Time::time >= endAnimTime)
 				newDoorState = DoorState::DOOR_CLOSED;
 			else
 				newDoorState = DoorState::DOOR_OPENING_0;
@@ -92,7 +93,7 @@ void Door::Update(float delta, float time)
 		}
 		else
 		{
-			if (time >= endAnimTime - ANIM_RATE / 2)
+			if (Time::time >= endAnimTime - ANIM_RATE / 2)
 				newDoorState = DoorState::DOOR_OPENING_1;
 			else
 				newDoorState = DoorState::DOOR_OPENING_0;
@@ -102,7 +103,7 @@ void Door::Update(float delta, float time)
 	case DoorState::DOOR_OPENING_1:
 		if (_closed)
 		{
-			if (time >= endAnimTime - ANIM_RATE / 2)
+			if (Time::time >= endAnimTime - ANIM_RATE / 2)
 				newDoorState = DoorState::DOOR_OPENING_0;
 			else
 				newDoorState = DoorState::DOOR_OPENING_1;
@@ -110,7 +111,7 @@ void Door::Update(float delta, float time)
 		}
 		else
 		{
-			if (time >= endAnimTime)
+			if (Time::time >= endAnimTime)
 				newDoorState = DoorState::DOOR_OPENED;
 			else
 				newDoorState = DoorState::DOOR_OPENING_1;
@@ -121,7 +122,7 @@ void Door::Update(float delta, float time)
 	case DoorState::DOOR_OPENED:
 		if (_closed)
 		{
-			endAnimTime = time + ANIM_RATE;
+			endAnimTime = Time::time + ANIM_RATE;
 			newDoorState = DoorState::DOOR_OPENING_1;
 		}
 		else

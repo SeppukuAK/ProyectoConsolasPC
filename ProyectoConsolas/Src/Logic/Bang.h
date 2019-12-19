@@ -5,7 +5,7 @@ class Sprite;
 class Image;
 
 /*
-	Animación de "Bang" mostrada cuando se recibe un disparo de un ladrón
+	Animaciï¿½n de "Bang" mostrada cuando se recibe un disparo de un ladrï¿½n
 */
 class Bang : public Entity
 {
@@ -23,6 +23,6 @@ public:
 	Bang(int x, int y);
 	void Reset() override;
 
-	virtual void Update(float delta, float time) override;
+	virtual void Update(float delta) override;
 };
 

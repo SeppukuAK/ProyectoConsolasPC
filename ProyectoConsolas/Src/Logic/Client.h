@@ -41,7 +41,7 @@ public:
 	Client(int x, int y, Door* door);
 	void Reset() override;
 
-	virtual void Update(float delta, float deltaTime) override;
+	virtual void Update(float delta) override;
 	virtual void Render() override;
 
 };

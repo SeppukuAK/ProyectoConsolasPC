@@ -17,21 +17,6 @@ El proceso es:
 
 		-En neiborhood. Mando en pantalla o mando host controller. Hay que marcar host controller antes de hacer el view. Hay que hacerlo con el fisico.
 
-SDL:
-
-Tenemos 2 gatillos en el mando. No es una metralleta. Para que deje de ser disparo los 2 gatillos tienen que estar sueltos. Hay que convertirlos de analogico a digital.
-
--Tiene que haber un deltaTime.
-
-	-La logica discretiza el estado de los gatillos no la plataforma.
-el joystick izquierdo derecho va desde -1.0 a 1.0. Tiene que haber zonas muertas
--0.8 a -0.2 , 0.2 a 0.8 son zonas muertas
-
-gatillo:
--1.0 a 1.0
-	-1.0 reposo
-	a la ida y ala vuelta del trigger hay distintos deadzones de on y off.
-
 
 	------------------------------------------------------------------------
 	Cositas para adri:

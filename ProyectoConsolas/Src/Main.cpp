@@ -2,22 +2,19 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererThread.h"
 #include "Input/Input.h"
-#include "Logic//WestBank.h"
+#include "Utilities/Time.h"
+
+#include "Logic/WestBank.h"
 
 #include <stdlib.h>		/* srand, rand */
-#include <time.h>       /* time */
 #include <iostream>		/* cout */		
-
-#include <chrono>
-#include <ctime>    
-#include <thread>		/* sleep_for */
 
 using namespace std;
 
 //Atributos de la ventana
 const int NUM_BUFFERS = 1;							//PC : 1(Modo ventana) O 2(Modo fullscreen). PS4 2-16 //TODO: DETECTAR ERROR?
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;						//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
+const int SCREEN_WIDTH = 1920;
+const int SCREEN_HEIGHT = 1080;						//PS4: Tiene que tener relación de aspecto 16:9. Solo se tiene en cuenta el height
 
 const double MS_PER_UPDATE = 1000.0 / 60;
 
@@ -59,29 +56,23 @@ int main(int argc, char* args[])
 	//Variables bucle
 	int tick = 0;
 
-	auto startGameTime = std::chrono::system_clock::now();
-	double previous = 0.0;
+	Time::Init();
+
 	double lag = 0.0;
 
 	//Bucle principal. Hebra lógica.
 	while (Platform::Tick())
 	{
-		//GetCurrentTime
-		auto startFrameTime = std::chrono::system_clock::now();
-		std::chrono::duration<double> elapsed_seconds = startFrameTime - startGameTime;
-		double current = elapsed_seconds.count();
-
-		double elapsed = current - previous;
-		previous = current;
-		lag += elapsed * 1000;
+		Time::Tick();
+		lag += Time::deltaTime * 1000;
 
 		Input::Tick();
+
 		WestBank::Input();
 
 		while (lag >= MS_PER_UPDATE)
 		{
-			WestBank::Update(current, tick);
-			//waves->Update();
+			WestBank::Update(tick);
 			lag -= MS_PER_UPDATE;
 		}
 

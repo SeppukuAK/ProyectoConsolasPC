@@ -16,6 +16,7 @@ private:
 	static int _screenWidth;		//Ancho de la ventana
 	static int _screenHeight;		//Alto de la ventana
 	static int _numBuffers;			//Número de frame buffers del Renderer
+	static int _scale;
 
 	static SDL_Window* window;		//Referencia a la ventana de SDL
 	static SDL_Renderer* renderer;	//Referencia al renderer de SDL
@@ -43,6 +44,8 @@ public:
 	*/
 	static void PutPixel(int x, int y, Color color);
 
+	static void DrawSquare(int x, int y, Color color);
+
 	/*
 		Pinta una seccion de una imagen en la posición especificada
 	*/
@@ -52,6 +55,8 @@ public:
 		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.
 	*/
 	static void Present();
+
+	inline static void SetScale(int newScale) { _scale = newScale; }
 
 	//Getters
 	inline static int GetWidth() { return _screenWidth; };

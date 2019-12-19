@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../Renderer/Renderer.h"
 #include "Sprite.h"
+#include "../Utilities/Time.h"
 
 Entity::Entity(int x, int y) : _x(x), _y(y)
 {
@@ -31,9 +32,9 @@ void Entity::CheckState(float delta, int newState)
 
 }
 
-void Entity::Update(float delta, float time)
+void Entity::Update(float delta)
 {
-	CheckState(delta, 0);
+	CheckState(delta,0);
 }
 
 void Entity::Render()

@@ -8,14 +8,13 @@ class Sprite
 {
 private:
 	Image* _image;
-	Rect _sRect;		//Región de la imagen que se va a pintar
+	Rect _sRect;		//Regiï¿½n de la imagen que se va a pintar
 
 public:
 	Sprite(Image* image, Rect sRect);
 
-	//Método que pinta el sprite a partir de una posición (esquina sup izquierda del sprite)
+	//Mï¿½todo que pinta el sprite a partir de una posiciï¿½n (esquina sup izquierda del sprite)
 	void Draw(int posX, int posY);
 	void DrawPartially(int posX, int posY, Rect partialRect);
-	void DrawWithDelta(int posX, Rect rect, int delta);
 };
 

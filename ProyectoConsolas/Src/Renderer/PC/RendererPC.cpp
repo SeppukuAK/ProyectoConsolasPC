@@ -12,6 +12,7 @@
 int RendererPC::_screenWidth = 0;
 int RendererPC::_screenHeight = 0;
 int RendererPC::_numBuffers = 0;
+int RendererPC::_scale = 1;
 SDL_Window* RendererPC::window = NULL;
 SDL_Renderer* RendererPC::renderer = NULL;
 
@@ -74,6 +75,19 @@ void RendererPC::PutPixel(int x, int y, Color color)
 	SDL_RenderDrawPoint(renderer, x, y);
 }
 
+void RendererPC::DrawSquare(int x, int y, Color color)
+{
+	for (size_t i = 0; i < _scale; i++)
+	{
+		for (size_t j = 0; j < _scale; j++)
+		{
+			PutPixel(x + j, y + i, color);
+
+		}
+
+	}
+}
+
 void RendererPC::DrawRect(Image* image, int posX, int posY, Rect sRect)
 {
 	int imageWidth = image->GetWidth();
@@ -84,7 +98,7 @@ void RendererPC::DrawRect(Image* image, int posX, int posY, Rect sRect)
 	{
 		for (int j = 0; j < sRect.Width; j++)
 		{
-			PutPixel(posX + j, posY + i, colorArray[(i + sRect.Y) * imageWidth + (j + sRect.X)]);
+			DrawSquare((posX + j) * _scale, (posY + i) * _scale, colorArray[(i + sRect.Y) * imageWidth + (j + sRect.X)]);
 		}
 	}
 
@@ -95,5 +109,6 @@ void RendererPC::Present()
 	//Actualiza la pantalla
 	SDL_RenderPresent(renderer);
 }
+
 
 #endif

@@ -29,12 +29,6 @@ void FrameDoor::Release()
 	frameDoorSprite = nullptr;
 }
 
-void FrameDoor::Update(float delta, float time)
-{
-	CheckState(delta, 0);
-}
-
-
 void FrameDoor::RenderWithDelta(int posX) {
 	Rect rLeft = scrollRect;
 	rLeft.X = scrollRect.Width - posX;

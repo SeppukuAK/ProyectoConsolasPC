@@ -17,7 +17,7 @@ public:
 
 private:
 	/*
-		Imágenes disponibles en la escena
+		Imï¿½genes disponibles en la escena
 	*/
 	enum ImageType { DOOR_FRAME, DOORS, CLIENT, THIEF, DOLLARS, BANG, SIZE };
 
@@ -30,6 +30,15 @@ private:
 	static const float MIN_SECONDS_OPENING_DOOR;
 	static const float MAX_SECONDS_OPENING_DOOR;
 	static const float DOOR_OPENED_TIME;	//Incluye el tiempo abriendose
+	static const float FIRE_RATE;	
+
+	//Conversiï¿½n a digital de los triggers
+	static const float DEADZONE_TRIGGER_ACTIVE;
+	static const float DEADZONE_TRIGGER_REPOSE;
+
+	static const float DEADZONE_AXIS_CENTER;
+	static const float DEADZONE_AXIS_DIRECTION;
+
 
 	static const int NUM_DOORS;
 	static const int NUM_VISIBLE_DOORS;
@@ -44,7 +53,7 @@ private:
 
 
 
-	//Carga de recursos. Asumen una resolución de juego de 640 x 360
+	//Carga de recursos. Asumen una resoluciï¿½n de juego de 640 x 360
 	static Image** images;
 
 	static FrameDoor** frameDoors;			//Pared con puerta. 3 De ellas consecutivas crean la escena principal de juego
@@ -54,10 +63,10 @@ private:
 	static Bang* bang;
 
 	//Client
-	static std::vector <Client*> clients; //Vector de clientes(puede haber más de uno a la vez)
+	static std::vector <Client*> clients; //Vector de clientes(puede haber mï¿½s de uno a la vez)
 
 	//Thief
-	static std::vector<Thief*> thieves; //Vector de clientes(puede haber más de uno a la vez)
+	static std::vector<Thief*> thieves; //Vector de clientes(puede haber mï¿½s de uno a la vez)
 
 	static int personChosen;		//Persona elegida (Cliente o Bandido)
 
@@ -77,7 +86,9 @@ private:
 	//Atributos escena
 	static GameState gameState;			//Estado actual de la escena
 	static int doorIndex;				//Puerta seleccionada (mas a la izquierda)
-	static float nextResetGameSeconds;	//Instante de tiempo en que se reseteará el juego
+	static float nextResetGameSeconds;	//Instante de tiempo en que se resetearï¿½ el juego
+	static float nextFire;				//Instante de tiempo en el que se puede disparar
+	static bool canShoot;
 
 public:
 	/*
@@ -91,13 +102,13 @@ public:
 	static void Release();
 
 	static void Input();
-	static void Update(float time, float tick);
+	static void Update(float tick);
 	static void Render();
 
 private:
 
 	/*
-		Carga las imágenes que utiliza el juego
+		Carga las imï¿½genes que utiliza el juego
 	*/
 	static void LoadResources();
 

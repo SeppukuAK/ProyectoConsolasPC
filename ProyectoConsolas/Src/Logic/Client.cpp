@@ -4,6 +4,7 @@
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
 #include <iostream>
+#include "../Utilities/Time.h"
 
 using namespace std;
 
@@ -42,7 +43,7 @@ void Client::Init(Image* clientImage)
 	sRect.Y = 0;
 	sRect.X = 0;
 
-	//Creación sprites Client
+	//Creaciï¿½n sprites Client
 	clientSprites = new Sprite * [NUM_SPRITES];
 
 	for (int i = 0; i < NUM_SPRITES; i++)
@@ -61,7 +62,7 @@ void Client::Release()
 	clientSprites = nullptr;
 }
 
-void Client::Update(float delta, float time)
+void Client::Update(float delta)
 {
 	int newClientState = 0;
 
@@ -74,7 +75,7 @@ void Client::Update(float delta, float time)
 			}
 
 		case ClientState::CLIENT_IDLE:
-			//Se inicia la animación
+			//Se inicia la animaciï¿½n
 			endAnimTime = time + ANIM_RATE;
 			newClientState = ClientState::CLIENT_DEAD_0;
 			break;
