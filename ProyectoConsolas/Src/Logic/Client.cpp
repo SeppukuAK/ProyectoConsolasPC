@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const float Client::ANIM_RATE = 1.0f;
+const float Client::ANIM_RATE = 2.0f;
 const int Client::NUM_SPRITES = 3;
 
 Sprite** Client::clientSprites = nullptr;
@@ -21,7 +21,9 @@ Client::Client(int x, int y, Door* door) : Entity(x, y), _door(door)
 	animTimer = 0.0f;
 	doorState = 0;
 	endAnimTime = 0.0f;
-	dying = false;
+
+	_dying = false;
+	_dead = false;
 }
 
 void Client::Reset()
@@ -29,7 +31,8 @@ void Client::Reset()
 	Entity::Reset();
 
 	endAnimTime = 0.0f;
-	dying = false;
+	_dying = false;
+	_dead = false;
 }
 
 void Client::Init(Image* clientImage)
@@ -66,22 +69,36 @@ void Client::Update(float delta)
 {
 	int newClientState = 0;
 
-	if (dying) {
+	if (_dying) {
+
 		switch (currentState) {
 		case ClientState::CLIENT_DEAD_0:
+			//Fin de la animaci�n
 			if (Time::time >= endAnimTime - ANIM_RATE / 2) {
+				_dead = true;
 				newClientState = ClientState::CLIENT_DEAD_1;
-				dying = false;
 			}
+			else 
+				newClientState = ClientState::CLIENT_DEAD_0;
 
+			break;
+			//TODO: ARREGLAR ESTO
+		case ClientState::CLIENT_DEAD_1:
+				newClientState = ClientState::CLIENT_DEAD_1;
+
+			break;
 		case ClientState::CLIENT_IDLE:
 			//Se inicia la animaci�n
 			endAnimTime = Time::time + ANIM_RATE;
 			newClientState = ClientState::CLIENT_DEAD_0;
 			break;
 		}
-		CheckState(delta, newClientState);
 	}
+	else if(!_dying && !_dead) {
+		newClientState = ClientState::CLIENT_IDLE;
+	}
+	CheckState(delta, newClientState);
+
 }
 
 void Client::Render() {

@@ -29,6 +29,11 @@ private:
 	*/
 	enum GameState { GAMEPLAY, SCROLL_LEFT, SCROLL_RIGHT, DEATH };
 
+	/* 
+	Tipos de personas
+	*/
+	enum PersonType { TYPE_CLIENT, TYPE_THIEF, TYPE_SIZE };
+
 	//Game
 	static const int GAME_WIDTH;
 	static const int GAME_HEIGHT;

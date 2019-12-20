@@ -16,6 +16,10 @@
 #include <iostream>
 using namespace std;
 
+//TODO: HA HABIDO UN MOMENTO QUE SE HA ABIERTO UNA PUERTA Y HA SALIDO UN BANDIDO MUERTO
+//CUANDO HA MUERTO UN BANDIDO Y SE VUELVE A ABRIR LA MISMA PUERTA DONDE HA MUERTO, VUELVE A APARECER
+//ALGUN BORRADO MAL?
+
 //Game
 const float WestBank::MIN_SECONDS_OPENING_DOOR = 0.5f;
 const float WestBank::MAX_SECONDS_OPENING_DOOR = 3.0f;
@@ -117,9 +121,9 @@ void WestBank::Release()
 	for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 	{
 		if (clients[i] != nullptr)
-			 clients[i] =nullptr;
+			clients[i] = nullptr;
 		if (thieves[i] != nullptr)
-			 thieves[i] = nullptr;
+			thieves[i] = nullptr;
 	}
 	//delete[]clients;
 	//delete[]thieves;
@@ -233,7 +237,7 @@ void WestBank::ResetScene()
 
 	//Configuraci�n de la escena
 	doorChosenIndex = rand() % NUM_VISIBLE_DOORS;
-	personChosen = 0;//2 = typeOfPerson ( 0 = Cliente / 1 = Bandido )
+	personChosen = rand() % PersonType::TYPE_SIZE;
 
 	nextClosingDoorSeconds = 0.0f;
 	nextOpeningDoorSeconds = 0.0f;
@@ -321,8 +325,37 @@ void WestBank::CheckShoot()
 			nextFire = Time::time + FIRE_RATE;
 			//TODO: DISPARAR
 		}
+
+		////TODO: MEJORAR?
+		////Disparar a la persona de la izquierda
+		//if (Input::GetUserInput().Key_1 && doors[doorIndex]->IsOpened())
+		//{
+		//	if (personChosen == PersonType::TYPE_CLIENT)
+		//		clients[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+		//	else
+		//		thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+
+
+		//}
+		////Disparar a la persona del centro
+		//else if (Input::GetUserInput().Key_2 && doors[doorIndex + 1]->IsOpened())
+		//{
+		//	if (personChosen == PersonType::TYPE_CLIENT)
+		//		clients[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+		//	else
+		//		thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+		//}
+		////Disparar a la persona de la derecha
+		//else if (Input::GetUserInput().Key_3 && doors[doorIndex + 2]->IsOpened())
+		//{
+		//	if (personChosen == PersonType::TYPE_CLIENT)
+		//		clients[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+		//	else
+		//		thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+		//}
 	}
 }
+
 
 void WestBank::Input()
 {
@@ -346,15 +379,12 @@ void WestBank::Update(float tick)
 	{
 		if (oldDoorChosenIndex >= 0 && doors[oldDoorChosenIndex]->IsClosed()) {
 
-			//TODO: cutre pero no se como hacerlo
-			if (personChosen == 0) {
-				cout << "Se elimina al cliente de la puerta: " << oldDoorChosenIndex << endl;
-
+			if (personChosen == PersonType::TYPE_CLIENT) {
+				//	cout << "Se elimina al cliente de la puerta: " << oldDoorChosenIndex << endl;
 				clients[oldDoorChosenIndex] = nullptr;
 			}
 			else {
-				cout << "Se elimina al ladron de la puerta: " << oldDoorChosenIndex << endl;
-
+				//	cout << "Se elimina al ladron de la puerta: " << oldDoorChosenIndex << endl;
 				thieves[oldDoorChosenIndex] = nullptr;
 			}
 
@@ -377,26 +407,23 @@ void WestBank::Update(float tick)
 				nextOpeningDoorSeconds = 0.0f;
 				nextClosingDoorSeconds = 0.0f;
 
-				if (personChosen == 0) {
+				if (personChosen == PersonType::TYPE_CLIENT) {
 					Client* client = new Client(doors[doorChosenIndex]->GetPosX(), doors[doorChosenIndex]->GetPosY(), doors[doorChosenIndex]);
 					clients[doorChosenIndex] = client;//Se añade el nuevo cliente seleccionado
-					cout << "Se crea cliente en la puerta: " << doorChosenIndex << endl;
+				//	cout << "Se crea cliente en la puerta: " << doorChosenIndex << endl;
 
 				}
 				else {
 					Thief* thief = new Thief(doors[doorChosenIndex]->GetPosX(), doors[doorChosenIndex]->GetPosY(), doors[doorChosenIndex]);
 					thieves[doorChosenIndex] = thief;//Se añade el nuevo cliente seleccionado
-					cout << "Se crea ladron en la puerta: " << doorChosenIndex << endl;
-
-
+				//	cout << "Se crea ladron en la puerta: " << doorChosenIndex << endl;
 				}
 			}
 
 			//Si a la puerta actual no le toca abrirse y la anterior est� cerrada, est�n todas cerradas
 			else if (oldDoorChosenIndex == -1)
-			{
 				allDoorsClosed = true;
-			}
+
 		}
 
 
@@ -413,24 +440,27 @@ void WestBank::Update(float tick)
 				doors[doorChosenIndex]->SetClosed(true);
 
 				//Se gana un dolar
-				if (personChosen == 0) {
+				if (personChosen == PersonType::TYPE_CLIENT) {
 
-					//Si no se ha ganado este dolar ya, se aumenta el contador
-					if (!dollars[(doorIndex + doorChosenIndex) % NUM_DOORS]->HasAlreadyWonDollar()) {
-						dollarsWon++;
-						if (dollarsWon == NUM_DOORS) {
-							ResetScene();
+					//Solo se gana un dolar si el cliente no está muerto
+					if (!clients[doorChosenIndex]->IsDead()) {
+
+						//Si no se ha ganado este dolar ya y el cliente no está muerto, se aumenta el contador
+						if (!dollars[(doorIndex + doorChosenIndex) % NUM_DOORS]->HasAlreadyWonDollar()) {
+							dollarsWon++;
+							if (dollarsWon == NUM_DOORS) {
+								ResetScene();
+							}
+							cout << dollarsWon << endl;
 						}
-						cout << dollarsWon << endl;
+						dollars[(doorIndex + doorChosenIndex) % NUM_DOORS]->WinMoney();
 					}
-					dollars[(doorIndex + doorChosenIndex) % NUM_DOORS]->WinMoney();
-
-					
 				}
-
-				//Te mueres porque te dispara el ladron
-				else
-					gameState = WestBank::GameState::DEATH;
+				//Te mueres porque te dispara el ladron, siempre que no le hayas matado tú antes
+				else {
+					if (!thieves[doorChosenIndex]->IsDead())
+						gameState = WestBank::GameState::DEATH;
+				}
 
 				nextOpeningDoorSeconds = 0.0f;
 				nextClosingDoorSeconds = 0.0f;
@@ -438,7 +468,7 @@ void WestBank::Update(float tick)
 				//Se elige la nueva puerta
 				oldDoorChosenIndex = doorChosenIndex;
 				doorChosenIndex = rand() % NUM_VISIBLE_DOORS;
-				personChosen = 0;//2 = typeOfPerson ( 0 = Cliente / 1 = Bandido )
+				personChosen = rand() % PersonType::TYPE_SIZE; //rand() % PersonType::SIZE ( 0 = Cliente / 1 = Bandido )
 			}
 		}
 
@@ -471,8 +501,8 @@ void WestBank::Update(float tick)
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Update(tick);
 
-		posX += 2;//Se aumenta la posicion del frameDoor
-		if (posX > FrameDoor::GetFrameDoorWidth() - 1)
+		posX += 5;//Se aumenta la posicion del frameDoor
+		if (posX >= FrameDoor::GetFrameDoorWidth())
 		{
 			for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 			{
@@ -490,7 +520,7 @@ void WestBank::Update(float tick)
 		for (int i = 0; i < NUM_DOORS; i++)
 			dollars[i]->Update(tick);
 
-		posX -= 2;
+		posX -= 5;
 
 		if (posX <= 0)
 		{

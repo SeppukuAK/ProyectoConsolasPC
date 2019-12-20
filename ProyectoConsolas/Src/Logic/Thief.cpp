@@ -4,6 +4,7 @@
 #include "../Utilities/Rect.h"
 #include "Sprite.h"
 #include <iostream>
+#include "../Utilities/Time.h"
 
 using namespace std;
 
@@ -21,24 +22,39 @@ Thief::Thief(int x, int y, Door* door) : Entity(x, y), _door(door)
 	sprites = thiefSprites;
 	animTimer = 0.0f;
 	doorState = 0;
+	endAnimTime = 0.0f;
+
+	_dying = false;
+	_dead = false;
 }
 
-void Thief::Init(Image* clientImage)
+void Thief::Reset()
 {
-	//Creación sprites Client
+	Entity::Reset();
+
+	endAnimTime = 0.0f;
+	_dying = false;
+	_dead = false;
+}
+
+void Thief::Init(Image* thiefImage)
+{
+	spriteWidth = thiefImage->GetWidth() / TOTAL_SPRITES;
+	spriteHeight = thiefImage->GetHeight();
+
+	Rect sRect;
+	sRect.Width = spriteWidth;
+	sRect.Height = spriteHeight;
+	sRect.Y = 0;
+	sRect.X = 0;
+
+	//Creaciï¿½n sprites Thief
 	thiefSprites = new Sprite * [NUM_SPRITES];
 
-	spriteWidth = clientImage->GetWidth() / TOTAL_SPRITES;
-	spriteHeight = clientImage->GetHeight();
-
 	for (int i = 0; i < NUM_SPRITES; i++)
-	{
-		Rect sRect;
-		sRect.Width = spriteWidth;
-		sRect.Height = spriteHeight;
-		sRect.Y = 0;
+	{		
 		sRect.X = (i+1) * sRect.Width;
-		thiefSprites[i] = new Sprite(clientImage, sRect);
+		thiefSprites[i] = new Sprite(thiefImage, sRect);
 	}
 }
 
@@ -53,8 +69,39 @@ void Thief::Release()
 
 void Thief::Update(float delta)
 {
-	int newClientState = 0;
-	CheckState(delta, newClientState);
+	int newThiefState = 0;
+
+	if (_dying) {
+
+		switch (currentState) {
+		case ThiefState::THIEF_DEAD_0:
+			//Fin de la animaciï¿½n
+			if (Time::time >= endAnimTime - ANIM_RATE / 2) {
+				_dead = true;
+				//_dying = false;//TODO: LO ARREGLARï¿½ ESTO?
+				newThiefState = ThiefState::THIEF_DEAD_1;
+			}
+			else
+				newThiefState = ThiefState::THIEF_DEAD_0;
+
+			break;
+			//TODO: ARREGLAR ESTO
+		case ThiefState::THIEF_DEAD_1:
+			newThiefState = ThiefState::THIEF_DEAD_1;
+
+			break;
+		case ThiefState::THIEF_IDLE:
+			//Se inicia la animaciï¿½n
+			endAnimTime = Time::time + ANIM_RATE;
+			newThiefState = ThiefState::THIEF_DEAD_0;
+			break;
+		}
+	}
+	else if (!_dying && !_dead) {
+		newThiefState = ThiefState::THIEF_IDLE;
+	}
+
+	CheckState(delta, newThiefState);
 
 	if (_door->GetCurrentState() != doorState) {
 		changedState = true;

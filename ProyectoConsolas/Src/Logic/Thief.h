@@ -13,13 +13,21 @@ class Door;
 */
 class Thief : public Entity
 {
+public:
+	static const int NUM_SPRITES;
+
 private:
-	enum ClientState { THIEF_IDLE, THIEF_DEAD_0, THIEF_DEAD_1 };
+	enum ThiefState { THIEF_IDLE, THIEF_DEAD_0, THIEF_DEAD_1 };
 
 	static const float ANIM_RATE;
-	static const int NUM_SPRITES;
 	static const int TOTAL_SPRITES;
+
 	static Sprite** thiefSprites;
+
+	float endAnimTime;
+
+	bool _dying;
+	bool _dead;
 
 	float animTimer;
 	static int spriteWidth;
@@ -30,13 +38,17 @@ private:
 	Door* _door;
 
 public:
-	static void Init(Image* clientImage);
+	static void Init(Image* thiefImage);
 	static void Release();
 
 	Thief(int x, int y, Door* door);
+	void Reset() override;
 
 	virtual void Update(float delta) override;
 	virtual void Render() override;
+
+	inline void Die() { _dying = true; };
+	inline bool IsDead() { return (_dead == true); };
 
 };
 

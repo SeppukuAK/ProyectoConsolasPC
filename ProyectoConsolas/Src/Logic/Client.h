@@ -24,7 +24,9 @@ private:
 	static Sprite** clientSprites;
 
 	float endAnimTime;
-	bool dying;
+
+	bool _dying;
+	bool _dead;
 
 	float animTimer;
 	static int spriteWidth;
@@ -43,6 +45,9 @@ public:
 
 	virtual void Update(float delta) override;
 	virtual void Render() override;
+
+	inline void Die() { _dying = true; };
+	inline bool IsDead() { return (_dead == true); };
 
 };
 
