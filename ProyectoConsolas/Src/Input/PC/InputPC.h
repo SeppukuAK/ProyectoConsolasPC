@@ -23,7 +23,7 @@ public:
 	class Observer : public InputObserver
 	{
 	public:
-		virtual bool HandleEvent(SDL_Event e) override;
+		virtual bool HandleEvent(const SDL_Event e) override;
 	};
 
 private:
@@ -35,14 +35,14 @@ private:
 	//Attributes
 	static SDL_GameController* gameController;	//Manejador del GameController
 	static Observer observer;					//Observa los eventos de Input de Platform. TODO: Puntero?????????
-	static std::queue<SDL_Event> eventQueue;
+	static std::queue<SDL_Event> eventQueue;	//Cola con los eventos a procesar en el siguiente tick
 	static UserInput userInput;					//Informacion del estado actual del input
 
 public:
 
 	/*
 		Inicializa el input.
-		Se registra a platform para escuchar el input
+		Se registra a platform para escuchar el input.
 	*/
 	static void Init();
 
@@ -64,10 +64,10 @@ public:
 	/*
 		Añade un evento a la cola de input para que se procese
 	*/
-	static void AddEvent(SDL_Event e);
+	static void AddEvent(const SDL_Event e);
 
 	/*
-		Restringe un valor al rango
+		Restringe un valor float al rango
 	*/
 	static float Clamp(float min, float max, float value);
 

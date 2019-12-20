@@ -4,14 +4,15 @@
 
 #include "InputPC.h"
 #include <stdio.h> 
-#include <iostream>
-#include "../../Platform/Platform.h"
-#include <stdlib.h>     /* abs */
+#include "../../Platform/PC/PlatformPC.h"
 #include <SDL.h>		/* SDL. Pintado */
+#include <stdlib.h>     /* abs */
+#include <iostream>
+using namespace std;
 
 //Inicialización de atributos estáticos
 //-32768 and 32767
-const int InputPC::JOYSTICK_MAX_VALUE = 30000;
+const int InputPC::JOYSTICK_MAX_VALUE = 32767;
 const int InputPC::JOYSTICK_DEAD_ZONE = 8000;
 const int InputPC::TRIGGER_MAX_VALUE = 32767;
 
@@ -20,13 +21,14 @@ InputPC::Observer InputPC::observer = InputPC::Observer();
 std::queue<SDL_Event> InputPC::eventQueue = std::queue<SDL_Event>();
 UserInput InputPC::userInput = UserInput();
 
-bool InputPC::Observer::HandleEvent(SDL_Event e)
+bool InputPC::Observer::HandleEvent(const SDL_Event e)
 {
 	bool eventConsumed = false;
 	switch (e.type)
 	{
 	case SDL_KEYDOWN:
 	case SDL_KEYUP:
+	{
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_1:
@@ -34,41 +36,52 @@ bool InputPC::Observer::HandleEvent(SDL_Event e)
 		case SDLK_3:
 		case SDLK_o:
 		case SDLK_p:
+		{
 			eventConsumed = true;
 			break;
 		}
+		}
 		break;
+	}
 
 	case SDL_CONTROLLERBUTTONDOWN:
 	case SDL_CONTROLLERBUTTONUP:
+	{
 		switch (e.cbutton.button)
 		{
-		case SDL_CONTROLLER_BUTTON_A:
-		case SDL_CONTROLLER_BUTTON_B:
-		case SDL_CONTROLLER_BUTTON_X:
-		case SDL_CONTROLLER_BUTTON_Y:
+			//case SDL_CONTROLLER_BUTTON_A:
+			//case SDL_CONTROLLER_BUTTON_B:
+			//case SDL_CONTROLLER_BUTTON_X:
+			//case SDL_CONTROLLER_BUTTON_Y:
 		case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
 		case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+		{
 			eventConsumed = true;
 			break;
 		}
+		}
 		break;
+	}
 
 	case SDL_CONTROLLERAXISMOTION:
+	{
 		if (e.caxis.which == 0)
 		{
 			switch (e.caxis.axis)
 			{
 			case SDL_CONTROLLER_AXIS_LEFTX:
-			case SDL_CONTROLLER_AXIS_LEFTY:
+				//case SDL_CONTROLLER_AXIS_LEFTY:
 			case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
 			case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
+			{
 				eventConsumed = true;
 				break;
+			}
 			}
 
 		}
 		break;
+	}
 	}
 
 	if (eventConsumed)
@@ -125,96 +138,130 @@ void InputPC::Tick()
 		switch (e.type)
 		{
 		case SDL_KEYDOWN:
+		{
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_1:
+			{
 				userInput.Key_1 = true;
 				break;
+			}
 			case SDLK_2:
+			{
 				userInput.Key_2 = true;
 				break;
+			}
 			case SDLK_3:
+			{
 				userInput.Key_3 = true;
 				break;
+			}
 			case SDLK_o:
+			{
 				userInput.Key_O = true;
 				break;
+			}
 			case SDLK_p:
+			{
 				userInput.Key_P = true;
 				break;
 			}
+			}
 			break;
-
+		}
 		case SDL_KEYUP:
+		{
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_1:
+			{
 				userInput.Key_1 = false;
 				break;
+			}
 			case SDLK_2:
+			{
 				userInput.Key_2 = false;
 				break;
+			}
 			case SDLK_3:
+			{
 				userInput.Key_3 = false;
 				break;
+			}
 			case SDLK_o:
+			{
 				userInput.Key_O = false;
 				break;
+			}
 			case SDLK_p:
+			{
 				userInput.Key_P = false;
 				break;
 			}
+			}
 			break;
+		}
 
 		case SDL_CONTROLLERBUTTONDOWN:
+		{
 			switch (e.cbutton.button)
 			{
-			//case SDL_CONTROLLER_BUTTON_A:
-			//	userInput.Cross = true;
-			//	break;
-			//case SDL_CONTROLLER_BUTTON_B:
-			//	userInput.Circle = true;
-			//	break;
-			//case SDL_CONTROLLER_BUTTON_X:
-			//	userInput.Square = true;
-			//	break;
-			//case SDL_CONTROLLER_BUTTON_Y:
-			//	userInput.Triangle = true;
-			//	break;
+				//case SDL_CONTROLLER_BUTTON_A:
+				//	userInput.Cross = true;
+				//	break;
+				//case SDL_CONTROLLER_BUTTON_B:
+				//	userInput.Circle = true;
+				//	break;
+				//case SDL_CONTROLLER_BUTTON_X:
+				//	userInput.Square = true;
+				//	break;
+				//case SDL_CONTROLLER_BUTTON_Y:
+				//	userInput.Triangle = true;
+				//	break;
 			case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+			{
 				userInput.L1 = true;
 				break;
+			}
 			case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+			{
 				userInput.R1 = true;
 				break;
 			}
+			}
 			break;
+		}
 
 		case SDL_CONTROLLERBUTTONUP:
+		{
 			switch (e.cbutton.button)
 			{
-			//case SDL_CONTROLLER_BUTTON_A:
-			//	userInput.Cross = false;
-			//	break;
-			//case SDL_CONTROLLER_BUTTON_B:
-			//	userInput.Circle = false;
-			//	break;
-			//case SDL_CONTROLLER_BUTTON_X:
-			//	userInput.Square = false;
-			//	break;
-			//case SDL_CONTROLLER_BUTTON_Y:
-			//	userInput.Triangle = false;
-			//	break;
+				//case SDL_CONTROLLER_BUTTON_A:
+				//	userInput.Cross = false;
+				//	break;
+				//case SDL_CONTROLLER_BUTTON_B:
+				//	userInput.Circle = false;
+				//	break;
+				//case SDL_CONTROLLER_BUTTON_X:
+				//	userInput.Square = false;
+				//	break;
+				//case SDL_CONTROLLER_BUTTON_Y:
+				//	userInput.Triangle = false;
+				//	break;
 			case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+			{
 				userInput.L1 = false;
 				break;
+			}
 			case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+			{
 				userInput.R1 = false;
 				break;
 			}
+			}
 			break;
-
-			//Eventos que utilizan ejes ( TRIGGERS Y STICKERS ) 
+		}
+		//Eventos que utilizan ejes ( TRIGGERS Y STICKERS ) 
 		case SDL_CONTROLLERAXISMOTION:
 		{
 			//Mando 0
@@ -222,7 +269,9 @@ void InputPC::Tick()
 			{
 				switch (e.caxis.axis)
 				{
+					//Joystick
 				case SDL_CONTROLLER_AXIS_LEFTX:
+				{
 					//Aplicación de deadzone
 					if (abs(e.caxis.value) < JOYSTICK_DEAD_ZONE)
 						userInput.HorizontalAxis = 0;
@@ -230,7 +279,10 @@ void InputPC::Tick()
 						userInput.HorizontalAxis = Clamp(-1.0f, 1.0f, (float)e.caxis.value / JOYSTICK_MAX_VALUE);
 
 					break;
+				}
+
 				//case SDL_CONTROLLER_AXIS_LEFTY:
+				//{
 				//	//Aplicación de deadzone
 				//	if (abs(e.caxis.value) < JOYSTICK_DEAD_ZONE)
 				//		userInput.VerticalAxis = 0;
@@ -238,26 +290,24 @@ void InputPC::Tick()
 				//		userInput.VerticalAxis = Clamp(-1.0f, 1.0f, (float)e.caxis.value / JOYSTICK_MAX_VALUE);
 
 				//	break;
-
+				//}
 
 					//GATILLOS
-					//Los gatillos analogicos se mapean a los ejes 2 y 5 en mandos de xbox (y 3 y 4 en caso de los mandos de PS4.) ????
-					//TODO: No es una metralleta. Para que deje de ser disparo los 2 gatillos tienen que estar sueltos. Hay que convertirlos de analogico a digital.
 				case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
-
-					//(0-30000) --> (0-60000) --> [-1,+1]
-					//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
+				{
+					//(0-TRIGGER_MAX_VALUE) --> (0-TRIGGER_MAX_VALUE) --> [-1,+1]
+					//Convertimos el valor que tiene rango [0,TRIGGER_MAX_VALUE] al rango [-1,1]
 					userInput.L2 = (float)(2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
 
 					break;
-
+				}
 				case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
-
-					//(0-30000) --> (0-60000) --> [-1,+1]
-					//Convertimos el valor que tiene rango [0,JOYSTICK_MAX_VALUE] al rango [-1,1]
+				{
+					//(0-TRIGGER_MAX_VALUE) --> (0-TRIGGER_MAX_VALUE) --> [-1,+1]
+					//Convertimos el valor que tiene rango [0,TRIGGER_MAX_VALUE] al rango [-1,1]
 					userInput.R2 = (float)(2 * e.caxis.value - TRIGGER_MAX_VALUE) / TRIGGER_MAX_VALUE;
 					break;
-
+				}
 				}
 			}
 			break;
@@ -270,7 +320,7 @@ void InputPC::Tick()
 	}
 }
 
-void InputPC::AddEvent(SDL_Event e)
+void InputPC::AddEvent(const SDL_Event e)
 {
 	eventQueue.push(e);
 }
