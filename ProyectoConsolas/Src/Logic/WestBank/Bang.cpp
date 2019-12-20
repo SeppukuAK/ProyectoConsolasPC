@@ -1,10 +1,10 @@
 #include "Bang.h"
-#include "../Renderer/Image.h"
-#include "../Utilities/Rect.h"
-#include "Sprite.h"
+#include "../../Renderer/Image.h"
+#include "../../Utilities/Rect.h"
+#include "../Sprite.h"
 #include <iostream>
 #include "WestBank.h"
-#include "../Utilities/Time.h"
+#include "../../Utilities/Time.h"
 
 const int Bang::NUM_SPRITES = 6;
 

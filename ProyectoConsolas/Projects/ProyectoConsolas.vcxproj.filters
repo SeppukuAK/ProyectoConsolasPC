@@ -63,11 +63,14 @@
     <Filter Include="Source Files\Utilities">
       <UniqueIdentifier>{3827b7c4-df17-4899-b41c-1b43975e0f94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic\WestBank">
+      <UniqueIdentifier>{a597e795-cc6d-498e-857d-c4fc81aea329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic\WestBank">
+      <UniqueIdentifier>{86baf1f9-fe0b-4f83-8a5f-855306f876e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Src\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Src\Platform\PC\PlatformPC.cpp">
       <Filter>Source Files\Platform\PC</Filter>
     </ClCompile>
@@ -83,41 +86,44 @@
     <ClCompile Include="..\Src\Input\PC\InputPC.cpp">
       <Filter>Source Files\Input\PC</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\Logic\Door.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
     <ClCompile Include="..\Src\Logic\Sprite.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Logic\Dollar.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="..\Src\Logic\Entity.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\Logic\FrameDoor.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Logic\Client.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Logic\WestBank.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
     <ClCompile Include="..\Src\Logic\Waves.cpp">
       <Filter>Source Files\Logic\_old</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Logic\DeathBackground.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\Logic\Bang.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="..\Src\Utilities\Time.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\Logic\Thief.cpp">
-      <Filter>Source Files\Logic</Filter>
+    <ClCompile Include="..\Src\Logic\WestBank\Bang.cpp">
+      <Filter>Source Files\Logic\WestBank</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\WestBank\Client.cpp">
+      <Filter>Source Files\Logic\WestBank</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\WestBank\DeathBackground.cpp">
+      <Filter>Source Files\Logic\WestBank</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\WestBank\Dollar.cpp">
+      <Filter>Source Files\Logic\WestBank</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\WestBank\Door.cpp">
+      <Filter>Source Files\Logic\WestBank</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\WestBank\FrameDoor.cpp">
+      <Filter>Source Files\Logic\WestBank</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\WestBank\Thief.cpp">
+      <Filter>Source Files\Logic\WestBank</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Logic\WestBank\WestBank.cpp">
+      <Filter>Source Files\Logic\WestBank</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\Main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +157,6 @@
     <ClInclude Include="..\Src\Input\UserInput.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Logic\Door.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Logic\Sprite.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
@@ -163,19 +166,7 @@
     <ClInclude Include="..\Src\Utilities\Rect.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Logic\Dollar.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Logic\Entity.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\Logic\FrameDoor.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\Logic\Client.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\Logic\WestBank.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\Logic\Waves.h">
@@ -184,17 +175,32 @@
     <ClInclude Include="..\Src\Input\PC\InputObserver.h">
       <Filter>Header Files\Input\PC</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Logic\Bang.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\Logic\DeathBackground.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Utilities\Time.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Logic\Thief.h">
-      <Filter>Header Files\Logic</Filter>
+    <ClInclude Include="..\Src\Logic\WestBank\Bang.h">
+      <Filter>Header Files\Logic\WestBank</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\WestBank\Client.h">
+      <Filter>Header Files\Logic\WestBank</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\WestBank\DeathBackground.h">
+      <Filter>Header Files\Logic\WestBank</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\WestBank\Dollar.h">
+      <Filter>Header Files\Logic\WestBank</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\WestBank\Door.h">
+      <Filter>Header Files\Logic\WestBank</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\WestBank\FrameDoor.h">
+      <Filter>Header Files\Logic\WestBank</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\WestBank\Thief.h">
+      <Filter>Header Files\Logic\WestBank</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\Logic\WestBank\WestBank.h">
+      <Filter>Header Files\Logic\WestBank</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

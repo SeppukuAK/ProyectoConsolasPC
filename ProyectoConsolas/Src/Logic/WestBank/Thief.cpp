@@ -1,14 +1,14 @@
 #include "Thief.h"
 #include "Door.h"
-#include "../Renderer/Image.h"
-#include "../Utilities/Rect.h"
-#include "Sprite.h"
+#include "../../Renderer/Image.h"
+#include "../../Utilities/Rect.h"
+#include "../Sprite.h"
 #include <iostream>
-#include "../Utilities/Time.h"
+#include "../../Utilities/Time.h"
 
 using namespace std;
 
-const float Thief::ANIM_RATE = 0.5f;
+const float Thief::ANIM_RATE = 0.15f;
 const int Thief::NUM_SPRITES = 3;
 const int Thief::TOTAL_SPRITES = 5;
 

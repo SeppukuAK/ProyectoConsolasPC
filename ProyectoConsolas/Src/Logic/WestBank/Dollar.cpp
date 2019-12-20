@@ -1,8 +1,8 @@
 #include "Dollar.h"
-#include "../Renderer/Image.h"
-#include "../Utilities/Rect.h"
-#include "Sprite.h"
-#include "../Utilities/Time.h"
+#include "../../Renderer/Image.h"
+#include "../../Utilities/Rect.h"
+#include "../Sprite.h"
+#include "../../Utilities/Time.h"
 
 #include <iostream>
 

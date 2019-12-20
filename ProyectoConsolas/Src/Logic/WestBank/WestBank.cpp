@@ -1,8 +1,8 @@
 #include "WestBank.h"
 #include <stdlib.h>		/* srand, rand */
-#include "../Renderer/Image.h"
-#include "../Platform/Platform.h"
-#include "../Input/Input.h"
+#include "../../Renderer/Image.h"
+#include "../../Platform/Platform.h"
+#include "../../Input/Input.h"
 #include "FrameDoor.h"
 #include "Door.h"
 #include "Client.h"
@@ -10,8 +10,8 @@
 #include "Dollar.h"
 #include "DeathBackground.h"
 #include "Bang.h"
-#include "../Utilities/Time.h"
-#include "../Renderer/Renderer.h"
+#include "../../Utilities/Time.h"
+#include "../../Renderer/Renderer.h"
 
 #include <iostream>
 using namespace std;

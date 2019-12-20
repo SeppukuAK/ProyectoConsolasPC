@@ -1,10 +1,10 @@
 #include "Client.h"
 #include "Door.h"
-#include "../Renderer/Image.h"
-#include "../Utilities/Rect.h"
-#include "Sprite.h"
+#include "../../Renderer/Image.h"
+#include "../../Utilities/Rect.h"
+#include "../Sprite.h"
 #include <iostream>
-#include "../Utilities/Time.h"
+#include "../../Utilities/Time.h"
 
 using namespace std;
 

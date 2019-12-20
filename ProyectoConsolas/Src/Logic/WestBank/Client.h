@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.h"
+#include "../Entity.h"
 
 class Image;
 class Sprite;
@@ -11,18 +11,17 @@ class Door;
 	Tienen el mismo ancho que el ancho que deja una puerta completamente abierta
 	TODO: LADRON TAMBIEN
 */
-class Thief : public Entity
+class Client : public Entity
 {
-public:
+public: 
 	static const int NUM_SPRITES;
 
 private:
-	enum ThiefState { THIEF_IDLE, THIEF_DEAD_0, THIEF_DEAD_1 };
+	enum ClientState { CLIENT_IDLE, CLIENT_DEAD_0, CLIENT_DEAD_1 };
 
 	static const float ANIM_RATE;
-	static const int TOTAL_SPRITES;
 
-	static Sprite** thiefSprites;
+	static Sprite** clientSprites;
 
 	float endAnimTime;
 
@@ -38,10 +37,10 @@ private:
 	Door* _door;
 
 public:
-	static void Init(Image* thiefImage);
+	static void Init(Image* clientImage);
 	static void Release();
 
-	Thief(int x, int y, Door* door);
+	Client(int x, int y, Door* door);
 
 	virtual void Update(float delta) override;
 	virtual void Render() override;

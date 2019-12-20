@@ -3,7 +3,7 @@
 #include "Renderer/RendererThread.h"
 #include "Input/Input.h"
 #include "Utilities/Time.h"
-#include "Logic/WestBank.h"
+#include "Logic/WestBank/WestBank.h"
 
 #include <stdlib.h>		/* srand, rand */
 #include <iostream>		/* cout */		

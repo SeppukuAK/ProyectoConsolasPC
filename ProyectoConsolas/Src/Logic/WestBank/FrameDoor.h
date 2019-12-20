@@ -1,6 +1,6 @@
 #pragma once
-#include "Entity.h"
-#include "../Utilities/Rect.h"
+#include "../Entity.h"
+#include "../../Utilities/Rect.h"
 
 class Image;
 class Sprite;

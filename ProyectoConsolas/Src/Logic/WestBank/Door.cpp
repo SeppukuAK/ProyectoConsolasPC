@@ -1,13 +1,13 @@
 #include "Door.h"
-#include "../Renderer/Image.h"
-#include "../Utilities/Rect.h"
-#include "Sprite.h"
+#include "../../Renderer/Image.h"
+#include "../../Utilities/Rect.h"
+#include "../Sprite.h"
 #include <iostream>
-#include "../Utilities/Time.h"
+#include "../../Utilities/Time.h"
 
 using namespace std;
 
-const float Door::ANIM_RATE = 1.0f;
+const float Door::ANIM_RATE = 0.5f;
 const int Door::NUM_SPRITES = 4;
 const int Door::BACKGROUND_PIXELS = 32;
 
