@@ -8,8 +8,8 @@ using namespace std;
 const Color RendererThread::SCREEN_CLEAR_COLOR = { 0,0,0,255 };
 std::thread* RendererThread::t = nullptr;
 Queue<RenderCommand> RendererThread::commandQueue;
-std::atomic <bool> RendererThread::quitRequested;
-std::atomic <int> RendererThread::pendingFrames;
+std::atomic <bool> RendererThread::quitRequested = false;
+std::atomic <int> RendererThread::pendingFrames = 0;
 RenderCommand RendererThread::clearCommand = RenderCommand();
 RenderCommand RendererThread::presentCommand = RenderCommand();
 

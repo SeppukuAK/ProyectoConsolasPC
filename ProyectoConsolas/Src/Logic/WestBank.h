@@ -27,9 +27,9 @@ private:
 	/*
 		Posibles estados de la escena
 	*/
-	enum GameState { GAMEPLAY, SCROLL_LEFT, SCROLL_RIGHT, DEATH };
+	enum GameState { GAMEPLAY, SCROLL_LEFT, SCROLL_RIGHT, INITIALIZE, DEATH };
 
-	/* 
+	/*
 	Tipos de personas
 	*/
 	enum PersonType { TYPE_CLIENT, TYPE_THIEF, TYPE_SIZE };
@@ -44,7 +44,8 @@ private:
 	static const float MIN_SECONDS_OPENING_DOOR;
 	static const float MAX_SECONDS_OPENING_DOOR;
 	static const float DOOR_OPENED_TIME;	//Incluye el tiempo abriendose
-	static const float FIRE_RATE;	
+	static const float FIRE_RATE;
+	static const float INITIALIZE_RATE;//Tiempo de espera antes de empezar el juego
 
 	//Input
 
@@ -79,7 +80,7 @@ private:
 	static std::vector<Thief*> thieves; //Vector de clientes(puede haber m�s de uno a la vez)
 
 	static int personChosen;		//Persona elegida (Cliente o Bandido)
-
+	static int oldPersonChosen;		//Anterior persona elegida(Cliente o Bandido)
 	//Puertas
 	static float nextClosingDoorSeconds;	//Instante de tiempo en los que se cierra las puerta
 	static float nextOpeningDoorSeconds;	//Instante de tiempo en los que se abre las puerta
@@ -97,7 +98,7 @@ private:
 	static GameState gameState;			//Estado actual de la escena
 	static int doorIndex;				//Puerta seleccionada (mas a la izquierda)
 	static float nextResetGameSeconds;	//Instante de tiempo en que se resetear� el juego
-
+	static float nextInitializeSeconds; //Instante de tiempo en que se inicia el juego
 	//Input
 	static float nextFire;				//Instante de tiempo en el que se puede disparar
 	static bool canShoot;

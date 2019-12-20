@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const float Client::ANIM_RATE = 2.0f;
+const float Client::ANIM_RATE = 0.5f;
 const int Client::NUM_SPRITES = 3;
 
 Sprite** Client::clientSprites = nullptr;
@@ -26,14 +26,6 @@ Client::Client(int x, int y, Door* door) : Entity(x, y), _door(door)
 	_dead = false;
 }
 
-void Client::Reset()
-{
-	Entity::Reset();
-
-	endAnimTime = 0.0f;
-	_dying = false;
-	_dead = false;
-}
 
 void Client::Init(Image* clientImage)
 {
@@ -82,7 +74,6 @@ void Client::Update(float delta)
 				newClientState = ClientState::CLIENT_DEAD_0;
 
 			break;
-			//TODO: ARREGLAR ESTO
 		case ClientState::CLIENT_DEAD_1:
 				newClientState = ClientState::CLIENT_DEAD_1;
 
@@ -98,6 +89,11 @@ void Client::Update(float delta)
 		newClientState = ClientState::CLIENT_IDLE;
 	}
 	CheckState(delta, newClientState);
+
+	if (_door->GetCurrentState() != doorState) {
+		changedState = true;
+		doorState = _door->GetCurrentState();
+	}
 
 }
 

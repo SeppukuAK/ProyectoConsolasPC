@@ -20,12 +20,15 @@ using namespace std;
 //CUANDO HA MUERTO UN BANDIDO Y SE VUELVE A ABRIR LA MISMA PUERTA DONDE HA MUERTO, VUELVE A APARECER
 //ALGUN BORRADO MAL?
 
+//TODO: Cuando se (re)inicia la escena, tiene que pasar un segundo
+
 //Game
 const float WestBank::MIN_SECONDS_OPENING_DOOR = 0.5f;
 const float WestBank::MAX_SECONDS_OPENING_DOOR = 3.0f;
-const float WestBank::DOOR_OPENED_TIME = 2.0f;	
+const float WestBank::DOOR_OPENED_TIME = 2.0f;
 const float WestBank::BANG_TIME = 2.0f;
 const float WestBank::FIRE_RATE = 1.0f;
+const float WestBank::INITIALIZE_RATE = 1.0f;
 
 //Pantalla de juego
 const int WestBank::GAME_WIDTH = 640;
@@ -62,6 +65,7 @@ Bang* WestBank::bang = nullptr;
 vector<Client*> WestBank::clients(NUM_VISIBLE_DOORS);
 vector<Thief*> WestBank::thieves(NUM_VISIBLE_DOORS);
 int WestBank::personChosen = -1;
+int WestBank::oldPersonChosen = -1;
 
 float WestBank::nextClosingDoorSeconds = 0.0f;
 float WestBank::nextOpeningDoorSeconds = 0.0f;
@@ -72,6 +76,7 @@ bool WestBank::allDoorsClosed = true;
 int WestBank::doorIndex = 0;
 
 WestBank::GameState WestBank::gameState = GameState::GAMEPLAY;
+float WestBank::nextInitializeSeconds = 0.0f;
 float WestBank::nextResetGameSeconds = 0.0f;
 float WestBank::nextFire = 0.0f;
 bool WestBank::canShoot = true;
@@ -203,7 +208,7 @@ void WestBank::InitScene()
 
 void WestBank::ResetScene()
 {
-	gameState = GameState::GAMEPLAY;
+	//gameState = GameState::GAMEPLAY;
 	deathBackground->Reset();
 	bang->Reset();
 
@@ -214,14 +219,13 @@ void WestBank::ResetScene()
 
 		//Clientes y ladrones
 		if (clients[i] != nullptr) {
-			cout << "cliente borrado" << endl;
-			clients[i]->Reset();//TODO: Supongo?
+			delete clients[i],
+			clients[i] = nullptr;
 		}
 
 		if (thieves[i] != nullptr) {
-			cout << "ladron borrado" << endl;
-
-			thieves[i]->Reset();
+			delete thieves[i];
+			thieves[i]= nullptr;
 		}
 	}
 	for (int i = 0; i < NUM_DOORS; i++)
@@ -235,9 +239,11 @@ void WestBank::ResetScene()
 
 	nextResetGameSeconds = 0.0f;
 
+
 	//Configuraci�n de la escena
 	doorChosenIndex = rand() % NUM_VISIBLE_DOORS;
 	personChosen = rand() % PersonType::TYPE_SIZE;
+	oldPersonChosen = -1;
 
 	nextClosingDoorSeconds = 0.0f;
 	nextOpeningDoorSeconds = 0.0f;
@@ -246,6 +252,15 @@ void WestBank::ResetScene()
 	allDoorsClosed = true;
 	nextFire = 0.0f;
 	canShoot = true;
+
+	nextInitializeSeconds = Time::time + INITIALIZE_RATE;
+	gameState = GameState::INITIALIZE;
+
+	if (personChosen == PersonType::TYPE_CLIENT)
+		cout << "Persona elegida: " << "Cliente" << "en la puerta: " << doorChosenIndex << endl;
+	else
+		cout << "Persona elegida: " << "Ladron" << "en la puerta: " << doorChosenIndex << endl;
+
 }
 
 void WestBank::CheckMovement()
@@ -323,36 +338,31 @@ void WestBank::CheckShoot()
 		{
 			canShoot = false;
 			nextFire = Time::time + FIRE_RATE;
-			//TODO: DISPARAR
+
+			if (dir == 0 && doors[doorIndex]->IsOpened())//izq
+			{
+				//Si el cliente muere, se reinicia la escena
+				if (personChosen == PersonType::TYPE_CLIENT)
+					ResetScene();
+				else
+					thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+			}
+			else if (dir == 1 && doors[doorIndex + 1]->IsOpened())//centro
+			{
+				if (personChosen == PersonType::TYPE_CLIENT)
+					ResetScene();
+
+				else
+					thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+			}
+			else if (dir == 2 && doors[doorIndex + 2]->IsOpened())//derecha
+			{
+				if (personChosen == PersonType::TYPE_CLIENT)
+					ResetScene();
+				else
+					thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
+			}
 		}
-
-		////TODO: MEJORAR?
-		////Disparar a la persona de la izquierda
-		//if (Input::GetUserInput().Key_1 && doors[doorIndex]->IsOpened())
-		//{
-		//	if (personChosen == PersonType::TYPE_CLIENT)
-		//		clients[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
-		//	else
-		//		thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
-
-
-		//}
-		////Disparar a la persona del centro
-		//else if (Input::GetUserInput().Key_2 && doors[doorIndex + 1]->IsOpened())
-		//{
-		//	if (personChosen == PersonType::TYPE_CLIENT)
-		//		clients[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
-		//	else
-		//		thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
-		//}
-		////Disparar a la persona de la derecha
-		//else if (Input::GetUserInput().Key_3 && doors[doorIndex + 2]->IsOpened())
-		//{
-		//	if (personChosen == PersonType::TYPE_CLIENT)
-		//		clients[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
-		//	else
-		//		thieves[(doorIndex + doorChosenIndex) % NUM_DOORS]->Die();
-		//}
 	}
 }
 
@@ -379,12 +389,14 @@ void WestBank::Update(float tick)
 	{
 		if (oldDoorChosenIndex >= 0 && doors[oldDoorChosenIndex]->IsClosed()) {
 
-			if (personChosen == PersonType::TYPE_CLIENT) {
-				//	cout << "Se elimina al cliente de la puerta: " << oldDoorChosenIndex << endl;
+			if (oldPersonChosen == PersonType::TYPE_CLIENT) {
+				cout << "Se elimina al cliente de la puerta: " << oldDoorChosenIndex << endl;
+				delete clients[oldDoorChosenIndex];
 				clients[oldDoorChosenIndex] = nullptr;
 			}
 			else {
-				//	cout << "Se elimina al ladron de la puerta: " << oldDoorChosenIndex << endl;
+				cout << "Se elimina al ladron de la puerta: " << oldDoorChosenIndex << endl;
+				delete thieves[oldDoorChosenIndex];
 				thieves[oldDoorChosenIndex] = nullptr;
 			}
 
@@ -451,15 +463,15 @@ void WestBank::Update(float tick)
 							if (dollarsWon == NUM_DOORS) {
 								ResetScene();
 							}
-							cout << dollarsWon << endl;
 						}
 						dollars[(doorIndex + doorChosenIndex) % NUM_DOORS]->WinMoney();
 					}
 				}
 				//Te mueres porque te dispara el ladron, siempre que no le hayas matado tú antes
 				else {
-					if (!thieves[doorChosenIndex]->IsDead())
+					if (!thieves[doorChosenIndex]->IsDead()) {
 						gameState = WestBank::GameState::DEATH;
+					}
 				}
 
 				nextOpeningDoorSeconds = 0.0f;
@@ -468,7 +480,14 @@ void WestBank::Update(float tick)
 				//Se elige la nueva puerta
 				oldDoorChosenIndex = doorChosenIndex;
 				doorChosenIndex = rand() % NUM_VISIBLE_DOORS;
+				oldPersonChosen = personChosen;
 				personChosen = rand() % PersonType::TYPE_SIZE; //rand() % PersonType::SIZE ( 0 = Cliente / 1 = Bandido )
+
+				if (personChosen == PersonType::TYPE_CLIENT)
+					cout << "Persona elegida: " << "Cliente " << "en la puerta: " << doorChosenIndex << endl;
+				else
+					cout << "Persona elegida: " << "Ladron " << " en la puerta: " << doorChosenIndex << endl;
+
 			}
 		}
 
@@ -532,6 +551,20 @@ void WestBank::Update(float tick)
 
 		break;
 	}
+	case GameState::INITIALIZE: {
+		if (Time::time >= nextInitializeSeconds) {
+			gameState = GameState::GAMEPLAY;
+		}
+		//Dolares
+		for (int i = 0; i < NUM_DOORS; i++)
+			dollars[i]->Update(tick);
+
+		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+			frameDoors[i]->Update(tick);
+
+		break;
+	}
+
 	case GameState::DEATH:
 	{
 		if (nextResetGameSeconds == 0.0f)
@@ -592,6 +625,19 @@ void WestBank::Render()
 		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
 		{
 			frameDoors[i]->RenderWithDelta(posX);
+
+		}
+		break;
+	}
+	case GameState::INITIALIZE:
+	{
+		//Dollars
+		for (int i = 0; i < NUM_DOORS; i++)
+			dollars[i]->Render();
+
+		for (int i = 0; i < NUM_VISIBLE_DOORS; i++)
+		{
+			frameDoors[i]->Render();
 
 		}
 		break;

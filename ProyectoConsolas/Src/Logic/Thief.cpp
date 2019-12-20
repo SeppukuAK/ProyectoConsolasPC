@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const float Thief::ANIM_RATE = 1.0f;
+const float Thief::ANIM_RATE = 0.5f;
 const int Thief::NUM_SPRITES = 3;
 const int Thief::TOTAL_SPRITES = 5;
 
@@ -24,15 +24,6 @@ Thief::Thief(int x, int y, Door* door) : Entity(x, y), _door(door)
 	doorState = 0;
 	endAnimTime = 0.0f;
 
-	_dying = false;
-	_dead = false;
-}
-
-void Thief::Reset()
-{
-	Entity::Reset();
-
-	endAnimTime = 0.0f;
 	_dying = false;
 	_dead = false;
 }
@@ -85,7 +76,7 @@ void Thief::Update(float delta)
 				newThiefState = ThiefState::THIEF_DEAD_0;
 
 			break;
-			//TODO: ARREGLAR ESTO
+
 		case ThiefState::THIEF_DEAD_1:
 			newThiefState = ThiefState::THIEF_DEAD_1;
 
