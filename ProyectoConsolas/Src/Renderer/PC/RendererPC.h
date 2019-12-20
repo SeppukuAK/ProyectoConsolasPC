@@ -16,7 +16,7 @@ private:
 	static int _screenWidth;		//Ancho de la ventana
 	static int _screenHeight;		//Alto de la ventana
 	static int _numBuffers;			//Número de frame buffers del Renderer
-	static int _scale;
+	static int _scale;				//Escala que se aplica al pintado de Sprites
 
 	static SDL_Window* window;		//Referencia a la ventana de SDL
 	static SDL_Renderer* renderer;	//Referencia al renderer de SDL
@@ -36,27 +36,31 @@ public:
 	/*
 		Limpia la pantalla con el color especificado
 	*/
-	static void Clear(Color color);
+	static void Clear(const Color& color);
 
 	/*
 		Pinta un pixel en el RenderBuffer con el color especificado en la posición (x,y).
 		No aparece en pantalla hasta que se hace Present().
 	*/
-	static void PutPixel(int x, int y, Color color);
+	static void PutPixel(const int& x, const int& y, const Color& color);
 
-	static void DrawSquare(int x, int y, Color color);
+	/*
+		Pinta un cuadrado de pixeles en función de la escala
+	*/
+	static void DrawSquare(const int& posX, const int& posY, const Color& color);
 
 	/*
 		Pinta una seccion de una imagen en la posición especificada
 	*/
-	static void DrawRect(Image* image, int posX, int posY, Rect sRect);
+	static void DrawRect(Image* image, const int& posX, const int& posY, const Rect& sRect);
 
 	/*
 		Realiza el intercambio de Buffers: Muestra en pantalla el siguiente RenderBuffer.
 	*/
 	static void Present();
 
-	inline static void SetScale(int newScale) { _scale = newScale; }
+	//Setters
+	inline static void SetScale(const int& newScale) { _scale = newScale; }
 
 	//Getters
 	inline static int GetWidth() { return _screenWidth; };

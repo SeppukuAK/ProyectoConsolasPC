@@ -1,5 +1,6 @@
 #pragma once
 
+//Declaración adelantada para evitar inclusión adicional
 struct Color;
 
 /*
@@ -12,9 +13,10 @@ private:
 	int _width, _height;
 
 public:
-	Image(Color* colorArray, int width, int height);
+	Image(Color* colorArray, const int& width, const int& height);
 	~Image();
 
+	//Getters
 	inline Color* GetColorArray() const { return _colorArray; }
 	inline int GetWidth() const { return _width; }
 	inline int GetHeight() const { return _height; }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>		//TODO: Vector, habrá problemas?
+#include <vector>
 
 //Declaración adelantada para evitar inclusión adicional
 class InputObserver;
@@ -43,12 +43,15 @@ public:
 		Carga una imagen en formato crudo con cabecera.
 		Devuelve una Image.
 	*/
-	static Image* LoadImage(std::string path);
+	static Image* LoadImage(const std::string & path);
 
 	/*
 		Devuelve la ruta donde se encuentran los recursos
 	*/
 	static std::string GetMediaPath() { return mediaPath; };
+
+
+//  ------- Métodos Observer ------------
 
 	/**
 	 * Register an observer
@@ -62,12 +65,14 @@ public:
 	 */
 	static void RemoveObserver(InputObserver* observer);
 
-
 private:
 
 	/*
 		Notifica a todos los observers el evento hasta que uno lo consuma
 	*/
-	static void NotifyObservers(SDL_Event e);
+	static void NotifyObservers(const SDL_Event& e);
+
+//  ------- Métodos Observer ------------
+
 };
 

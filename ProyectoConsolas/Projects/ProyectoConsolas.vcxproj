@@ -109,7 +109,6 @@
     <ClInclude Include="..\Src\Renderer\PC\RendererPC.h" />
     <ClInclude Include="..\Src\Renderer\Renderer.h" />
     <ClInclude Include="..\Src\Renderer\RendererThread.h" />
-    <ClInclude Include="..\Src\Utilities\Clamp.h" />
     <ClInclude Include="..\Src\Utilities\ConcurrentQueue.h" />
     <ClInclude Include="..\Src\Utilities\Rect.h" />
     <ClInclude Include="..\Src\Utilities\Time.h" />

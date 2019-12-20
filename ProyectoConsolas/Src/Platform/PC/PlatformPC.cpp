@@ -1,19 +1,18 @@
+
 //Se envuelve todo para evitar que se compile si no estamos en la plataforma
 #if PLATFORM_PC
 
 #include "PlatformPC.h"
-#include <iostream>		/* cout */
-#include <stdio.h>		/* fopen */
 #include <SDL.h>		/* SDL. Pintado */
+#include <stdio.h>		/* fopen */
 #include "../../Input/PC/InputObserver.h"
 #include "../../Renderer/Image.h"
 #include "../../Renderer/Color.h"
-
+#include <iostream>		/* cout */
 using namespace std;
 
 //Inicialización de atributos estáticos
 const string PlatformPC::mediaPath = "../Media/";	//Se accede desde Projects
-
 vector<InputObserver*> PlatformPC::observers = vector<InputObserver*>();
 
 void PlatformPC::Init()
@@ -69,21 +68,21 @@ bool PlatformPC::Tick()
 	return !quit;
 }
 
-Image* PlatformPC::LoadImage(string path)
+Image* PlatformPC::LoadImage(const string & path)
 {
 	Image* image = nullptr;
-	Color* arrayColor = nullptr;
-	int width = 0;
-	int height = 0;
 
 	//Inicialización fichero
 	FILE* f = NULL;
-
 	f = fopen((mediaPath + path).c_str(), "rb");
 
 	//Imagen cargada
 	if (f != NULL)
 	{
+		Color* arrayColor = nullptr;
+		int width = 0;
+		int height = 0;
+
 		//Lectura de cabecera: 2 enteros de 4 bytes (big endian)
 		uint8_t buffer[4];
 
@@ -105,9 +104,7 @@ Image* PlatformPC::LoadImage(string path)
 		image = new Image(arrayColor, width, height);
 	}
 	else
-	{
 		printf("Error al cargar la imagen");
-	}
 
 	return image;
 }
@@ -127,7 +124,7 @@ void PlatformPC::RemoveObserver(InputObserver* observer)
 	}
 }
 
-void PlatformPC::NotifyObservers(SDL_Event e)
+void PlatformPC::NotifyObservers(const SDL_Event & e)
 {
 	bool eventConsumed = false;
 	int i = 0;

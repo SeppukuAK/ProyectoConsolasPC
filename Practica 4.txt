@@ -74,8 +74,6 @@ LA ENTIDAD TIENE UN METODO RENDER
 ------------------
 
 Algunos TODO:
--PlatformPC.h.
-	-Utilizamos vector.
 -PlatformPC.cpp.
 	-BigEndian. Crear metodo
 
@@ -92,18 +90,22 @@ Algunos TODO:
 En todo: 
 -Parametros const & ????????
 -Atributos que se usan todo el rato declarados en la clase?????????
--CERRAR LA VENTANA CON LA 'X' no funcionaç
 -ctrl + k + d
--no se donde va rect.h
 -RendererThread. Me ha dado perezota
 -FrameRate esta mal. Va demasiado rapido
 -DELETE BIEN?? . Array [] . Elementos normal
 -TODOS LOS SWITCH TIENEN QUE TENER LLAVES COMO EN RENDERER_THREAD (DABA WARNING EN PS4)
--TIME ESTARIA MUY BIEN SIENDO ESTÁTICA
 -Existen todos los objetos desde el inicio o se van borrando y creando con los cambios de escena??????????
 -Const main no se si son especificas de la plataforma
+-Const InputPC.
 
 ------------------
 COSAS DEL ENUNCIADO:
 -PC TERMINA AL HACER CLICK CON RATON O PULSAR TECLA ESCAPE. A veces va a veces no
 -DISPARAR EN INPUT
+
+Bien:
+-Utilities. No hay nada raro
+-Platform. No hay nada raro
+-Renderer. Solo no he mirado rendererThread
+	-RendererPC. me da miedo drawSquare este mal. Pero funciona

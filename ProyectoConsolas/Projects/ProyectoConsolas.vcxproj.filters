@@ -163,9 +163,6 @@
     <ClInclude Include="..\Src\Utilities\Rect.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\Utilities\Clamp.h">
-      <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\Logic\Dollar.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>

@@ -8,15 +8,11 @@
 #include "../../Platform/Platform.h"
 #include <stdlib.h>     /* abs */
 #include <SDL.h>		/* SDL. Pintado */
-#include "../../Utilities/Clamp.h"
-
-//TODO: Estos const tienen que estar aquí??
 
 //Inicialización de atributos estáticos
 //-32768 and 32767
 const int InputPC::JOYSTICK_MAX_VALUE = 30000;
-const int InputPC::JOYSTICK_DEAD_ZONE = 8000; //TODO: ESTE ES EL DEADZONE PARA LOS STICKS, CUAL ES EL DEADZONE PARA LOS TRIGGERS?
-
+const int InputPC::JOYSTICK_DEAD_ZONE = 8000;
 const int InputPC::TRIGGER_MAX_VALUE = 32767;
 
 SDL_GameController* InputPC::gameController = NULL;
@@ -277,6 +273,16 @@ void InputPC::Tick()
 void InputPC::AddEvent(SDL_Event e)
 {
 	eventQueue.push(e);
+}
+
+float InputPC::Clamp(float min, float max, float value)
+{
+	if (value < min)
+		return min;
+	else if (value > max)
+		return max;
+	else
+		return value;
 }
 
 #endif

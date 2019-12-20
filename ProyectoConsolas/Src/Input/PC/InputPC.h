@@ -10,6 +10,8 @@ union SDL_Event;
 
 /*
 	Clase con métodos estáticos.
+	Gestiona la entrada en PC. 
+	Toda la información se guarda en userInput
 */
 class InputPC
 {
@@ -25,14 +27,16 @@ public:
 	};
 
 private:
+	//Constants
 	static const int JOYSTICK_MAX_VALUE;
 	static const int JOYSTICK_DEAD_ZONE;
 	static const int TRIGGER_MAX_VALUE;
 
+	//Attributes
 	static SDL_GameController* gameController;	//Manejador del GameController
 	static Observer observer;					//Observa los eventos de Input de Platform. TODO: Puntero?????????
 	static std::queue<SDL_Event> eventQueue;
-	static UserInput userInput; //Informacion del "boton" pulsado
+	static UserInput userInput;					//Informacion del estado actual del input
 
 public:
 
@@ -61,6 +65,11 @@ public:
 		Añade un evento a la cola de input para que se procese
 	*/
 	static void AddEvent(SDL_Event e);
+
+	/*
+		Restringe un valor al rango
+	*/
+	static float Clamp(float min, float max, float value);
 
 };
 

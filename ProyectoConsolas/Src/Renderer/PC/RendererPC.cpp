@@ -1,3 +1,4 @@
+
 //Se envuelve todo para evitar que se compile si no estamos en la plataforma
 #if PLATFORM_PC
 
@@ -13,6 +14,7 @@ int RendererPC::_screenWidth = 0;
 int RendererPC::_screenHeight = 0;
 int RendererPC::_numBuffers = 0;
 int RendererPC::_scale = 1;
+
 SDL_Window* RendererPC::window = NULL;
 SDL_Renderer* RendererPC::renderer = NULL;
 
@@ -57,7 +59,7 @@ void RendererPC::Release()
 	window = NULL;
 }
 
-void RendererPC::Clear(Color color)
+void RendererPC::Clear(const Color& color)
 {
 	//Establecemos un color de dibujado
 	SDL_SetRenderDrawColor(renderer, color.R, color.G, color.B, color.A);
@@ -66,7 +68,7 @@ void RendererPC::Clear(Color color)
 	SDL_RenderClear(renderer);
 }
 
-void RendererPC::PutPixel(int x, int y, Color color)
+void RendererPC::PutPixel(const int& x, const int& y, const Color& color)
 {
 	//Establecemos un color de dibujado
 	SDL_SetRenderDrawColor(renderer, color.R, color.G, color.B, color.A);
@@ -75,30 +77,39 @@ void RendererPC::PutPixel(int x, int y, Color color)
 	SDL_RenderDrawPoint(renderer, x, y);
 }
 
-void RendererPC::DrawSquare(int x, int y, Color color)
+void RendererPC::DrawSquare(const int& posX, const int& posY, const Color& color)
 {
-	for (size_t i = 0; i < _scale; i++)
-	{
-		for (size_t j = 0; j < _scale; j++)
-		{
-			PutPixel(x + j, y + i, color);
+	//Establecemos un color de dibujado
+	SDL_SetRenderDrawColor(renderer, color.R, color.G, color.B, color.A);
 
+	for (int i = 0; i < _scale; i++)
+	{
+		int y = posY + i;
+		for (int j = 0; j < _scale; j++)
+		{
+			int x = posX + j;
+
+			//Pintamos el pixel
+			SDL_RenderDrawPoint(renderer, x, y);
 		}
 
 	}
 }
 
-void RendererPC::DrawRect(Image* image, int posX, int posY, Rect sRect)
+void RendererPC::DrawRect(Image* image, const int& posX, const int& posY, const Rect& sRect)
 {
 	int imageWidth = image->GetWidth();
-
 	Color* colorArray = image->GetColorArray();
 
 	for (int i = 0; i < sRect.Height; i++)
 	{
+		int y = (posY + i) * _scale;
+		int yColor = (i + sRect.Y);
 		for (int j = 0; j < sRect.Width; j++)
 		{
-			DrawSquare((posX + j) * _scale, (posY + i) * _scale, colorArray[(i + sRect.Y) * imageWidth + (j + sRect.X)]);
+			int x = (posX + j) * _scale;
+			int xColor = (j + sRect.X);
+			DrawSquare(x, y, colorArray[yColor * imageWidth + xColor]);
 		}
 	}
 
@@ -109,6 +120,5 @@ void RendererPC::Present()
 	//Actualiza la pantalla
 	SDL_RenderPresent(renderer);
 }
-
 
 #endif
