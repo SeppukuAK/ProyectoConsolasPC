@@ -74,14 +74,6 @@ LA ENTIDAD TIENE UN METODO RENDER
 ------------------
 
 Algunos TODO:
--PlatformPC.cpp.
-	-BigEndian. Crear metodo
-
--Input.h.
-	-Init.Texture filtering
-	-Observer. Es putero?????
-	-COMPROBAR INPUT PC QUE ME HE CARGADO LOS DEADZONE DE LOS TRIGGER
-
 -Dollar.cpp
 	-TODO: Renderer::GetNumBuffers(). Variable estatica????
 	//TODO: SE PINTA MAS VECES DE LAS NECESARIAS AL INICIO
@@ -107,5 +99,11 @@ COSAS DEL ENUNCIADO:
 Bien:
 -Utilities. No hay nada raro
 -Platform. No hay nada raro
+	-BigEndian. Crear metodo
 -Renderer. Solo no he mirado rendererThread
 	-RendererPC. me da miedo drawSquare este mal. Pero funciona
+	-RendererThread. Pintado de Waves.
+		-Aqui deberia haber un error por el que no se cierra
+-InputPC.
+	-Texture
+	-Puntero observer?

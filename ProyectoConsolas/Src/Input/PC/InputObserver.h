@@ -12,6 +12,6 @@ public:
 	/*
 		Update the state of this observer
 	*/
-	virtual bool HandleEvent(SDL_Event e) = 0;
+	virtual bool HandleEvent(const SDL_Event e) = 0;
 };
 
